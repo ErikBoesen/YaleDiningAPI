@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        {% if title %}
+        <title>{{ title }} - MailYale</title>
+        <meta property="og:title" content="{{ title }} - MailYale">
+        {% else %}
+        <title>MailYale</title>
+        <meta property="og:title" content="MailYale">
+        {% endif %}
+        <meta name="viewport" content="width=device-width">
+        <meta name="description" content="Easily send bulk emails to Yale students.">
+        <meta name="author" content="Erik Boesen">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta property="og:description" content="Easily send bulk emails to Yale students.">
+        <meta property="og:image" content="https://mailyale.com/static/images/logo/banner.png">
+        <meta name="theme-color" content="#00356b">
+        <link rel="stylesheet" href="/static/css/main.css">
+        <link rel="stylesheet" href="/static/css/form.css">
+        <link rel="icon" href="/static/images/logo/favicon.png" type="image/png">
+        <link rel="icon" href="/static/images/logo/favicon.ico" type="image/x-icon">
+        {% block head %}
+        {% endblock %}
+    </head>
+    <body>
+        <header>
+            <nav>
+                <img src="/static/images/logo.svg">
+                <h2 id="logo">MailYale</h2>
+            </nav>
+        </header>
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+        <footer>
+            <p>This directory is intended for official University use and for individual communication of a business or incidental personal nature between individuals who are included in the facebook/directory. No other uses are permitted, including but not limited to using the addresses or other information for any private, commercial or political mailing or other purposes.</p>
+        </footer>
+        <script src="/static/js/main.js"></script>
+    </body>
+</html>
