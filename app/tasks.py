@@ -35,6 +35,7 @@ def scrape():
             address=raw['ADDRESS'],
             phone=raw['PHONE'],
         )
+        print('Parsing ' + location.name)
         geolocation = raw.get('GEOLOCATION')
         if geolocation is not None:
             location.latitude, location.longitude = [float(coordinate) for coordinate in geolocation.split(',')]
@@ -49,3 +50,4 @@ def scrape():
                 manager.location = location
                 db.session.add(location)
     db.session.commit()
+    print('Done.')
