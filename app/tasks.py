@@ -50,4 +50,5 @@ def scrape():
                 manager.location = location
                 db.session.add(location)
     db.session.commit()
-    print('Done.')
+    print('Done reading FastTrack data.')
+
