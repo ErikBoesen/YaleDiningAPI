@@ -8,3 +8,4 @@ requests
 gunicorn
 redis
 celery
+yaledining==1.1.0
