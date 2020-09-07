@@ -3,7 +3,7 @@ from app import app, db
 
 class Location:
     __tablename__ = 'locations'
-    id = db.Column(db.Integer, primary=True)
+    id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String, nullable=False)
     type = db.Column(db.String, nullable=False)
@@ -14,12 +14,13 @@ class Location:
     address = db.Column(db.String, nullable=False)
     phone = db.Column(db.String, nullable=False)
 
-    managers = db.relationship('Manager', backref='location')
+    managers = db.relationship('Manager', back_populates='location')
 
 class Manager:
     __tablename__ = 'managers'
-    id = db.Column(db.Integer, primary=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String)
     email = db.Column(db.String)
 
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
+    location = db.relationship('Location', back_populates='managers')

@@ -39,11 +39,13 @@ def scrape():
         if geolocation is not None:
             location.latitude, location.longitude = [float(coordinate) for coordinate in geolocation.split(',')]
         db.session.add(location)
-        managers = []
         num_managers = 0
         while num_managers < 4:
             num_managers += 1
             name = raw[f'MANAGER{num_managers}NAME']
             email = raw[f'MANAGER{num_managers}EMAIL']
             if name is not None and email is not None:
-                managers.append(Manager(name, email))
+                manager = Manager(name=name, email=email)
+                manager.location = location
+                db.session.add(location)
+    db.session.commit()
