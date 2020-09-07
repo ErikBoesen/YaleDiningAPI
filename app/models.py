@@ -1,7 +1,7 @@
 from app import app, db
 
 
-class Location:
+class Location(db.Model):
     __tablename__ = 'locations'
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.Integer, nullable=False)
@@ -16,7 +16,7 @@ class Location:
 
     managers = db.relationship('Manager', back_populates='location')
 
-class Manager:
+class Manager(db.Model):
     __tablename__ = 'managers'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String)

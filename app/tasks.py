@@ -13,10 +13,10 @@ def scrape():
     # which still provides non-menu data
     FASTTRACK_ROOT = 'https://www.yaledining.org/fasttrack/'
     params = {
-        'version': self.API_VERSION,
+        'version': 3,
     }
     r = requests.get(FASTTRACK_ROOT + 'locations.cfm', params=params)
-    data = request.json()
+    data = r.json()
     # Restructure data into a list of dictionaries for easier manipulation
     data = [
         {data['COLUMNS'][index]: entry[index] for index in range(len(entry))}
