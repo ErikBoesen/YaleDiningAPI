@@ -3,11 +3,11 @@
     <head>
         <meta charset="utf-8">
         {% if title %}
-        <title>{{ title }} - MailYale</title>
-        <meta property="og:title" content="{{ title }} - MailYale">
+        <title>{{ title }} - YaleDine</title>
+        <meta property="og:title" content="{{ title }} - YaleDine">
         {% else %}
-        <title>MailYale</title>
-        <meta property="og:title" content="MailYale">
+        <title>YaleDine</title>
+        <meta property="og:title" content="YaleDine">
         {% endif %}
         <meta name="viewport" content="width=device-width">
         <meta name="description" content="Easily send bulk emails to Yale students.">
@@ -25,10 +25,8 @@
     </head>
     <body>
         <header>
-            <nav>
-                <img src="/static/images/logo.svg">
-                <h2 id="logo">MailYale</h2>
-            </nav>
+            <img src="/static/images/logo.png" id="logo">
+            <h2>YaleDine</h2>
         </header>
         <main>
             {% block content %}
