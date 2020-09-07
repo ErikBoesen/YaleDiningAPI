@@ -12,7 +12,7 @@ class Location:
     longitude = db.Column(db.Float)
     is_open = db.Column(db.Boolean, nullable=False)
     address = db.Column(db.String, nullable=False)
-    phone = db.Column(db.String)
+    phone = db.Column(db.String, nullable=False)
 
     managers = db.relationship('Manager', backref='location')
 

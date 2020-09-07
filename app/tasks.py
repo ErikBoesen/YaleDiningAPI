@@ -1,5 +1,5 @@
 from app import app, db, celery
-from app.models import Student
+from app.models import Location, Manager
 
 import os
 import requests
@@ -23,4 +23,27 @@ def scrape():
         for entry in data['DATA']
     ]
     Location.query.delete()
+    Manager.query.delete()
     for raw in data:
+        location = Location(
+            id=int(raw['ID_LOCATION']),
+            code=int(raw['LOCATIONCODE']),
+            name=raw['DININGLOCATIONNAME'],
+            type=raw['TYPE'],
+            capacity=raw['CAPACITY'],
+            is_open=not bool(raw['ISCLOSED']),
+            address=raw['ADDRESS'],
+            phone=raw['PHONE'],
+        )
+        geolocation = raw.get('GEOLOCATION')
+        if geolocation is not None:
+            location.latitude, location.longitude = [float(coordinate) for coordinate in geolocation.split(',')]
+        db.session.add(location)
+        managers = []
+        num_managers = 0
+        while num_managers < 4:
+            num_managers += 1
+            name = raw[f'MANAGER{num_managers}NAME']
+            email = raw[f'MANAGER{num_managers}EMAIL']
+            if name is not None and email is not None:
+                managers.append(Manager(name, email))
