@@ -19,6 +19,9 @@ def get_courses():
 def get_properties():
     return driver.find_elements_by_css_selector('.v-button.v-widget.multiline.v-button-multiline.selection.v-button-selection.icon-align-right.v-button-icon-align-right.v-has-width')
 
+def click_back():
+    driver.find_element_by_css_selector('.button-navigation--previous .v-button').click()
+
 college = get_header()
 print('Parsing ' + college)
 
@@ -32,8 +35,13 @@ while True:
     previous_date_button = driver.find_element_by_class_name('button-date-selection--previous')
     previous_date_button.click()
 
+dates = {
+
+}
 # Cycle through dates, collecting data
 while True:
+    date = driver.find_element_by_css_selector('.v-label.v-widget.sub-title.v-label-sub-title.v-has-width').text
+
     next_date_button = driver.find_element_by_class_name('button-date-selection--next')
     next_date_button.click()
 
@@ -55,10 +63,20 @@ while True:
             courses = get_courses()
             courses[courses_processed].click()
 
+            # Grab and parse Ingredients page
             properties = get_properties()
             properties[0].click()
-
-            driver.find_element_by_css_selector('.v-verticallayout.v-layout.v-vertical.v-widget.v-has-width.v-margin-top.v-margin-right.v-margin-bottom.v-margin-left')[1].get_elements_by_xpath('//div[@class="')
+            rows = driver.find_elements_by_css_selector('.v-panel-content.v-scrollable')[1].find_elements_by_xpath('//div[@class="v-slot"]')
+            rows_processed = 0
+            print('Found %d rows.' % len(rows))
             courses_processed += 1
+            # TODO: process page.
+
+            click_back()
+            # Do again to reattach to the list
+            properties = get_properties()
+
 
         tabs_processed += 1
+
+
