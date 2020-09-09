@@ -185,7 +185,7 @@ def parse_nutrition_facts_course():
             items[items_processed].click()
             sleep()
 
-            nutrition_facts['items'][item_name].append(parse_nutrition_facts())
+            nutrition_facts['items'][item_name] = parse_nutrition_facts()
 
             click_back()
 
@@ -244,6 +244,9 @@ def parse_meal(name):
 menus = []
 
 def parse_right():
+    college = get_header_text()
+    print('Parsing ' + college)
+
     # Cycle through dates, collecting data
     while True:
         today_menu = {
@@ -286,9 +289,6 @@ def parse_right():
     return True
 
 def parse():
-    college = get_header_text()
-    print('Parsing ' + college)
-
     finished = False
     while not finished:
         driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=1')
@@ -300,3 +300,5 @@ def parse():
             finished = parse_right()
         except e:
             raise e
+
+parse()
