@@ -94,28 +94,27 @@ def scrape():
                     nutrition_facts = course_d['nutrition_facts']
                     for item_name in ingredients:
                         print('Parsing item ' + item_name)
-                        items[item_name] = Item(
+                        item = Item(
                             name=item_name,
                             course=course_name,
                             ingredients=ingredients[item_name]['ingredients'],
                         )
                         diets = ingredients[item_name]['diets'].split(', ')
-                        items[item_name].vegan = ('V' in diets)
-                        items[item_name].vegetarian = ('VG' in diets)
+                        item.vegan = ('V' in diets)
+                        item.vegetarian = ('VG' in diets)
                         allergens = ingredients[item_name].get('allergens')
                         if allergens:
                             allergens = allergens.split(', ')
                             for allergen in allergens:
                                 # AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-                                setattr(items[item_name], allergen.lower(), True)
+                                setattr(item, allergen.lower(), True)
 
                         # Read nutrition facts
                         # TODO: 'nutrition' or 'nutrition facts'?
                         nutrition = read_nutrition_facts(nutrition_facts['items'][item_name])
                         db.session.add(nutrition)
-                        items[item_name].nutrition = nutrition
-                    for item_name in items:
-                        db.session.add(items[item_name])
+                        item.nutrition = nutrition
+                        db.session.add(item)
                     #course_nutrition = read_nutrition_facts(nutrition_facts['course'])
                     #db.session.add(course_nutrition)
                     # TODO actually add to course!!!!!!!
