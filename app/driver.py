@@ -300,10 +300,10 @@ def parse_right():
 
     return True
 
-def parse():
+def parse(location_id):
     finished = False
     while not finished:
-        driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=1')
+        driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=%d' % location_id)
         try:
             if len(menus):
                 scan_to_start(start_date=day_after(menus[-1]['date']))
@@ -315,4 +315,6 @@ def parse():
             print(e)
     return menus
 
-parse()
+# Iterate through colleges
+for location_id in range(12):
+    parse(location_id)
