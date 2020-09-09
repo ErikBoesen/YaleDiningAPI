@@ -71,15 +71,21 @@ def parse_ingredients():
     Parse ingredients page that's on the screen.
     """
     ingredients = {}
-    rows = driver.find_elements_by_css_selector('.v-panel-content.v-scrollable')[-1].find_elements_by_xpath('//div[@class="v-slot"]')
+    rows = driver.find_element_by_css_selector('.v-verticallayout.v-layout.v-vertical.v-widget.v-has-width.v-margin-top.v-margin-right.v-margin-bottom.v-margin-left .v-verticallayout').find_elements_by_xpath('//div[@class="v-slot"]')
+    rows.pop(0)
     print('Found %d rows of ingredients data.' % len(rows))
     rows_processed = 0
     current_title = None
     looking_for = 'title'
     while rows_processed < len(rows):
         if looking_for == 'title':
-            current_title = rows[rows_processed].text
-            ingredients[current_title] = {}
+            print('Row %d: %s' % (rows_processed, rows[rows_processed].text))
+            slots = rows[rows_processed].find_elements_by_css_selector('.v-label')
+            print('Found %d slots, first is %s' % (len(slots), slots[0].text))
+            current_title = slots[0].text
+            ingredients[current_title] = {
+                'diets': slots[1].text,
+            }
             looking_for = 'ingredients'
             rows_processed += 1
         elif looking_for == 'ingredients':
@@ -100,9 +106,9 @@ def parse_nutrition_facts():
     Parse a visible nutrition facts pane, whether for a full course or an individual item.
     """
     nutrition_facts = {
-        'portion_size': driver.get_element_by_css_selector('.v-panel-content .v-panel-captionwrap').text,
+        'portion_size': driver.find_element_by_css_selector('.v-panel-content .v-panel-captionwrap').text,
     }
-    lists = driver.get_elements_by_css_selector('.v-panel-content ul')
+    lists = driver.find_elements_by_css_selector('.v-panel-content ul')
     if len(lists) != 2:
         print('Warning: more than 2 uls found on nutrition facts page.')
     # The nutrition facts table is made with two uls, the first of which has the ingredient name and amount of it,
@@ -172,6 +178,9 @@ def parse_course():
     in_buttons = get_ingredients_and_nutrition_buttons()
     in_buttons[1].click()
     sleep()
+
+    course['nutrition_facts'] = parse_nutrition_facts_course()
+
     click_back()  # to Ingredients/Nutrition Facts Selection pane
     sleep()
     return course
@@ -240,7 +249,7 @@ def parse_right():
             today_menu['meals'].append(parse_meal('Breakfast'))
 
         menus.append(today_menu)
-        print(menus)
+        print(json.dumps(menus))
     print(menus)
 
 
