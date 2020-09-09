@@ -30,7 +30,10 @@ class Meal(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     date = db.Column(db.Date, nullable=False)
+    course = db.Column(db.String, nullable=False)
 
+    items = db.relationship('Item', back_populates='meal')
+    nutrition = db.relationship('Nutrition', uselist=False, back_populates='meal')
 
 class Item(db.Model):
     __tablename__ = 'items'
@@ -53,6 +56,10 @@ class Item(db.Model):
     wheat = db.Column(db.Boolean, default=False)
     gluten = db.Column(db.Boolean, default=False)
     coconut = db.Column(db.Boolean, default=False)
+
+    meal_id = db.Column(db.Integer, db.ForeignKey('meals.id'))
+    meal = db.relationship('Meal', back_populates='items')
+    nutrition = db.relationship('Nutrition', uselist=False, back_populates='meal')
 
 class Nutrition(db.Model):
     __tablename__ = 'nutrition'
@@ -91,3 +98,8 @@ class Nutrition(db.Model):
     calcium_pdv = db.Column(db.Integer)
     iron_pdv = db.Column(db.Integer)
     potassium_pdv = db.Column(db.Integer)
+
+    meal_id = db.Column(db.Integer, db.ForeignKey('meals.id'))
+    meal = db.relationship('Meal', back_populates('nutrition')
+    item_id = db.Column(db.Integer, db.ForeignKey('items.id'))
+    item = db.relationship('Meal', back_populates('nutrition')
