@@ -71,13 +71,13 @@ def parse_ingredients():
     Parse ingredients page that's on the screen.
     """
     ingredients = {}
-    rows = driver.find_element_by_css_selector('.v-verticallayout.v-layout.v-vertical.v-widget.v-has-width.v-margin-top.v-margin-right.v-margin-bottom.v-margin-left .v-verticallayout').find_elements_by_xpath('//div[@class="v-slot"]')
-    rows.pop(0)
+    rows = driver.find_element_by_css_selector('.v-verticallayout.v-layout.v-vertical.v-widget.v-has-width.v-margin-top.v-margin-right.v-margin-bottom.v-margin-left .v-verticallayout').find_elements_by_xpath('./div[contains(@class, "v-slot")]')
     print('Found %d rows of ingredients data.' % len(rows))
     rows_processed = 0
     current_title = None
     looking_for = 'title'
     while rows_processed < len(rows):
+        print('Parsing row %d, with content [%s], looking for %s' % (rows_processed, rows[rows_processed].text, looking_for))
         if looking_for == 'title':
             slots = rows[rows_processed].find_elements_by_css_selector('.v-label')
             current_title = slots[0].text
@@ -92,8 +92,9 @@ def parse_ingredients():
             rows_processed += 1
         elif looking_for == 'allergens':
             text = rows[rows_processed].text
-            if text.startswith('Allergens'):
-                ingredients[current_title]['allergens'] = text
+            print('ALLERGENS: ' + text)
+            if text.startswith('Allergens: '):
+                ingredients[current_title]['allergens'] = text.replace('Allergens: ', '')
                 rows_processed += 1
             looking_for = 'title'
     return ingredients
@@ -104,7 +105,7 @@ def parse_nutrition_facts():
     Parse a visible nutrition facts pane, whether for a full course or an individual item.
     """
     nutrition_facts = {
-        'portion_size': driver.find_element_by_css_selector('.v-panel-content .v-panel-captionwrap').text,
+        'Portion Size': driver.find_element_by_css_selector('.v-panel-content .v-panel-captionwrap').text.replace('Nutrition Facts\n', ''),
     }
     lists = driver.find_elements_by_css_selector('.v-panel-content ul')
     if len(lists) != 2:
@@ -128,9 +129,8 @@ def parse_nutrition_facts():
 
         rtext = rside.text.strip(' %')
         if rtext:
-            nutrition_facts[ingredient]['percent_daily_value'] = rtext
+            nutrition_facts[ingredient]['percent_daily_value'] = int(rtext)
     return nutrition_facts
-
 
 
 def parse_nutrition_facts_course():
@@ -163,6 +163,7 @@ def parse_course():
     Parse course that has been opened on the screen (i.e. Ingredients and Nutrition Facts buttons are showing).
     """
     course = {
+        'name': get_header_text(),
     }
     # Grab and parse Ingredients page
     in_buttons = get_ingredients_and_nutrition_buttons()
