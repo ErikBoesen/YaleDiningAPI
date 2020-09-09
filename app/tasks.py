@@ -1,10 +1,23 @@
 from app import app, db, celery
-from app.models import Location, Manager
+from app.models import Location, Manager, Meal, Item, Nutrition
 
 import os
 import requests
-import re
+import json
+import datetime
 from bs4 import BeautifulSoup
+
+DATE_FMT = '%A, %B %d, %Y'
+
+def read_nutrition_facts(raw):
+    nutrition = Nutrition(
+        portion_size=raw.pop('Portion Size'),
+    )
+    for key in raw:
+        snaked_key = key.lower().replace(' ', '_')
+        setattr(nutrition, snaked_key, raw[key]['amount'])
+        setattr(nutrition, snaked_key + '_pdv', raw[key].get('percent_daily_value'))
+    return nutrition
 
 
 @celery.task
