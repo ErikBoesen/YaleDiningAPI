@@ -189,7 +189,7 @@ def parse_nutrition_facts_course():
     Parse nutrition facts for an entire course.
     """
     nutrition_facts = {
-        'meal': parse_nutrition_facts(),
+        'course': parse_nutrition_facts(),
         'items': {},
     }
     items = get_item_nutrition_buttons()
