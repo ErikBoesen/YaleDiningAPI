@@ -6,9 +6,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 
+WAIT_PERIOD = 10
+
 driver = webdriver.Firefox()
 driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=1')
-driver.implicitly_wait(10)
+driver.implicitly_wait(WAIT_PERIOD)
 
 ###################################
 # Functions for getting UI elements
@@ -20,7 +22,9 @@ def get_subheader_text():
     return driver.find_element_by_class_name('label-sub-caption').text
 
 def get_tabs():
+    driver.implicitly_wait(1)
     tabs_bar = driver.find_elements_by_class_name('v-tabsheet')
+    driver.implicitly_wait(WAIT_PERIOD)
     if len(tabs_bar) == 0:
         return []
     return tabs_bar[0].find_elements_by_class_name('v-caption')
@@ -140,7 +144,7 @@ def parse_right():
 
                 tabs_processed += 1
         else:
-            print('No tabs are available.')
+            print('No tabs are available. Parsing single meal.')
             parse_meal()
 
 
