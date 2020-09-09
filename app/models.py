@@ -30,6 +30,7 @@ class Meal(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     date = db.Column(db.Date, nullable=False)
+    # TODO: location_id???
 
     items = db.relationship('Item', back_populates='meal')
 
@@ -59,7 +60,7 @@ class Item(db.Model):
 
     meal_id = db.Column(db.Integer, db.ForeignKey('meals.id'))
     meal = db.relationship('Meal', back_populates='items')
-    nutrition = db.relationship('Nutrition', uselist=False, back_populates='meal')
+    nutrition = db.relationship('Nutrition', uselist=False, back_populates='item')
 
 class Nutrition(db.Model):
     __tablename__ = 'nutrition'
@@ -100,4 +101,4 @@ class Nutrition(db.Model):
     potassium_pdv = db.Column(db.Integer)
 
     item_id = db.Column(db.Integer, db.ForeignKey('items.id'))
-    item = db.relationship('Meal', back_populates='nutrition')
+    item = db.relationship('Item', back_populates='nutrition')
