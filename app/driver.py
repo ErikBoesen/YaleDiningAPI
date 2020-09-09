@@ -65,10 +65,50 @@ def scan_to_start():
         previous_date_button.click()
         sleep()
 
-def parse_meal():
+def parse_course():
+    """
+    Parse course that has been opened on the screen (i.e. Ingredients and Nutrition Facts buttons are showing).
+    """
+    # Grab and parse Ingredients page
+    in_buttons = get_ingredients_and_nutrition_buttons()
+    in_buttons[0].click()
+    sleep()
+    rows = driver.find_elements_by_css_selector('.v-panel-content.v-scrollable')[-1].find_elements_by_xpath('//div[@class="v-slot"]')
+    rows_processed = 0
+    print('Found %d rows.' % len(rows))
+    # TODO: process page.
+
+    click_back()
+    # Do again to reattach to the list
+    in_buttons = get_ingredients_and_nutrition_buttons()
+    in_buttons[1].click()
+    sleep()
+    # TODO: parse nutrition facts page too
+    items = get_item_nutrition_buttons()
+    if items:
+        items_processed = 0
+        while items_processed < len(items):
+            # TODO: stop this from running twice on the first go. And same with other such constructs in this file.
+            items = get_item_nutrition_buttons()
+            items[items_processed].click()
+            sleep()
+
+            # TODO: parse these pages too
+            click_back()
+
+            items_processed += 1
+    click_back()  # to Ingredients/Nutrition Facts Selection pane
+    sleep()
+
+
+def parse_meal(name):
     """
     Parse the meal currently on the screen, whether or not it was accessed via a tab.
     """
+    meal = {
+        'name': name,
+        'courses': [],
+    }
     courses = get_courses()
     courses_processed = 0
     while courses_processed < len(courses):
@@ -76,36 +116,8 @@ def parse_meal():
         courses[courses_processed].click()
         sleep()
 
-        # Grab and parse Ingredients page
-        in_buttons = get_ingredients_and_nutrition_buttons()
-        in_buttons[0].click()
-        sleep()
-        rows = driver.find_elements_by_css_selector('.v-panel-content.v-scrollable')[-1].find_elements_by_xpath('//div[@class="v-slot"]')
-        rows_processed = 0
-        print('Found %d rows.' % len(rows))
-        # TODO: process page.
+        meal['courses'].append(parse_course())
 
-        click_back()
-        # Do again to reattach to the list
-        in_buttons = get_ingredients_and_nutrition_buttons()
-        in_buttons[1].click()
-        sleep()
-        # TODO: parse nutrition facts page too
-        items = get_item_nutrition_buttons()
-        if items:
-            items_processed = 0
-            while items_processed < len(items):
-                # TODO: stop this from running twice on the first go. And same with other such constructs in this file.
-                items = get_item_nutrition_buttons()
-                items[items_processed].click()
-                sleep()
-
-                # TODO: parse these pages too
-                click_back()
-
-                items_processed += 1
-        click_back()  # to Ingredients/Nutrition Facts Selection pane
-        sleep()
         click_back()  # to main page/meal
         sleep()
         courses_processed += 1
@@ -121,7 +133,7 @@ def parse_right():
 
         today_menu = {
             'date': get_subheader_text(),
-            'meals': []
+            'meals': [],
         }
 
         print('Parsing date %s...' % today_menu['date'])
@@ -143,12 +155,13 @@ def parse_right():
                 sleep()
                 meal_name = tabs[tabs_processed].text
 
-                today_menu['meals'].append(parse_meal())
+                today_menu['meals'].append(parse_meal(meal_name))
 
                 tabs_processed += 1
         else:
             print('No tabs are available. Parsing single meal.')
-            today_menu['meals'].append(parse_meal())
+            # TODO: does this default hold?
+            today_menu['meals'].append(parse_meal('Breakfast'))
 
         menus.append(today_menu)
     print(menus)
