@@ -133,7 +133,10 @@ def parse_nutrition_facts_course():
     """
     Parse nutrition facts for an entire course.
     """
-    # TODO: parse nutrition facts page too
+    nutrition_facts = {
+        'meal': parse_nutrition_facts(),
+        'items': [],
+    }
     items = get_item_nutrition_buttons()
     if items:
         items_processed = 0
@@ -143,10 +146,12 @@ def parse_nutrition_facts_course():
             items[items_processed].click()
             sleep()
 
-            # TODO: parse these pages too
+            nutrition_facts['items'].append(parse_nutrition_facts())
+
             click_back()
 
             items_processed += 1
+    return nutrition_facts
 
 
 def parse_course():
@@ -235,6 +240,7 @@ def parse_right():
             today_menu['meals'].append(parse_meal('Breakfast'))
 
         menus.append(today_menu)
+        print(menus)
     print(menus)
 
 
