@@ -248,6 +248,7 @@ def parse_right():
 
         menus.append(today_menu)
         print(json.dumps(menus))
+    return True
 
 def day_after(date):
     """
@@ -262,6 +263,14 @@ def parse():
     college = get_header_text()
     print('Parsing ' + college)
 
-    driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=1')
-    scan_to_start()
-    parse_right()
+    finished = False
+    while not finished:
+        driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=1')
+        try:
+            if len(menus):
+                scan_to_start(start_date=menus[-1]['date'])
+            else:
+                scan_to_start()
+            finished = parse_right()
+        except e:
+            raise e
