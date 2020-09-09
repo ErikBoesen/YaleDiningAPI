@@ -1,4 +1,5 @@
-<img src="app/static/images/logo.png" float="right" width=200 alt="YaleDine logo">
+<img src="app/static/images/logo.png" align="right" width=100 alt="YaleDine logo">
+
 # YaleDine
 
 > A powerful API for Yale's dining services.
