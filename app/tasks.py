@@ -65,8 +65,10 @@ def scrape():
     db.session.commit()
     print('Done reading FastTrack data.')
 
-    # TODO: temporary.
-
+    Meal.query.delete()
+    Item.query.delete()
+    Nutrition.query.delete()
+    # TODO: find a new way of getting this data in the future.
     with open('menus.json', 'r') as f:
         menus = json.load(f)
     for college in menus:
