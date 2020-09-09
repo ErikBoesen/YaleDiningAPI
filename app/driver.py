@@ -121,6 +121,7 @@ def parse_ingredients():
     """
     Parse ingredients page that's on the screen.
     """
+    sleep()
     ingredients = {}
     rows = driver.find_element_by_css_selector('.v-verticallayout.v-layout.v-vertical.v-widget.v-has-width.v-margin-top.v-margin-right.v-margin-bottom.v-margin-left .v-verticallayout').find_elements_by_xpath('./div[contains(@class, "v-slot")]')
     print('Found %d rows of ingredients data.' % len(rows))
@@ -130,8 +131,6 @@ def parse_ingredients():
     while rows_processed < len(rows):
         if looking_for == 'title':
             slots = rows[rows_processed].find_elements_by_css_selector('.v-label')
-            print('------------------ROWS:------')
-            print([row.text for row in rows])
             current_title = slots[0].text
             ingredients[current_title] = {
                 'diets': slots[1].text,
