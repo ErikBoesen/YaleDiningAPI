@@ -32,7 +32,6 @@ class Meal(db.Model):
     date = db.Column(db.Date, nullable=False)
 
     items = db.relationship('Item', back_populates='meal')
-    nutrition = db.relationship('Nutrition', uselist=False, back_populates='meal')
 
 class Item(db.Model):
     __tablename__ = 'items'
@@ -100,7 +99,5 @@ class Nutrition(db.Model):
     iron_pdv = db.Column(db.Integer)
     potassium_pdv = db.Column(db.Integer)
 
-    meal_id = db.Column(db.Integer, db.ForeignKey('meals.id'))
-    meal = db.relationship('Meal', back_populates='nutrition')
     item_id = db.Column(db.Integer, db.ForeignKey('items.id'))
     item = db.relationship('Meal', back_populates='nutrition')
