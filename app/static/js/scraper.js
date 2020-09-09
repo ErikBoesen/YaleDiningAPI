@@ -1,15 +1,8 @@
-let cookie = document.getElementById('cookie'),
-    submit = document.getElementById('submit');
-
-cookie.onchange = function() {
-    submit.disabled = Boolean(cookie.textContent);
-}
+let submit = document.getElementById('submit');
 
 submit.onclick = function() {
     console.log('Trying to start scraper.');
-    let payload = {
-        'cookie': cookie.value,
-    };
+    let payload = {};
     fetch('/scraper', {
         method: 'POST',
         headers: {
