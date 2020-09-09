@@ -115,6 +115,8 @@ def parse_ingredients():
     while rows_processed < len(rows):
         if looking_for == 'title':
             slots = rows[rows_processed].find_elements_by_css_selector('.v-label')
+            print('------------------ROWS:------')
+            print([row.text for row in rows])
             current_title = slots[0].text
             ingredients[current_title] = {
                 'diets': slots[1].text,
@@ -283,6 +285,8 @@ def parse_right():
 
         menus.append(today_menu)
         print(json.dumps(menus))
+        with open('menus.json', 'w') as f:
+            json.dump(menus, f)
         click_next_date()
         sleep()
 
@@ -294,11 +298,13 @@ def parse():
         driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=1')
         try:
             if len(menus):
-                scan_to_start(start_date=menus[-1]['date'])
+                scan_to_start(start_date=day_after(menus[-1]['date']))
             else:
                 scan_to_start()
             finished = parse_right()
-        except e:
-            raise e
+        except Exception as e:
+            print('Squashing error...')
+            print(e)
+    return menus
 
 parse()
