@@ -101,6 +101,6 @@ class Nutrition(db.Model):
     potassium_pdv = db.Column(db.Integer)
 
     meal_id = db.Column(db.Integer, db.ForeignKey('meals.id'))
-    meal = db.relationship('Meal', back_populates('nutrition')
+    meal = db.relationship('Meal', back_populates='nutrition')
     item_id = db.Column(db.Integer, db.ForeignKey('items.id'))
-    item = db.relationship('Meal', back_populates('nutrition')
+    item = db.relationship('Meal', back_populates='nutrition')
