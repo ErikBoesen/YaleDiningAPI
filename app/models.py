@@ -30,7 +30,6 @@ class Meal(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     date = db.Column(db.Date, nullable=False)
-    course = db.Column(db.String, nullable=False)
 
     items = db.relationship('Item', back_populates='meal')
     nutrition = db.relationship('Nutrition', uselist=False, back_populates='meal')
@@ -39,11 +38,13 @@ class Item(db.Model):
     __tablename__ = 'items'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
+    course = db.Column(db.String, nullable=False)
     ingredients = db.Column(db.String)
 
     vegetarian = db.Column(db.Boolean, default=False)
     vegan = db.Column(db.Boolean, default=False)
 
+    # TODO: it is possible that some of these allergens are not supported under the new API.
     alcohol = db.Column(db.Boolean, default=False)
     nuts = db.Column(db.Boolean, default=False)
     shellfish = db.Column(db.Boolean, default=False)
