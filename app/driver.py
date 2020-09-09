@@ -92,11 +92,46 @@ def parse_ingredients():
                 ingredients[current_title]['allergens'] = text
                 rows_processed += 1
             looking_for = 'title'
-    return
+    return ingredients
+
 
 def parse_nutrition_facts():
     """
-    Parse nutrition facts for a course.
+    Parse a visible nutrition facts pane, whether for a full course or an individual item.
+    """
+    nutrition_facts = {
+        'portion_size': driver.get_element_by_css_selector('.v-panel-content .v-panel-captionwrap').text,
+    }
+    lists = driver.get_elements_by_css_selector('.v-panel-content ul')
+    if len(lists) != 2:
+        print('Warning: more than 2 uls found on nutrition facts page.')
+    # The nutrition facts table is made with two uls, the first of which has the ingredient name and amount of it,
+    # and the second of which has the daily values.
+    # The elements in the left side list
+    llist = lists[0].find_elements_by_xpath('*')
+    # The elements in the right side list
+    rlist = lists[1].find_elements_by_xpath('*')
+    for lside, rside in zip(llist, rlist):
+        # Skip if we're on an empty row
+        if lside.text.strip() == '':
+            continue
+        spans = lside.find_elements_by_tag_name('span')
+        ingredient = spans[0].text.lstrip('- ')
+        amount = spans[1].text
+        nutrition_facts[ingredient] = {
+            'amount': amount,
+        }
+
+        rtext = rside.text.strip(' %')
+        if rtext:
+            nutrition_facts[ingredient]['percent_daily_value'] = rtext
+    return nutrition_facts
+
+
+
+def parse_nutrition_facts_course():
+    """
+    Parse nutrition facts for an entire course.
     """
     # TODO: parse nutrition facts page too
     items = get_item_nutrition_buttons()
