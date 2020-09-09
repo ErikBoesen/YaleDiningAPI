@@ -71,11 +71,23 @@ def day_after(date):
     fut = cur + datetime.timedelta(days=1)
     return fut.strftime(fmt)
 
-def is_target_date_in_future(current_date, target_date):
+def seek_date(current_date, target_date) -> bool:
+    """
+    Seek toward a target date.
+    :return: whether the date has been reached.
+    """
+    # TODO this name is kinda unclear
     fmt = '%A, %B %d, %Y'
     current_date = datetime.datetime.strptime(current_date, fmt)
     target_date = datetime.datetime.strptime(target_date, fmt)
-    return current_date < target_date
+    if current_date == target_date:
+        return True
+    if current_date < target_date:
+        click_next_date()
+    else:
+        click_previous_date()
+    sleep()
+    return False
 
 ################################
 # Parsing process functions
@@ -85,11 +97,7 @@ def scan_to_start(start_date=None):
     if start_date:
         # TODO: deduplicate
         date = get_subheader_text()
-        while date != start_date:
-            if is_target_date_in_future(date, start_date):
-                click_next_date()
-            else:
-                click_previous_date()
+        while seek_date(date, start_date):
             date = get_subheader_text()
     else:
         while True:
