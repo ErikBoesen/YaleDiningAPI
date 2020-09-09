@@ -65,24 +65,39 @@ def scan_to_start():
         previous_date_button.click()
         sleep()
 
-def parse_course():
-    """
-    Parse course that has been opened on the screen (i.e. Ingredients and Nutrition Facts buttons are showing).
-    """
-    # Grab and parse Ingredients page
-    in_buttons = get_ingredients_and_nutrition_buttons()
-    in_buttons[0].click()
-    sleep()
-    rows = driver.find_elements_by_css_selector('.v-panel-content.v-scrollable')[-1].find_elements_by_xpath('//div[@class="v-slot"]')
-    rows_processed = 0
-    print('Found %d rows.' % len(rows))
-    # TODO: process page.
 
-    click_back()
-    # Do again to reattach to the list
-    in_buttons = get_ingredients_and_nutrition_buttons()
-    in_buttons[1].click()
-    sleep()
+def parse_ingredients():
+    """
+    Parse ingredients page that's on the screen.
+    """
+    ingredients = {}
+    rows = driver.find_elements_by_css_selector('.v-panel-content.v-scrollable')[-1].find_elements_by_xpath('//div[@class="v-slot"]')
+    print('Found %d rows of ingredients data.' % len(rows))
+    rows_processed = 0
+    current_title = None
+    looking_for = 'title'
+    while rows_processed < len(rows):
+        if looking_for == 'title':
+            current_title = rows[rows_processed].text
+            ingredients[current_title] = {}
+            looking_for = 'ingredients'
+            rows_processed += 1
+        elif looking_for == 'ingredients':
+            ingredients[current_title]['ingredients'] = rows[rows_processed].text
+            looking_for = 'allergens'
+            rows_processed += 1
+        elif looking_for == 'allergens':
+            text = rows[rows_processed].text
+            if text.startswith('Allergens'):
+                ingredients[current_title]['allergens'] = text
+                rows_processed += 1
+            looking_for = 'title'
+    return
+
+def parse_nutrition_facts():
+    """
+    Parse nutrition facts for a course.
+    """
     # TODO: parse nutrition facts page too
     items = get_item_nutrition_buttons()
     if items:
@@ -97,9 +112,29 @@ def parse_course():
             click_back()
 
             items_processed += 1
-    click_back()  # to Ingredients/Nutrition Facts Selection pane
+
+
+def parse_course():
+    """
+    Parse course that has been opened on the screen (i.e. Ingredients and Nutrition Facts buttons are showing).
+    """
+    course = {
+    }
+    # Grab and parse Ingredients page
+    in_buttons = get_ingredients_and_nutrition_buttons()
+    in_buttons[0].click()
     sleep()
 
+    course['ingredients'] = parse_ingredients()
+
+    click_back()
+    # Do again to reattach to the list
+    in_buttons = get_ingredients_and_nutrition_buttons()
+    in_buttons[1].click()
+    sleep()
+    click_back()  # to Ingredients/Nutrition Facts Selection pane
+    sleep()
+    return course
 
 def parse_meal(name):
     """
@@ -121,6 +156,7 @@ def parse_meal(name):
         click_back()  # to main page/meal
         sleep()
         courses_processed += 1
+    return meal
 
 
 def parse_right():
