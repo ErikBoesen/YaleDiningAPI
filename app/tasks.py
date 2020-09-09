@@ -65,3 +65,44 @@ def scrape():
     db.session.commit()
     print('Done reading FastTrack data.')
 
+    # TODO: temporary.
+
+    with open('menus.json', 'r') as f:
+        menus = json.load(f)
+    for college in menus:
+        for day_d in menus[college]:
+            # There is no elegance here. Only sleep deprivation and regret.
+            date = datetime.datetime.strptime(day_d['date']).date()
+            for meal_d in day['meals']:
+                meal = Meal(
+                    name=meal_d['name'],
+                    date=date,
+                )
+                for course_d in meal_d['courses']:
+                    course_name = course_d['name']
+                    ingredients = course_d['ingredients']
+                    items = {}
+                    # Note that both ingredients and nutrition_facts['items'] are dictionaries,
+                    # with the keys being the names of the items. Yeah, I know it sucks.
+                    # I'm trying to web scrape an absolutely bewitched Java-based web app at 2:28am. Let me live.
+                    for item_name in ingredients:
+                        items[item_name] = Item(
+                            name=item_name,
+                            course=course_name,
+                            ingredients=ingredients[item_name]['ingredients'],
+                        )
+                        diets = ingredients[item_name]['diets'].split(', ')
+                        items[item_name].vegan = ('V' in diets)
+                        items[item_name].vegetarian = ('VG' in diets)
+                        allergens = ingredients[item_name].get('allergens')
+                        if allergens:
+                            allergens = allergens.split(', ')
+                            for allergen in allergens:
+                                # AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                                setattr(items[item_name], allergen.lower(), True)
+                    for item_name in nutrition_facts
+                    for item_name in ingredients:
+                        db.session.add(item)
+                    nutrition_facts = course_d['nutrition_facts']
+                db.session.add(meal)
+    db.session.commit()
