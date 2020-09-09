@@ -46,25 +46,60 @@ def click_back():
     driver.find_element_by_css_selector('.button-navigation--previous .v-button').click()
     sleep()
 
+def click_previous_date():
+    previous_date_button = driver.find_element_by_class_name('button-date-selection--previous')
+    previous_date_button.click()
+    sleep()
+
+def click_next_date():
+    next_date_button = driver.find_element_by_class_name('button-date-selection--next')
+    next_date_button.click()
+    sleep()
+
 ######################
 # Other util functions
 
 def sleep():
     time.sleep(0.8)
 
+def day_after(date):
+    """
+    Given a date, return the next day in that format.
+    """
+    fmt = '%A, %B %d, %Y'
+    cur = datetime.datetime.strptime(date, fmt)
+    fut = cur + datetime.timedelta(days=1)
+    return fut.strftime(fmt)
+
+def is_target_date_in_future(current_date, target_date):
+    fmt = '%A, %B %d, %Y'
+    current_date = datetime.datetime.strptime(current_date, fmt)
+    target_date = datetime.datetime.strptime(target_date, fmt)
+    return current_date < target_date
+
 ################################
 # Parsing process functions
 
-def scan_to_start():
+def scan_to_start(start_date=None):
     # Go to earliest available date or requested date
-    while True:
-        panels = driver.find_elements_by_class_name('v-panel-content')
-        if len(panels) == 1:
-            # The only panel is the no menus error message
-            break
-        previous_date_button = driver.find_element_by_class_name('button-date-selection--previous')
-        previous_date_button.click()
-        sleep()
+    if start_date:
+        # TODO: deduplicate
+        date = get_subheader_text()
+        while date != start_date:
+            if is_target_date_in_future(date, start_date):
+                click_next_date()
+            else:
+                click_previous_date()
+            date = get_subheader_text()
+    else:
+        while True:
+            panels = driver.find_elements_by_class_name('v-panel-content')
+            if len(panels) == 1:
+                # The only panel is the no menus error message
+                click_next_date()
+                break
+            click_previous_date()
+            sleep()
 
 
 def parse_ingredients():
@@ -211,10 +246,6 @@ menus = []
 def parse_right():
     # Cycle through dates, collecting data
     while True:
-        next_date_button = driver.find_element_by_class_name('button-date-selection--next')
-        next_date_button.click()
-        sleep()
-
         today_menu = {
             'date': get_subheader_text(),
             'meals': [],
@@ -249,16 +280,10 @@ def parse_right():
 
         menus.append(today_menu)
         print(json.dumps(menus))
-    return True
+        click_next_date()
+        sleep()
 
-def day_after(date):
-    """
-    Given a date, return the next day in that format.
-    """
-    fmt = '%A, %B %d, %Y'
-    cur = datetime.datetime.strptime(date, fmt)
-    fut = cur + datetime.timedelta(days=1)
-    return fut.strftime(fmt)
+    return True
 
 def parse():
     college = get_header_text()
