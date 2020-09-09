@@ -80,11 +80,11 @@ def scrape():
                 )
                 for course_d in meal_d['courses']:
                     course_name = course_d['name']
-                    ingredients = course_d['ingredients']
                     items = {}
                     # Note that both ingredients and nutrition_facts['items'] are dictionaries,
                     # with the keys being the names of the items. Yeah, I know it sucks.
                     # I'm trying to web scrape an absolutely bewitched Java-based web app at 2:28am. Let me live.
+                    ingredients = course_d['ingredients']
                     for item_name in ingredients:
                         items[item_name] = Item(
                             name=item_name,
@@ -100,9 +100,16 @@ def scrape():
                             for allergen in allergens:
                                 # AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
                                 setattr(items[item_name], allergen.lower(), True)
-                    for item_name in nutrition_facts
-                    for item_name in ingredients:
-                        db.session.add(item)
+                    course_nutrition = read_nutrition_facts(nutrition_facts['course'])
+                    db.session.add(course_nutrition)
+                    # TODO actually add to course!!!!!!!
                     nutrition_facts = course_d['nutrition_facts']
+                    for item_name in nutrition_facts['items']:
+                        # TODO: 'nutrition' or 'nutrition facts'?
+                        nutrition = read_nutrition_facts(nutrition_facts['items'][item_name])
+                        db.session.add(nutrition)
+                        items[item_name].nutrition = nutrition
+                    for item_name in items:
+                        db.session.add(items[item_name])
                 db.session.add(meal)
     db.session.commit()
