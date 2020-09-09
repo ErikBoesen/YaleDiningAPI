@@ -38,6 +38,13 @@ def get_courses():
 def get_ingredients_and_nutrition_buttons():
     return driver.find_elements_by_css_selector('.v-button.v-widget.multiline.v-button-multiline.selection.v-button-selection.icon-align-right.v-button-icon-align-right.v-has-width')
 
+def get_portion_size():
+    text = driver.find_element_by_css_selector('.v-panel-content .v-panel-captionwrap').text.replace('Nutrition Facts\n', '')
+    # Chop off parentheses
+    if text.startswith('(') and text.endswith(')'):
+        text = text[1:-1]
+    return text
+
 def get_item_nutrition_buttons():
     return driver.find_elements_by_css_selector('.v-button.nutrition')
 
@@ -149,7 +156,7 @@ def parse_nutrition_facts():
     Parse a visible nutrition facts pane, whether for a full course or an individual item.
     """
     nutrition_facts = {
-        'Portion Size': driver.find_element_by_css_selector('.v-panel-content .v-panel-captionwrap').text.replace('Nutrition Facts\n', ''),
+        'Portion Size': get_portion_size,
     }
     lists = driver.find_elements_by_css_selector('.v-panel-content ul')
     if len(lists) != 2:
