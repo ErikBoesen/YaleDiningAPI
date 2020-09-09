@@ -250,7 +250,13 @@ def parse_right():
         print(json.dumps(menus))
 
 def day_after(date):
-    return date
+    """
+    Given a date, return the next day in that format.
+    """
+    fmt = '%A, %B %d, %Y'
+    cur = datetime.datetime.strptime(date, fmt)
+    fut = cur + datetime.timedelta(days=1)
+    return fut.strftime(fmt)
 
 def parse():
     college = get_header_text()
