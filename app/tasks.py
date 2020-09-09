@@ -77,7 +77,7 @@ def scrape():
         for day_d in menus[college]:
             # There is no elegance here. Only sleep deprivation and regret.
             date = datetime.datetime.strptime(day_d['date'], DATE_FMT).date()
-            print('Parsing day ' + date
+            print('Parsing day ' + day_d['date'])
             for meal_d in day_d['meals']:
                 meal_name = meal_d['name']
                 print('Parsing meal ' + meal_name)
@@ -85,6 +85,7 @@ def scrape():
                     name=meal_name,
                     date=date,
                 )
+                meal.location = Location.query.filter_by(name=college).first()
                 for course_d in meal_d['courses']:
                     course_name = course_d['name']
                     print('Parsing course ' + course_name)
@@ -109,14 +110,17 @@ def scrape():
                                 # AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
                                 setattr(item, allergen.lower(), True)
 
-                        # Read nutrition facts
-                        # TODO: 'nutrition' or 'nutrition facts'?
-                        nutrition = read_nutrition_facts(nutrition_facts['items'][item_name])
-                        db.session.add(nutrition)
-                        item.nutrition = nutrition
+                        # TODO: this should always be present, but handle its absence in case the scraper broke
+                        if nutrition_facts['items'].get(item_name):
+                            # Read nutrition facts
+                            # TODO: 'nutrition' or 'nutrition facts'?
+                            nutrition = read_nutrition_facts(nutrition_facts['items'][item_name])
+                            db.session.add(nutrition)
+                            item.nutrition = nutrition
                         db.session.add(item)
                     #course_nutrition = read_nutrition_facts(nutrition_facts['course'])
                     #db.session.add(course_nutrition)
                     # TODO actually add to course!!!!!!!
                 db.session.add(meal)
     db.session.commit()
+    print('Done.')
