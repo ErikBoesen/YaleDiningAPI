@@ -69,25 +69,31 @@ def scrape():
     Item.query.delete()
     Nutrition.query.delete()
     # TODO: find a new way of getting this data in the future.
-    with open('menus.json', 'r') as f:
+    with open('app/menus.json', 'r') as f:
         menus = json.load(f)
+    print('Reading in menu data.')
     for college in menus:
+        print('Parsing college ' + college)
         for day_d in menus[college]:
             # There is no elegance here. Only sleep deprivation and regret.
-            date = datetime.datetime.strptime(day_d['date']).date()
-            for meal_d in day['meals']:
+            date = datetime.datetime.strptime(day_d['date'], DATE_FMT).date()
+            print('Parsing day ' + date
+            for meal_d in day_d['meals']:
+                meal_name = meal_d['name']
+                print('Parsing meal ' + meal_name)
                 meal = Meal(
-                    name=meal_d['name'],
+                    name=meal_name,
                     date=date,
                 )
                 for course_d in meal_d['courses']:
                     course_name = course_d['name']
-                    items = {}
+                    print('Parsing course ' + course_name)
                     # Note that both ingredients and nutrition_facts['items'] are dictionaries,
-                    # with the keys being the names of the items. Yeah, I know it sucks.
-                    # I'm trying to web scrape an absolutely bewitched Java-based web app at 2:28am. Let me live.
+                    # with the keys being the names of the items.
                     ingredients = course_d['ingredients']
+                    nutrition_facts = course_d['nutrition_facts']
                     for item_name in ingredients:
+                        print('Parsing item ' + item_name)
                         items[item_name] = Item(
                             name=item_name,
                             course=course_name,
@@ -102,16 +108,16 @@ def scrape():
                             for allergen in allergens:
                                 # AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
                                 setattr(items[item_name], allergen.lower(), True)
-                    course_nutrition = read_nutrition_facts(nutrition_facts['course'])
-                    db.session.add(course_nutrition)
-                    # TODO actually add to course!!!!!!!
-                    nutrition_facts = course_d['nutrition_facts']
-                    for item_name in nutrition_facts['items']:
+
+                        # Read nutrition facts
                         # TODO: 'nutrition' or 'nutrition facts'?
                         nutrition = read_nutrition_facts(nutrition_facts['items'][item_name])
                         db.session.add(nutrition)
                         items[item_name].nutrition = nutrition
                     for item_name in items:
                         db.session.add(items[item_name])
+                    #course_nutrition = read_nutrition_facts(nutrition_facts['course'])
+                    #db.session.add(course_nutrition)
+                    # TODO actually add to course!!!!!!!
                 db.session.add(meal)
     db.session.commit()
