@@ -15,6 +15,8 @@ class Location(db.Model):
     phone = db.Column(db.String, nullable=False)
 
     managers = db.relationship('Manager', back_populates='location')
+    meals = db.relationship('Meal', back_populates='location')
+
 
 class Manager(db.Model):
     __tablename__ = 'managers'
@@ -32,6 +34,8 @@ class Meal(db.Model):
     date = db.Column(db.Date, nullable=False)
     # TODO: location_id???
 
+    location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
+    location = db.relationship('Location', back_populates='meals')
     items = db.relationship('Item', back_populates='meal')
 
 class Item(db.Model):
