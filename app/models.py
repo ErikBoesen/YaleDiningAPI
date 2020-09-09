@@ -32,7 +32,6 @@ class Meal(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     date = db.Column(db.Date, nullable=False)
-    # TODO: location_id???
 
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
     location = db.relationship('Location', back_populates='meals')
