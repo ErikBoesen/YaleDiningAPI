@@ -113,15 +113,18 @@ def parse_meal():
 
 def parse_right():
     # Cycle through dates, collecting data
+    menus = []
     while True:
-        sleep()
         next_date_button = driver.find_element_by_class_name('button-date-selection--next')
         next_date_button.click()
-
         sleep()
 
-        date = driver.find_element_by_css_selector('.v-label.v-widget.sub-title.v-label-sub-title.v-has-width').text
-        print('Parsing date %s...' % date)
+        today_menu = {
+            'date': get_subheader_text(),
+            'meals': []
+        }
+
+        print('Parsing date %s...' % today_menu['date'])
 
         panels = driver.find_elements_by_class_name('v-panel-content')
         if len(panels) == 1:
@@ -140,12 +143,15 @@ def parse_right():
                 sleep()
                 meal_name = tabs[tabs_processed].text
 
-                parse_meal()
+                today_menu['meals'].append(parse_meal())
 
                 tabs_processed += 1
         else:
             print('No tabs are available. Parsing single meal.')
-            parse_meal()
+            today_menu['meals'].append(parse_meal())
+
+        menus.append(today_menu)
+    print(menus)
 
 
 college = get_header_text()
