@@ -9,6 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 
 WAIT_PERIOD = 10
+DATE_FMT = '%A, %B %d, %Y'
 
 driver = webdriver.Firefox()
 driver.implicitly_wait(WAIT_PERIOD)
@@ -73,48 +74,40 @@ def day_after(date):
     """
     Given a date, return the next day in that format.
     """
-    fmt = '%A, %B %d, %Y'
-    cur = datetime.datetime.strptime(date, fmt)
+    cur = datetime.datetime.strptime(date, DATE_FMT)
     fut = cur + datetime.timedelta(days=1)
-    return fut.strftime(fmt)
+    return fut.strftime(DATE_FMT)
 
-def seek_date(current_date, target_date) -> bool:
+def seek_date(target_date) -> bool:
     """
     Seek toward a target date.
     :return: whether the date has been reached.
     """
-    # TODO this name is kinda unclear
-    fmt = '%A, %B %d, %Y'
-    current_date = datetime.datetime.strptime(current_date, fmt)
-    target_date = datetime.datetime.strptime(target_date, fmt)
-    if current_date == target_date:
-        return True
-    if current_date < target_date:
-        click_next_date()
-    else:
-        click_previous_date()
-    sleep()
-    return False
+    while True:
+        current_date = get_subheader_text()
+        current_date = datetime.datetime.strptime(current_date, DATE_FMT)
+        target_date = datetime.datetime.strptime(target_date, DATE_FMT)
+        if current_date == target_date:
+            break
+        if current_date < target_date:
+            click_next_date()
+        else:
+            click_previous_date()
+        sleep()
 
 ################################
 # Parsing process functions
 
 def scan_to_start(start_date=None):
     # Go to earliest available date or requested date
-    if start_date:
-        # TODO: deduplicate
-        date = get_subheader_text()
-        while seek_date(date, start_date):
-            date = get_subheader_text()
-    else:
-        while True:
-            panels = driver.find_elements_by_class_name('v-panel-content')
-            if len(panels) == 1:
-                # The only panel is the no menus error message
-                click_next_date()
-                break
-            click_previous_date()
-            sleep()
+    while True:
+        panels = driver.find_elements_by_class_name('v-panel-content')
+        if len(panels) == 1:
+            # The only panel is the no menus error message
+            click_next_date()
+            break
+        click_previous_date()
+        sleep()
 
 
 def parse_ingredients():
@@ -312,7 +305,7 @@ def parse(location_id):
         driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=%d' % location_id)
         try:
             if len(menus):
-                scan_to_start(start_date=day_after(menus[-1]['date']))
+                seek_date(day_after(menus[-1]['date']))
             else:
                 scan_to_start()
             finished = parse_right()
