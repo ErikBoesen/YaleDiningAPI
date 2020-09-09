@@ -138,7 +138,7 @@ def parse_nutrition_facts_course():
     """
     nutrition_facts = {
         'meal': parse_nutrition_facts(),
-        'items': [],
+        'items': {},
     }
     items = get_item_nutrition_buttons()
     if items:
@@ -146,10 +146,11 @@ def parse_nutrition_facts_course():
         while items_processed < len(items):
             # TODO: stop this from running twice on the first go. And same with other such constructs in this file.
             items = get_item_nutrition_buttons()
+            item_name = items[items_processed].text
             items[items_processed].click()
             sleep()
 
-            nutrition_facts['items'].append(parse_nutrition_facts())
+            nutrition_facts['items'][item_name].append(parse_nutrition_facts())
 
             click_back()
 
