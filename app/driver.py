@@ -79,9 +79,7 @@ def parse_ingredients():
     looking_for = 'title'
     while rows_processed < len(rows):
         if looking_for == 'title':
-            print('Row %d: %s' % (rows_processed, rows[rows_processed].text))
             slots = rows[rows_processed].find_elements_by_css_selector('.v-label')
-            print('Found %d slots, first is %s' % (len(slots), slots[0].text))
             current_title = slots[0].text
             ingredients[current_title] = {
                 'diets': slots[1].text,
