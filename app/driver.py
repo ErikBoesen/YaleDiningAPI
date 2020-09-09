@@ -1,6 +1,8 @@
 import requests
 import time
 import json
+import datetime
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -9,7 +11,6 @@ from selenium.webdriver.support import expected_conditions
 WAIT_PERIOD = 10
 
 driver = webdriver.Firefox()
-driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=1')
 driver.implicitly_wait(WAIT_PERIOD)
 
 ###################################
@@ -77,7 +78,6 @@ def parse_ingredients():
     current_title = None
     looking_for = 'title'
     while rows_processed < len(rows):
-        print('Parsing row %d, with content [%s], looking for %s' % (rows_processed, rows[rows_processed].text, looking_for))
         if looking_for == 'title':
             slots = rows[rows_processed].find_elements_by_css_selector('.v-label')
             current_title = slots[0].text
@@ -92,7 +92,6 @@ def parse_ingredients():
             rows_processed += 1
         elif looking_for == 'allergens':
             text = rows[rows_processed].text
-            print('ALLERGENS: ' + text)
             if text.startswith('Allergens: '):
                 ingredients[current_title]['allergens'] = text.replace('Allergens: ', '')
                 rows_processed += 1
@@ -113,14 +112,14 @@ def parse_nutrition_facts():
     # The nutrition facts table is made with two uls, the first of which has the ingredient name and amount of it,
     # and the second of which has the daily values.
     # The elements in the left side list
-    llist = lists[0].find_elements_by_xpath('*')
+    llist = BeautifulSoup(lists[0].get_attribute('innerHTML'), 'html.parser').findChildren(recursive=False)
     # The elements in the right side list
-    rlist = lists[1].find_elements_by_xpath('*')
+    rlist = BeautifulSoup(lists[1].get_attribute('innerHTML'), 'html.parser').findChildren(recursive=False)
     for lside, rside in zip(llist, rlist):
         # Skip if we're on an empty row
         if lside.text.strip() == '':
             continue
-        spans = lside.find_elements_by_tag_name('span')
+        spans = lside.find_all('span')
         ingredient = spans[0].text.lstrip('- ')
         amount = spans[1].text
         nutrition_facts[ingredient] = {
@@ -206,10 +205,10 @@ def parse_meal(name):
         courses_processed += 1
     return meal
 
+menus = []
 
 def parse_right():
     # Cycle through dates, collecting data
-    menus = []
     while True:
         next_date_button = driver.find_element_by_class_name('button-date-selection--next')
         next_date_button.click()
@@ -249,10 +248,14 @@ def parse_right():
 
         menus.append(today_menu)
         print(json.dumps(menus))
-    print(menus)
 
+def day_after(date):
+    return date
 
-college = get_header_text()
-print('Parsing ' + college)
-scan_to_start()
-parse_right()
+def parse():
+    college = get_header_text()
+    print('Parsing ' + college)
+
+    driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=1')
+    scan_to_start()
+    parse_right()
