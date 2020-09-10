@@ -74,7 +74,9 @@ def scrape():
 
     # Separate multi-college menus
     # TODO: should we do this at request time?
-    for key in menus:
+    # Extract key names to prevent size from changing during iteration
+    colleges = list(menus.keys())
+    for key in colleges:
         if key == 'Branford and Saybrook':
             value = menus.pop(key)
             menus['Branford'] = value
