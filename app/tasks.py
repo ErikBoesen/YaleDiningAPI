@@ -63,7 +63,6 @@ def scrape():
                 manager = Manager(name=name, email=email)
                 manager.location = location
                 db.session.add(location)
-    db.session.commit()
     print('Done reading FastTrack data.')
 
     Meal.query.delete()
