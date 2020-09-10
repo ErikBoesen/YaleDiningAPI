@@ -119,7 +119,6 @@ def scrape():
                         print('Parsing item ' + item_name)
                         item = Item(
                             name=item_name,
-                            course=course_name,
                             ingredients=ingredients[item_name]['ingredients'],
                         )
                         diets = ingredients[item_name]['diets'].split(', ')
