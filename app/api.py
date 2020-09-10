@@ -69,3 +69,16 @@ def api_course_items(course_id):
     course = Course.query.get_or_404(course_id)
     items = course.items
     return to_json(items)
+
+
+@api_bp.route('/items/<item_id>')
+def api_item(item_id):
+    item = Item.query.get_or_404(item_id)
+    return to_json(item)
+
+
+@api_bp.route('/items/<item_id>/nutrition')
+def api_item_nutrition(item_id):
+    item = Item.query.get_or_404(item_id)
+    nutrition = item.nutrition
+    return to_json(nutrition)
