@@ -83,10 +83,10 @@ def seek_date(target_date) -> bool:
     Seek toward a target date.
     :return: whether the date has been reached.
     """
+    target_date = datetime.datetime.strptime(target_date, DATE_FMT)
     while True:
         current_date = get_subheader_text()
         current_date = datetime.datetime.strptime(current_date, DATE_FMT)
-        target_date = datetime.datetime.strptime(target_date, DATE_FMT)
         if current_date == target_date:
             break
         if current_date < target_date:
@@ -98,7 +98,7 @@ def seek_date(target_date) -> bool:
 ################################
 # Parsing process functions
 
-def scan_to_start(start_date=None):
+def seek_start(start_date=None):
     # Go to earliest available date or requested date
     while True:
         panels = driver.find_elements_by_class_name('v-panel-content')
@@ -307,7 +307,7 @@ def parse(location_id):
             if len(menus):
                 seek_date(day_after(menus[-1]['date']))
             else:
-                scan_to_start()
+                seek_start()
             finished = parse_right()
         except Exception as e:
             print('Squashing error...')
