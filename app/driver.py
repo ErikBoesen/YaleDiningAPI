@@ -4,7 +4,7 @@ import json
 import datetime
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.common.exceptions import ElementClickInterceptedException, ElementNotInteractableException
 
 WAIT_PERIOD = 10
 DATE_FMT = '%A, %B %d, %Y'
@@ -67,7 +67,7 @@ def click_next_date():
 # Other util functions
 
 def sleep():
-    time.sleep(1)
+    time.sleep(0.7)
 
 def day_after(date):
     """
@@ -249,7 +249,8 @@ def parse_meal(name):
         courses_processed += 1
     return meal
 
-menus = []
+with open('menus.json', 'r') as f:
+    menus = json.load(f)
 
 def parse_right():
     college = get_header_text()
@@ -308,11 +309,11 @@ def parse(location_id):
             else:
                 seek_start()
             finished = parse_right()
-        except ElementClickInterceptedException as e:
+        except (ElementClickInterceptedException, ElementNotInteractableException, IndexError) as e:
             print('Squashing error...')
             print(e)
     return menus
 
 # Iterate through colleges
-for location_id in range(12):
+for location_id in range(1, 12 + 1):
     parse(location_id)
