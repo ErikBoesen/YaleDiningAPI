@@ -1,9 +1,19 @@
-from sqlalchemy.ext.declarative import DeclarativeMeta
-import json
 from flask import jsonify
+from sqlalchemy.ext.declarative import DeclarativeMeta
+
+import datetime
+import json
+
+
+DATE_FMT = '%Y-%m-%d'
 
 
 class ModelEncoder(json.JSONEncoder):
+    def val_to_string(self, val):
+        if type(val) == datetime.date:
+            return val.strftime(DATE_FMT)
+        return val
+
     def default(self, obj):
         if isinstance(obj.__class__, DeclarativeMeta):
             # go through each field in this SQLalchemy class
@@ -19,7 +29,7 @@ class ModelEncoder(json.JSONEncoder):
                         fields[field] = None
                         continue
 
-                fields[field] = val
+                fields[field] = self.val_to_string(val)
             # a json-encodable dict
             return fields
 
