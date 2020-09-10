@@ -48,7 +48,7 @@ class Meal(db.Model):
 class Course(db.Model):
     __tablename__ = 'courses'
     _to_expand = ()
-    _to_exclude = ()
+    _to_exclude = ('meal', 'items')
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
 
