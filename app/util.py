@@ -19,3 +19,12 @@ class ModelEncoder(json.JSONEncoder):
             return fields
 
         return json.JSONEncoder.default(self, obj)
+
+def to_json(model, run_jsonify=False):
+    if isinstance(model, list):
+        out = [to_json(m, run_jsonify=False) for m in model]
+    else:
+        out = json.dumps(model, cls=ModelEncoder)
+    if run_jsonify:
+        out = jsonify(out)
+    return out
