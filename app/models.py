@@ -63,7 +63,6 @@ class Item(db.Model):
     _to_exclude = ('meal', 'nutrition')
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
-    course = db.Column(db.String, nullable=False)
     ingredients = db.Column(db.String)
 
     vegetarian = db.Column(db.Boolean, default=False)
