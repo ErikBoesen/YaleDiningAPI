@@ -14,4 +14,5 @@ cors = CORS(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-from app import routes, errors
+from app import routes, models, errors, api
+app.register_bp(api.api_bp, url_prefix='/api')
