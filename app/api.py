@@ -26,6 +26,8 @@ def api_location(location_id):
 
 @api_bp.route('/locations/<location_id>/meals')
 def api_location_meals(location_id):
+    # TODO: use this later on, right now it's mostly a 404 check
+    location = Location.query.get_or_404(location_id)
     meals = Meal.query.filter_by(location_id=location_id)
     start_date = request.args.get('start_date')
     if start_date is None:
@@ -42,19 +44,21 @@ def api_location_meals(location_id):
 
 @api_bp.route('/meals/<meal_id>')
 def api_meal(meal_id):
-    meal = Meal.query.get(meal_id)
+    meal = Meal.query.get_or_404(meal_id)
     return to_json(meal)
 
 
 @api_bp.route('/meals/<meal_id>/items')
 def api_meal_items(meal_id):
-    items = Item.query.filter_by(meal_id=meal_id).all()
+    meal = Meal.query.get_or_404(meal_id)
+    items = meal.items
     return to_json(items)
 
 
 @api_bp.route('/meals/<meal_id>/courses')
 def api_meal_courses(meal_id):
-    courses = Course.query.filter_by(meal_id=meal_id).all()
+    meal = Meal.query.get_or_404(meal_id)
+    courses = meal.courses
     return to_json(courses)
 
 
