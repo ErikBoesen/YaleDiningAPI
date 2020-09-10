@@ -6,7 +6,6 @@ class Location(db.Model):
     _to_expand = ('managers',)
     _to_exclude = ('meals',)
     id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String, nullable=False)
     type = db.Column(db.String, nullable=False)
     capacity = db.Column(db.Integer)

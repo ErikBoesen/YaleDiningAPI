@@ -40,7 +40,8 @@ def scrape():
     for raw in data:
         location = Location(
             id=int(raw['ID_LOCATION']),
-            code=int(raw['LOCATIONCODE']),
+            # TODO: I can't figure out what this is for, so just omit it for now.
+            #code=int(raw['LOCATIONCODE']),
             name=raw['DININGLOCATIONNAME'],
             type=raw['TYPE'],
             capacity=raw['CAPACITY'],
