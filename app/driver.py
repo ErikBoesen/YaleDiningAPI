@@ -254,8 +254,6 @@ with open('menus.json', 'r') as f:
 
 def parse_right(college):
     print('Parsing ' + college)
-    if college not in menus:
-        menus[college] = []
 
     # Cycle through dates, collecting data
     while True:
@@ -306,9 +304,11 @@ def parse(location_id):
         driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=%d' % location_id)
         sleep()
         college = get_header_text()
+        if college not in menus:
+            menus[college] = []
         try:
             if len(menus):
-                seek_date(day_after(menus[-1]['date']))
+                seek_date(day_after(menus[college][-1]['date']))
             else:
                 seek_start()
             finished = parse_right(college)
