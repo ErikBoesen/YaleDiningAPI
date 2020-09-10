@@ -71,6 +71,21 @@ def scrape():
     # TODO: find a new way of getting this data in the future.
     with open('app/menus.json', 'r') as f:
         menus = json.load(f)
+
+    # Separate multi-college menus
+    # TODO: should we do this at request time?
+    for key in menus:
+        if key == 'Branford and Saybrook':
+            value = menus.pop(key)
+            menus['Branford'] = value
+            menus['Saybrook'] = value
+        # Murray & Franklin, Ezra Stiles & Morse
+        elif ' & ' in key:
+            value = menus.pop(key)
+            college_a, college_b = key.split(' & ')
+            menus[college_a] = value
+            menus[college_b] = value
+
     print('Reading in menu data.')
     for college in menus:
         print('Parsing college ' + college)
@@ -107,7 +122,6 @@ def scrape():
                         if allergens:
                             allergens = allergens.split(', ')
                             for allergen in allergens:
-                                # AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
                                 setattr(item, allergen.lower(), True)
 
                         # TODO: this should always be present, but handle its absence in case the scraper broke
