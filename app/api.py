@@ -50,3 +50,9 @@ def api_meal(meal_id):
 def api_meal_items(meal_id):
     items = Item.query.filter_by(meal_id=meal_id).all()
     return to_json(items)
+
+
+@api_bp.route('/meals/<meal_id>/courses')
+def api_meal_courses(meal_id):
+    courses = Course.query.filter_by(meal_id=meal_id).all()
+    return to_json(courses)
