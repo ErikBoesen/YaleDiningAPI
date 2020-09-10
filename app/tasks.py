@@ -11,7 +11,7 @@ DATE_FMT = '%A, %B %d, %Y'
 
 def read_nutrition_facts(raw):
     nutrition = Nutrition(
-        portion_size=raw.pop('Portion Size'),
+        portion_size=raw.pop('Portion Size', None),
     )
     for key in raw:
         snaked_key = key.lower().replace(' ', '_')
