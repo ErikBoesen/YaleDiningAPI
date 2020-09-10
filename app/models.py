@@ -3,6 +3,8 @@ from app import app, db
 
 class Location(db.Model):
     __tablename__ = 'locations'
+    _to_expand = ('managers',)
+    _to_exclude = ('meals',)
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String, nullable=False)
@@ -20,6 +22,8 @@ class Location(db.Model):
 
 class Manager(db.Model):
     __tablename__ = 'managers'
+    _to_expand = ()
+    _to_exclude = ('id', 'location_id', 'location')
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String)
     email = db.Column(db.String)
@@ -30,6 +34,8 @@ class Manager(db.Model):
 
 class Meal(db.Model):
     __tablename__ = 'meals'
+    _to_expand = ()
+    _to_exclude = ('location', 'items')
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     date = db.Column(db.Date, nullable=False)
@@ -41,6 +47,8 @@ class Meal(db.Model):
 
 class Item(db.Model):
     __tablename__ = 'items'
+    _to_expand = ()
+    _to_exclude = ('meal', 'nutrition')
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     course = db.Column(db.String, nullable=False)
@@ -70,6 +78,8 @@ class Item(db.Model):
 
 class Nutrition(db.Model):
     __tablename__ = 'nutrition'
+    _to_expand = ()
+    _to_exclude = ('item',)
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     portion_size = db.Column(db.String)
     calories = db.Column(db.String)
