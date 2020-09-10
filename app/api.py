@@ -44,3 +44,9 @@ def api_location_meals(location_id):
 def api_meal(meal_id):
     meal = Meal.query.get(meal_id)
     return to_json(meal)
+
+
+@api_bp.route('/meals/<meal_id>/items')
+def api_meal_items(meal_id):
+    items = Item.query.filter_by(meal_id=meal_id).all()
+    return to_json(items)
