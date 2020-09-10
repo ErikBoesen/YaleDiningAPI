@@ -147,7 +147,7 @@ def parse_nutrition_facts():
     Parse a visible nutrition facts pane, whether for a full course or an individual item.
     """
     nutrition_facts = {
-        'Portion Size': get_portion_size,
+        'Portion Size': get_portion_size(),
     }
     lists = driver.find_elements_by_css_selector('.v-panel-content ul')
     if len(lists) != 2:
@@ -290,8 +290,6 @@ def parse_right():
             today_menu['meals'].append(parse_meal('Breakfast'))
 
         menus.append(today_menu)
-        print(menus)
-        print(type(menus))
         print(json.dumps(menus))
         with open('menus.json', 'w') as f:
             json.dump(menus, f)
