@@ -4,14 +4,13 @@ import json
 import datetime
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions
+from selenium.common.exceptions import ElementClickInterceptedException
 
 WAIT_PERIOD = 10
 DATE_FMT = '%A, %B %d, %Y'
 
 driver = webdriver.Firefox()
+driver.maximize_window()
 driver.implicitly_wait(WAIT_PERIOD)
 
 ###################################
@@ -68,7 +67,7 @@ def click_next_date():
 # Other util functions
 
 def sleep():
-    time.sleep(0.8)
+    time.sleep(1)
 
 def day_after(date):
     """
@@ -291,6 +290,8 @@ def parse_right():
             today_menu['meals'].append(parse_meal('Breakfast'))
 
         menus.append(today_menu)
+        print(menus)
+        print(type(menus))
         print(json.dumps(menus))
         with open('menus.json', 'w') as f:
             json.dump(menus, f)
@@ -309,7 +310,7 @@ def parse(location_id):
             else:
                 seek_start()
             finished = parse_right()
-        except Exception as e:
+        except ElementClickInterceptedException as e:
             print('Squashing error...')
             print(e)
     return menus
