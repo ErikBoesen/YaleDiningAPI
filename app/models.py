@@ -27,6 +27,7 @@ class Manager(db.Model):
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
     location = db.relationship('Location', back_populates='managers')
 
+
 class Meal(db.Model):
     __tablename__ = 'meals'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -36,6 +37,7 @@ class Meal(db.Model):
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
     location = db.relationship('Location', back_populates='meals')
     items = db.relationship('Item', back_populates='meal')
+
 
 class Item(db.Model):
     __tablename__ = 'items'
@@ -64,6 +66,7 @@ class Item(db.Model):
     meal_id = db.Column(db.Integer, db.ForeignKey('meals.id'))
     meal = db.relationship('Meal', back_populates='items')
     nutrition = db.relationship('Nutrition', uselist=False, back_populates='item')
+
 
 class Nutrition(db.Model):
     __tablename__ = 'nutrition'
