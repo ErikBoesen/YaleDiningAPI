@@ -38,3 +38,9 @@ def api_location_meals(location_id):
         meals = meals.filter(Meal.date <= end_date)
     meals = meals.all()
     return to_json(meals)
+
+
+@api_bp.route('/meals/<meal_id>')
+def api_meal(meal_id):
+    meal = Meal.query.get(meal_id)
+    return to_json(meal)
