@@ -252,9 +252,10 @@ def parse_meal(name):
 with open('menus.json', 'r') as f:
     menus = json.load(f)
 
-def parse_right():
-    college = get_header_text()
+def parse_right(college):
     print('Parsing ' + college)
+    if college not in menus:
+        menus[college] = []
 
     # Cycle through dates, collecting data
     while True:
@@ -290,7 +291,7 @@ def parse_right():
             # TODO: does this default hold?
             today_menu['meals'].append(parse_meal('Breakfast'))
 
-        menus.append(today_menu)
+        menus[college].append(today_menu)
         print(json.dumps(menus))
         with open('menus.json', 'w') as f:
             json.dump(menus, f)
@@ -303,12 +304,14 @@ def parse(location_id):
     finished = False
     while not finished:
         driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=%d' % location_id)
+        sleep()
+        college = get_header_text()
         try:
             if len(menus):
                 seek_date(day_after(menus[-1]['date']))
             else:
                 seek_start()
-            finished = parse_right()
+            finished = parse_right(college)
         except (ElementClickInterceptedException, ElementNotInteractableException, IndexError) as e:
             print('Squashing error...')
             print(e)
