@@ -9,7 +9,9 @@ from selenium.common.exceptions import ElementClickInterceptedException, Element
 WAIT_PERIOD = 10
 DATE_FMT = '%A, %B %d, %Y'
 
-driver = webdriver.Firefox()
+ops = webdriver.FirefoxOptions()
+ops.headless = True
+driver = webdriver.Firefox(options=ops)
 driver.maximize_window()
 driver.implicitly_wait(WAIT_PERIOD)
 
@@ -307,7 +309,9 @@ def parse(location_id):
         if college not in menus:
             menus[college] = []
         try:
-            if len(menus):
+            # If there's already some days in the list, then go to the next day.
+            # Otherwise, go all the way to the start.
+            if menus[college]:
                 seek_date(day_after(menus[college][-1]['date']))
             else:
                 seek_start()
