@@ -252,7 +252,10 @@ def parse_meal(name):
     return meal
 
 with open('menus.json', 'r') as f:
-    menus = json.load(f)
+    try:
+        menus = json.load(f)
+    except:
+        menus = {}
 
 def parse_right(college):
     print('Parsing ' + college)
