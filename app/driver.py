@@ -109,6 +109,7 @@ def seek_start(start_date=None):
             break
         click_previous_date()
         sleep()
+        sleep()
 
 
 def parse_ingredients():
