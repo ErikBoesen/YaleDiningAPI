@@ -15,4 +15,4 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 from app import routes, models, errors, api, util
-app.register_bp(api.api_bp, url_prefix='/api')
+app.register_blueprint(api.api_bp, url_prefix='/api')
