@@ -41,7 +41,20 @@ class Meal(db.Model):
 
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
     location = db.relationship('Location', back_populates='meals')
+    courses = db.relationship('Course', back_populates='meal')
     items = db.relationship('Item', back_populates='meal')
+
+
+class Course(db.Model):
+    __tablename__ = 'courses'
+    _to_expand = ()
+    _to_exclude = ()
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String, nullable=False)
+
+    meal_id = db.Column(db.Integer, db.ForeignKey('meals.id'))
+    meal = db.relationship('Meal', back_populates='courses')
+    items = db.relationship('Item', back_populates='course')
 
 
 class Item(db.Model):
@@ -72,6 +85,8 @@ class Item(db.Model):
 
     meal_id = db.Column(db.Integer, db.ForeignKey('meals.id'))
     meal = db.relationship('Meal', back_populates='items')
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'))
+    course = db.relationship('Course', back_populates='items')
     nutrition = db.relationship('Nutrition', uselist=False, back_populates='item')
 
 
