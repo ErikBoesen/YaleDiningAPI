@@ -67,6 +67,7 @@ def scrape():
     print('Done reading FastTrack data.')
 
     Meal.query.delete()
+    Course.query.delete()
     Item.query.delete()
     Nutrition.query.delete()
     # TODO: find a new way of getting this data in the future.
