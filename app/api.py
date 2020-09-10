@@ -56,3 +56,16 @@ def api_meal_items(meal_id):
 def api_meal_courses(meal_id):
     courses = Course.query.filter_by(meal_id=meal_id).all()
     return to_json(courses)
+
+
+@api_bp.route('/courses/<course_id>')
+def api_course(course_id):
+    course = Course.query.get_or_404(course_id)
+    return to_json(course)
+
+
+@api_bp.route('/courses/<course_id>/items')
+def api_course_items(course_id):
+    course = Course.query.get_or_404(course_id)
+    items = course.items
+    return to_json(items)
