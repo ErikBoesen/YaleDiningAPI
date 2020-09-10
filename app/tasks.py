@@ -133,6 +133,7 @@ def scrape():
                             nutrition = read_nutrition_facts(nutrition_facts['items'][item_name])
                             db.session.add(nutrition)
                             item.nutrition = nutrition
+                        item.meal = meal
                         db.session.add(item)
                     #course_nutrition = read_nutrition_facts(nutrition_facts['course'])
                     #db.session.add(course_nutrition)
