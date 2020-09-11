@@ -8,10 +8,10 @@ class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     type = db.Column(db.String, nullable=False)
+    is_open = db.Column(db.Boolean, nullable=False)
     capacity = db.Column(db.Integer)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
-    is_open = db.Column(db.Boolean, nullable=False)
     address = db.Column(db.String, nullable=False)
     phone = db.Column(db.String, nullable=False)
 
@@ -22,7 +22,7 @@ class Location(db.Model):
 class Manager(db.Model):
     __tablename__ = 'managers'
     _to_expand = ()
-    _to_exclude = ('id', 'location_id', 'location')
+    _to_exclude = ('location_id', 'location')
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String)
     email = db.Column(db.String)
@@ -113,6 +113,7 @@ class Nutrition(db.Model):
     iron = db.Column(db.String)
     potassium = db.Column(db.String)
 
+    # Percent Daily Value
     total_fat_pdv = db.Column(db.Integer)
     saturated_fat_pdv = db.Column(db.Integer)
     trans_fat_pdv = db.Column(db.Integer)
