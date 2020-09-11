@@ -22,7 +22,7 @@ class Location(db.Model):
 class Manager(db.Model):
     __tablename__ = 'managers'
     _to_expand = ()
-    _to_exclude = ('location_id', 'location')
+    _to_exclude = ('location')
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String)
     email = db.Column(db.String)
