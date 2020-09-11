@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 
 DATE_FMT = '%A, %B %d, %Y'
 
+
 def read_nutrition_facts(raw):
     nutrition = Nutrition(
         portion_size=raw.pop('Portion Size', None),
@@ -20,8 +21,7 @@ def read_nutrition_facts(raw):
     return nutrition
 
 
-@celery.task
-def scrape():
+def scrape_fasttrack():
     # Reach out to old FastTrack-based dining API,
     # which still provides non-menu data
     FASTTRACK_ROOT = 'https://www.yaledining.org/fasttrack/'
@@ -54,6 +54,7 @@ def scrape():
         if geolocation is not None:
             location.latitude, location.longitude = [float(coordinate) for coordinate in geolocation.split(',')]
         db.session.add(location)
+        """
         num_managers = 0
         while num_managers < 4:
             num_managers += 1
@@ -63,8 +64,11 @@ def scrape():
                 manager = Manager(name=name, email=email)
                 manager.location = location
                 db.session.add(location)
+        """
     print('Done reading FastTrack data.')
 
+
+def scrape_jamix():
     Meal.query.delete()
     Course.query.delete()
     Item.query.delete()
@@ -147,3 +151,9 @@ def scrape():
                 db.session.add(meal)
     db.session.commit()
     print('Done.')
+
+@celery.task
+def scrape():
+    scrape_fasttrack()
+
+    scrape_jamix()
