@@ -24,6 +24,13 @@ def api_location(location_id):
     return to_json(location)
 
 
+@api_bp.route('/locations/<location_id>/managers')
+def api_managers(location_id):
+    location = Location.query.get_or_404(location_id)
+    managers = location.managers
+    return to_json(managers)
+
+
 @api_bp.route('/locations/<location_id>/meals')
 def api_location_meals(location_id):
     # TODO: use this later on, right now it's mostly a 404 check
