@@ -85,7 +85,28 @@ def scrape_managers():
         r = requests.get(ROOT + slug)
         soup = BeautifulSoup(r.text, 'html.parser')
         h2 = soup.find('h2', text=HEADER_RE)
-        print(h2)
+        ul = h2.find_next()
+        if ul.name == 'p':
+            to_scan = [ul]
+        elif ul.name == 'ul':
+            to_scan = ul.find_all('li')
+        for li in to_scan:
+            contents = li.contents
+            print(contents)
+            manager = Manager()
+            if len(contents) == 1:
+                # The name is not a link, so no email is available
+                manager.name, manager.position = contents[0].split(', ')
+            elif len(contents) == 2:
+                manager.name = contents[0].text
+                manager.email = contents[0]['href'].replace('mailto:', '')
+                manager.position = contents[1].lstrip(', ').replace('/ ', '/')
+            db.session.add(manager)
+            manager.location = location
+            print('Name: ' + manager.name)
+            print('Email: %s' % manager.email)
+            print('Position: %s' % manager.position)
+    db.session.commit()
 
 
 def scrape_jamix():
