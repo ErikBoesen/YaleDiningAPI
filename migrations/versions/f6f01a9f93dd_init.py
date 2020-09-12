@@ -1,8 +1,8 @@
 """init
 
-Revision ID: aea82c2f16e2
+Revision ID: f6f01a9f93dd
 Revises: 
-Create Date: 2020-09-10 01:17:07.728839
+Create Date: 2020-09-12 10:22:33.758776
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'aea82c2f16e2'
+revision = 'f6f01a9f93dd'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,18 +22,19 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('type', sa.String(), nullable=False),
+    sa.Column('is_open', sa.Boolean(), nullable=False),
     sa.Column('capacity', sa.Integer(), nullable=True),
     sa.Column('latitude', sa.Float(), nullable=True),
     sa.Column('longitude', sa.Float(), nullable=True),
-    sa.Column('is_open', sa.Boolean(), nullable=False),
     sa.Column('address', sa.String(), nullable=False),
     sa.Column('phone', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('managers',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(), nullable=True),
+    sa.Column('name', sa.String(), nullable=False),
     sa.Column('email', sa.String(), nullable=True),
+    sa.Column('position', sa.String(), nullable=True),
     sa.Column('location_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['location_id'], ['locations.id'], ),
     sa.PrimaryKeyConstraint('id')

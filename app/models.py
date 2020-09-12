@@ -24,8 +24,9 @@ class Manager(db.Model):
     _to_expand = ()
     _to_exclude = ('location')
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, nullable=False)
     email = db.Column(db.String)
+    position = db.Column(db.String)
 
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
     location = db.relationship('Location', back_populates='managers')
