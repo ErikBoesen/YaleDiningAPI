@@ -5,6 +5,7 @@ import os
 import requests
 import json
 import datetime
+import re
 from bs4 import BeautifulSoup
 
 DATE_FMT = '%A, %B %d, %Y'
@@ -66,6 +67,25 @@ def scrape_fasttrack():
                 db.session.add(location)
         """
     print('Done reading FastTrack data.')
+
+
+def scrape_managers():
+    ROOT = 'https://hospitality.yale.edu/residential-dining/'
+    locations = Location.query.filter_by(type='Residential').all()
+    HEADER_RE = re.compile(r'Management Team')
+    for location in locations:
+        slug = location.name.lower().replace(' ', '-')
+        custom_slugs = {
+            'franklin': 'benjamin-franklin',
+            'stiles': 'ezra-stiles',
+        }
+        if slug in custom_slugs:
+            slug = custom_slugs[slug]
+        print(slug)
+        r = requests.get(ROOT + slug)
+        soup = BeautifulSoup(r.text, 'html.parser')
+        h2 = soup.find('h2', text=HEADER_RE)
+        print(h2)
 
 
 def scrape_jamix():
@@ -154,6 +174,6 @@ def scrape_jamix():
 
 @celery.task
 def scrape():
-    scrape_fasttrack()
-
-    scrape_jamix()
+    #scrape_fasttrack()
+    scrape_managers()
+    #scrape_jamix()
