@@ -70,6 +70,7 @@ def scrape_fasttrack():
 
 
 def scrape_managers():
+    print('Scraping managers.')
     ROOT = 'https://hospitality.yale.edu/residential-dining/'
     locations = Location.query.filter_by(type='Residential').all()
     HEADER_RE = re.compile(r'Management Team')
@@ -195,6 +196,6 @@ def scrape_jamix():
 
 @celery.task
 def scrape():
-    #scrape_fasttrack()
+    scrape_fasttrack()
     scrape_managers()
-    #scrape_jamix()
+    scrape_jamix()
