@@ -18,11 +18,14 @@ driver.implicitly_wait(WAIT_PERIOD)
 ###################################
 # Functions for getting UI elements
 
+
 def get_header_text():
     return driver.find_element_by_class_name('label-main-caption').text
 
+
 def get_subheader_text():
     return driver.find_element_by_class_name('label-sub-caption').text
+
 
 def get_tabs():
     driver.implicitly_wait(1)
@@ -32,13 +35,16 @@ def get_tabs():
         return []
     return tabs_bar[0].find_elements_by_class_name('v-caption')
 
+
 def get_courses():
     courses = driver.find_element_by_css_selector('div.v-verticallayout.v-layout.menu-sub-view').find_elements_by_class_name('v-button')
     print('Found %d courses this time.' % len(courses))
     return courses
 
+
 def get_ingredients_and_nutrition_buttons():
     return driver.find_elements_by_css_selector('.v-button.v-widget.multiline.v-button-multiline.selection.v-button-selection.icon-align-right.v-button-icon-align-right.v-has-width')
+
 
 def get_portion_size():
     text = driver.find_element_by_css_selector('.v-panel-content .v-panel-captionwrap').text.replace('Nutrition Facts\n', '')
@@ -47,29 +53,36 @@ def get_portion_size():
         text = text[1:-1]
     return text
 
+
 def get_item_nutrition_buttons():
     return driver.find_elements_by_css_selector('.v-button.nutrition')
+
 
 def click_back():
     sleep()
     driver.find_element_by_css_selector('.button-navigation--previous .v-button').click()
     sleep()
 
+
 def click_previous_date():
     previous_date_button = driver.find_element_by_class_name('button-date-selection--previous')
     previous_date_button.click()
     sleep()
+
 
 def click_next_date():
     next_date_button = driver.find_element_by_class_name('button-date-selection--next')
     next_date_button.click()
     sleep()
 
+
 ######################
 # Other util functions
 
+
 def sleep():
     time.sleep(0.7)
+
 
 def day_after(date):
     """
@@ -78,6 +91,7 @@ def day_after(date):
     cur = datetime.datetime.strptime(date, DATE_FMT)
     fut = cur + datetime.timedelta(days=1)
     return fut.strftime(DATE_FMT)
+
 
 def seek_date(target_date) -> bool:
     """
@@ -96,8 +110,10 @@ def seek_date(target_date) -> bool:
             click_previous_date()
         sleep()
 
+
 ################################
 # Parsing process functions
+
 
 def seek_start(start_date=None):
     # Go to earliest available date or requested date
@@ -230,6 +246,7 @@ def parse_course():
     sleep()
     return course
 
+
 def parse_meal(name):
     """
     Parse the meal currently on the screen, whether or not it was accessed via a tab.
@@ -252,11 +269,13 @@ def parse_meal(name):
         courses_processed += 1
     return meal
 
+
 with open('menus.json', 'r') as f:
     try:
         menus = json.load(f)
     except:
         menus = {}
+
 
 def parse_right(college):
     print('Parsing ' + college)
@@ -304,6 +323,7 @@ def parse_right(college):
 
     return True
 
+
 def parse(location_id):
     finished = False
     while not finished:
@@ -324,6 +344,7 @@ def parse(location_id):
             print('Squashing error...')
             print(e)
     return menus
+
 
 # Iterate through colleges
 for location_id in range(1, 12 + 1):
