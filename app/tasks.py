@@ -486,9 +486,23 @@ def scrape_jamix():
             for meal_d in day_d['meals']:
                 meal_name = meal_d['name']
                 print('Parsing meal ' + meal_name)
+                if meal_name == 'Breakfast':
+                    start_time = '8:00'
+                    end_time = '10:30'
+                elif meal_name == 'Lunch':
+                    start_time = '11:30'
+                    end_time = '14:00'
+                elif meal_name == 'Dinner':
+                    start_time = '17:00'
+                    end_time = '19:30'
+                else:
+                    start_time = None
+                    end_time = None
                 meal = Meal(
                     name=meal_name,
                     date=date,
+                    start_time=start_time,
+                    end_time=end_time,
                 )
                 meal.location = Location.query.filter_by(name=college).first()
                 for course_d in meal_d['courses']:
