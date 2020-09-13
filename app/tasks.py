@@ -448,7 +448,77 @@ def parse(location_id):
         except (ElementClickInterceptedException, ElementNotInteractableException, IndexError) as e:
             print('Squashing error...')
             print(e)
-    return menus
+    return college, menus[college]
+
+
+def parse_college(college):
+    print('Parsing college ' + college)
+    for day_d in menus[college]:
+        date = datetime.datetime.strptime(day_d['date'], DATE_FMT).date()
+        print('Parsing day ' + day_d['date'])
+        for meal_d in day_d['meals']:
+            meal_name = meal_d['name']
+            print('Parsing meal ' + meal_name)
+            if meal_name == 'Breakfast':
+                start_time = '8:00'
+                end_time = '10:30'
+            elif meal_name == 'Lunch':
+                start_time = '11:30'
+                end_time = '14:00'
+            elif meal_name == 'Dinner':
+                start_time = '17:00'
+                end_time = '19:30'
+            else:
+                start_time = None
+                end_time = None
+            meal = Meal(
+                name=meal_name,
+                date=date,
+                start_time=start_time,
+                end_time=end_time,
+            )
+            meal.location = Location.query.filter_by(name=college).first()
+            for course_d in meal_d['courses']:
+                course_name = course_d['name']
+                print('Parsing course ' + course_name)
+                course = Course(
+                    name=course_name,
+                )
+                course.meal = meal
+                # Note that both ingredients and nutrition_facts['items'] are dictionaries,
+                # with the keys being the names of the items.
+                ingredients = course_d['ingredients']
+                nutrition_facts = course_d['nutrition_facts']
+                for item_name in ingredients:
+                    print('Parsing item ' + item_name)
+                    item = Item(
+                        name=item_name,
+                        ingredients=ingredients[item_name]['ingredients'],
+                    )
+                    diets = ingredients[item_name]['diets'].split(', ')
+                    item.vegan = ('V' in diets)
+                    item.vegetarian = ('VG' in diets)
+                    allergens = ingredients[item_name].get('allergens')
+                    if allergens:
+                        allergens = allergens.split(', ')
+                        for allergen in allergens:
+                            setattr(item, allergen.lower(), True)
+
+                    # TODO: this should always be present, but handle its absence in case the scraper broke
+                    if nutrition_facts['items'].get(item_name):
+                        # Read nutrition facts
+                        # TODO: 'nutrition' or 'nutrition facts'?
+                        nutrition = read_nutrition_facts(nutrition_facts['items'][item_name])
+                        db.session.add(nutrition)
+                        item.nutrition = nutrition
+                    item.course = course
+                    item.meal = meal
+                    db.session.add(item)
+                #course_nutrition = read_nutrition_facts(nutrition_facts['course'])
+                #db.session.add(course_nutrition)
+                # TODO actually add to course!!!!!!!
+                db.session.add(course)
+            db.session.add(meal)
 
 
 def scrape_jamix():
@@ -460,92 +530,26 @@ def scrape_jamix():
 
     # Iterate through colleges
     for location_id in range(1, 12 + 1):
-        parse(location_id)
-    # Separate multi-college menus
-    # TODO: should we do this at request time?
-    # Extract key names to prevent size from changing during iteration
-    colleges = list(menus.keys())
-    for key in colleges:
-        if key == 'Branford and Saybrook':
-            value = menus.pop(key)
+        college, college_data = parse(location_id)
+        # Separate multi-college menus
+        # TODO: should we do this at request time?
+        if college == 'Branford and Saybrook':
+            value = menus.pop(college)
             menus['Branford'] = value
             menus['Saybrook'] = value
+            parse_college('Branford')
+            parse_college('Saybrook')
         # Murray & Franklin, Ezra Stiles & Morse
         elif ' & ' in key:
             value = menus.pop(key)
             college_a, college_b = key.split(' & ')
             menus[college_a] = value
             menus[college_b] = value
+            parse_college(college_a)
+            parse_college(college_b)
+        else:
+            parse_college(college)
 
-    for college in menus:
-        print('Parsing college ' + college)
-        for day_d in menus[college]:
-            # There is no elegance here. Only sleep deprivation and regret.
-            date = datetime.datetime.strptime(day_d['date'], DATE_FMT).date()
-            print('Parsing day ' + day_d['date'])
-            for meal_d in day_d['meals']:
-                meal_name = meal_d['name']
-                print('Parsing meal ' + meal_name)
-                if meal_name == 'Breakfast':
-                    start_time = '8:00'
-                    end_time = '10:30'
-                elif meal_name == 'Lunch':
-                    start_time = '11:30'
-                    end_time = '14:00'
-                elif meal_name == 'Dinner':
-                    start_time = '17:00'
-                    end_time = '19:30'
-                else:
-                    start_time = None
-                    end_time = None
-                meal = Meal(
-                    name=meal_name,
-                    date=date,
-                    start_time=start_time,
-                    end_time=end_time,
-                )
-                meal.location = Location.query.filter_by(name=college).first()
-                for course_d in meal_d['courses']:
-                    course_name = course_d['name']
-                    print('Parsing course ' + course_name)
-                    course = Course(
-                        name=course_name,
-                    )
-                    course.meal = meal
-                    # Note that both ingredients and nutrition_facts['items'] are dictionaries,
-                    # with the keys being the names of the items.
-                    ingredients = course_d['ingredients']
-                    nutrition_facts = course_d['nutrition_facts']
-                    for item_name in ingredients:
-                        print('Parsing item ' + item_name)
-                        item = Item(
-                            name=item_name,
-                            ingredients=ingredients[item_name]['ingredients'],
-                        )
-                        diets = ingredients[item_name]['diets'].split(', ')
-                        item.vegan = ('V' in diets)
-                        item.vegetarian = ('VG' in diets)
-                        allergens = ingredients[item_name].get('allergens')
-                        if allergens:
-                            allergens = allergens.split(', ')
-                            for allergen in allergens:
-                                setattr(item, allergen.lower(), True)
-
-                        # TODO: this should always be present, but handle its absence in case the scraper broke
-                        if nutrition_facts['items'].get(item_name):
-                            # Read nutrition facts
-                            # TODO: 'nutrition' or 'nutrition facts'?
-                            nutrition = read_nutrition_facts(nutrition_facts['items'][item_name])
-                            db.session.add(nutrition)
-                            item.nutrition = nutrition
-                        item.course = course
-                        item.meal = meal
-                        db.session.add(item)
-                    #course_nutrition = read_nutrition_facts(nutrition_facts['course'])
-                    #db.session.add(course_nutrition)
-                    # TODO actually add to course!!!!!!!
-                    db.session.add(course)
-                db.session.add(meal)
     db.session.commit()
     print('Done.')
 
