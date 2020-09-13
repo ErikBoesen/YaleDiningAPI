@@ -18,13 +18,17 @@ MENU_FILE = 'menus.json'
 GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google-chrome'
 CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
 
-ops = webdriver.ChromeOptions()
-ops.add_argument('--disable-gpu')
-ops.add_argument('--no-sandbox')
-ops.binary_location = GOOGLE_CHROME_PATH
-driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=ops)
-driver.maximize_window()
-driver.implicitly_wait(WAIT_PERIOD)
+driver = None
+
+
+def setup_driver():
+    ops = webdriver.ChromeOptions()
+    ops.add_argument('--disable-gpu')
+    ops.add_argument('--no-sandbox')
+    ops.binary_location = GOOGLE_CHROME_PATH
+    driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=ops)
+    driver.maximize_window()
+    driver.implicitly_wait(WAIT_PERIOD)
 
 
 def read_nutrition_facts(raw):
@@ -456,6 +460,8 @@ def scrape_jamix():
     Course.query.delete()
     Item.query.delete()
     Nutrition.query.delete()
+
+    setup_driver()
 
     # Iterate through colleges
     for location_id in range(1, 12 + 1):
