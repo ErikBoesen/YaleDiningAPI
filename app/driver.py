@@ -1,3 +1,4 @@
+import os
 import requests
 import time
 import json
@@ -7,6 +8,7 @@ from selenium import webdriver
 from selenium.common.exceptions import ElementClickInterceptedException, ElementNotInteractableException
 
 WAIT_PERIOD = 10
+MENU_FILE = 'menus.json'
 DATE_FMT = '%A, %B %d, %Y'
 
 ops = webdriver.FirefoxOptions()
@@ -270,11 +272,11 @@ def parse_meal(name):
     return meal
 
 
-with open('menus.json', 'r') as f:
-    try:
+if os.path.exists(MENU_FILE):
+    with open(MENU_FILE, 'r') as f:
         menus = json.load(f)
-    except:
-        menus = {}
+else:
+    menus = {}
 
 
 def parse_right(college):
@@ -316,7 +318,7 @@ def parse_right(college):
 
         menus[college].append(today_menu)
         print(json.dumps(menus))
-        with open('menus.json', 'w') as f:
+        with open(MENU_FILE, 'w') as f:
             json.dump(menus, f)
         click_next_date()
         sleep()
