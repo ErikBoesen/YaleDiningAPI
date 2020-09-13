@@ -15,8 +15,8 @@ class Location(db.Model):
     address = db.Column(db.String, nullable=False)
     phone = db.Column(db.String, nullable=False)
 
-    managers = db.relationship('Manager', back_populates='location')
-    meals = db.relationship('Meal', back_populates='location')
+    managers = db.relationship('Manager', cascade='all,delete', back_populates='location')
+    meals = db.relationship('Meal', cascade='all,delete', back_populates='location')
 
 
 class Manager(db.Model):
@@ -42,8 +42,8 @@ class Meal(db.Model):
 
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
     location = db.relationship('Location', back_populates='meals')
-    courses = db.relationship('Course', back_populates='meal')
-    items = db.relationship('Item', back_populates='meal')
+    courses = db.relationship('Course', cascade='all,delete', back_populates='meal')
+    items = db.relationship('Item', cascade='all,delete', back_populates='meal')
 
 
 class Course(db.Model):
@@ -55,7 +55,7 @@ class Course(db.Model):
 
     meal_id = db.Column(db.Integer, db.ForeignKey('meals.id'))
     meal = db.relationship('Meal', back_populates='courses')
-    items = db.relationship('Item', back_populates='course')
+    items = db.relationship('Item', cascade='all,delete', back_populates='course')
 
 
 class Item(db.Model):
@@ -87,7 +87,7 @@ class Item(db.Model):
     meal = db.relationship('Meal', back_populates='items')
     course_id = db.Column(db.Integer, db.ForeignKey('courses.id'))
     course = db.relationship('Course', back_populates='items')
-    nutrition = db.relationship('Nutrition', uselist=False, back_populates='item')
+    nutrition = db.relationship('Nutrition', cascade='all,delete', uselist=False, back_populates='item')
 
 
 class Nutrition(db.Model):

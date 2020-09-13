@@ -52,8 +52,8 @@ def scrape_fasttrack():
         {data['COLUMNS'][index]: entry[index] for index in range(len(entry))}
         for entry in data['DATA']
     ]
-    Location.query.delete()
     Manager.query.delete()
+    Location.query.delete()
     for raw in data:
         location = Location(
             id=int(raw['ID_LOCATION']),
