@@ -50,22 +50,13 @@ def scrape_fasttrack():
             address=raw['ADDRESS'],
             phone=raw['PHONE'],
         )
+        # Ignore manager fields as they're now outdated.
         print('Parsing ' + location.name)
         geolocation = raw.get('GEOLOCATION')
         if geolocation is not None:
             location.latitude, location.longitude = [float(coordinate) for coordinate in geolocation.split(',')]
         db.session.add(location)
-        """
-        num_managers = 0
-        while num_managers < 4:
-            num_managers += 1
-            name = raw[f'MANAGER{num_managers}NAME']
-            email = raw[f'MANAGER{num_managers}EMAIL']
-            if name is not None and email is not None:
-                manager = Manager(name=name, email=email)
-                manager.location = location
-                db.session.add(location)
-        """
+    db.session.commit()
     print('Done reading FastTrack data.')
 
 
@@ -93,7 +84,6 @@ def scrape_managers():
             to_scan = ul.find_all('li')
         for li in to_scan:
             contents = li.contents
-            print(contents)
             manager = Manager()
             if len(contents) == 1:
                 # The name is not a link, so no email is available
@@ -111,6 +101,7 @@ def scrape_managers():
 
 
 def scrape_jamix():
+    print('Reading JAMIX menu data.')
     Meal.query.delete()
     Course.query.delete()
     Item.query.delete()
@@ -135,7 +126,6 @@ def scrape_jamix():
             menus[college_a] = value
             menus[college_b] = value
 
-    print('Reading in menu data.')
     for college in menus:
         print('Parsing college ' + college)
         for day_d in menus[college]:
@@ -193,6 +183,7 @@ def scrape_jamix():
                 db.session.add(meal)
     db.session.commit()
     print('Done.')
+
 
 @celery.task
 def scrape():
