@@ -22,7 +22,7 @@ ops = webdriver.ChromeOptions()
 ops.add_argument('--disable-gpu')
 ops.add_argument('--no-sandbox')
 ops.binary_location = GOOGLE_CHROME_PATH
-driver = webdriver.Chrome(execution_path=CHROMEDRIVER_PATH, chrome_options=ops)
+driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=ops)
 driver.maximize_window()
 driver.implicitly_wait(WAIT_PERIOD)
 
