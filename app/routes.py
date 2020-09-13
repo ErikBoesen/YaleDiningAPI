@@ -13,5 +13,6 @@ def scraper():
     if request.method == 'GET':
         return render_template('scraper.html')
     payload = request.get_json()
+    print('Kicking off scraper.')
     tasks.scrape.apply_async()
     return '', 200
