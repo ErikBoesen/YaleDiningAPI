@@ -15,9 +15,14 @@ DATE_FMT = '%A, %B %d, %Y'
 WAIT_PERIOD = 10
 MENU_FILE = 'menus.json'
 
-ops = webdriver.FirefoxOptions()
-ops.headless = True
-driver = webdriver.Firefox(options=ops)
+GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
+CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
+
+ops = webdriver.ChromeOptions()
+ops.add_argument('--disable-gpu')
+ops.add_argument('--no-sandbox')
+ops.binary_location = GOOGLE_CHROME_PATH
+driver = webdriver.Chrome(execution_path=CHROMEDRIVER_PATH, chrome_options=ops)
 driver.maximize_window()
 driver.implicitly_wait(WAIT_PERIOD)
 
