@@ -107,7 +107,7 @@ def scrape_managers():
             elif len(contents) == 2:
                 manager.name = contents[0].text
                 manager.email = contents[0]['href'].replace('mailto:', '')
-                manager.position = contents[1].lstrip(', ').replace('/ ', '/')
+                manager.position = contents[1].lstrip(', ').replace('/ ', '/').replace(' /', '/')
             db.session.add(manager)
             manager.location = location
             print('Name: ' + manager.name)
