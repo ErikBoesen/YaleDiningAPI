@@ -15,13 +15,14 @@ DATE_FMT = '%A, %B %d, %Y'
 WAIT_PERIOD = 10
 MENU_FILE = 'menus.json'
 
-GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google-chrome'
-CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
 
 ops = webdriver.ChromeOptions()
 ops.add_argument('--disable-gpu')
 ops.add_argument('--no-sandbox')
-ops.binary_location = GOOGLE_CHROME_PATH
+GOOGLE_CHROME_PATH = os.environ.get('GOOGLE_CHROME_PATH')
+if GOOGLE_CHROME_PATH:
+    ops.binary_location = GOOGLE_CHROME_PATH
+CHROMEDRIVER_PATH = os.environ.get('CHROMEDRIVER_PATH', '/usr/local/bin/chromedriver')
 driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=ops)
 driver.maximize_window()
 driver.implicitly_wait(WAIT_PERIOD)
