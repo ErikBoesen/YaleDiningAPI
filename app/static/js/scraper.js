@@ -1,7 +1,7 @@
 let submit = document.getElementById('submit');
 
 submit.onclick = function() {
-    console.log('Trying to start scraper.');
+    console.log('Starting scraper.');
     let payload = {};
     fetch('/scraper', {
         method: 'POST',
