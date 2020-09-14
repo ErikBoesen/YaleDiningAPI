@@ -53,20 +53,19 @@ def scrape_fasttrack():
         {data['COLUMNS'][index]: entry[index] for index in range(len(entry))}
         for entry in data['DATA']
     ]
-    Manager.query.delete()
-    Location.query.delete()
     for raw in data:
-        location = Location(
-            id=int(raw['ID_LOCATION']),
-            # TODO: I can't figure out what this is for, so just omit it for now.
-            #code=int(raw['LOCATIONCODE']),
-            name=raw['DININGLOCATIONNAME'],
-            type=raw['TYPE'],
-            capacity=raw['CAPACITY'],
-            is_open=not bool(raw['ISCLOSED']),
-            address=raw['ADDRESS'],
-            phone=raw['PHONE'],
-        )
+        location_id = int(raw['ID_LOCATION'])
+        location = Location.query.get(location_id)
+        if location is None:
+            location = Location(id=location_id)
+        # TODO: I can't figure out what this is for, so just omit it for now.
+        #location.code = int(raw['LOCATIONCODE']),
+        location.name = raw['DININGLOCATIONNAME'],
+        location.type = raw['TYPE'],
+        location.capacity = raw['CAPACITY'],
+        location.is_open = not bool(raw['ISCLOSED']),
+        location.address = raw['ADDRESS'],
+        location.phone = raw['PHONE'],
         # Ignore manager fields as they're now outdated.
         print('Parsing ' + location.name)
         geolocation = raw.get('GEOLOCATION')
@@ -82,6 +81,7 @@ def scrape_managers():
     ROOT = 'https://hospitality.yale.edu/residential-dining/'
     locations = Location.query.filter_by(type='Residential').all()
     HEADER_RE = re.compile(r'Management Team')
+    Manager.query.delete()
     for location in locations:
         slug = location.name.lower().replace(' ', '-')
         custom_slugs = {
