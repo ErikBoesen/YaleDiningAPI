@@ -449,10 +449,12 @@ def parse(location_id):
             if last_meal is None and college not in menus:
                 seek_start()
             else:
-                last_cached_day = menus[college][-1]['date']
-                # Make lexicographic comparison
-                if last_day is not None and last_cached_day > last_day:
-                    last_day = last_cached_day
+                # TODO: clean up conditional mess
+                if college not in menus:
+                    last_cached_day = menus[college][-1]['date']
+                    # Make lexicographic comparison
+                    if last_day is not None and last_cached_day > last_day:
+                        last_day = last_cached_day
                 seek_date(day_after(last_day))
             finished = parse_right(college)
         except (ElementClickInterceptedException, ElementNotInteractableException, IndexError) as e:
