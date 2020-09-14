@@ -540,7 +540,7 @@ def scrape_jamix():
             parse_college('Branford')
             parse_college('Saybrook')
         # Murray & Franklin, Ezra Stiles & Morse
-        elif ' & ' in key:
+        elif ' & ' in college:
             value = menus.pop(key)
             college_a, college_b = key.split(' & ')
             menus[college_a] = value
