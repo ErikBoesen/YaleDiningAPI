@@ -186,7 +186,7 @@ def click_next_date():
 
 
 def sleep():
-    time.sleep(0.7)
+    time.sleep(0.5)
 
 
 def day_after(date):
@@ -440,10 +440,18 @@ def parse(location_id):
         try:
             # If there's already some days in the list, then go to the next day.
             # Otherwise, go all the way to the start.
-            if menus[college]:
-                seek_date(day_after(menus[college][-1]['date']))
-            else:
+            # TODO: in theory, if we didn't run the scraper for a really long time, this could take us back to a time where there's no data. Hopefully we'll run often enough that this won't happen, but it would be good to be sure.
+            location = Location.query.filter_by(name=college).first()
+            last_meal = Meal.query.filter_by(location_id=location.id).order_by(Meal.date.desc()).first()
+            last_day = last_meal.date
+            if last_meal is None and college not in menus:
                 seek_start()
+            else:
+                last_cached_day = menus[college][-1]['date']
+                # Make lexicographic comparison
+                if last_cached_day > last_day:
+                    last_day = last_cached_day
+                seek_date(day_after(last_day))
             finished = parse_right(college)
         except (ElementClickInterceptedException, ElementNotInteractableException, IndexError) as e:
             print('Squashing error...')
@@ -523,10 +531,6 @@ def parse_college(college):
 
 def scrape_jamix():
     print('Reading JAMIX menu data.')
-    Meal.query.delete()
-    Course.query.delete()
-    Item.query.delete()
-    Nutrition.query.delete()
 
     # Iterate through colleges
     for location_id in range(1, 12 + 1):
