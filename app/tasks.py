@@ -60,12 +60,12 @@ def scrape_fasttrack():
             location = Location(id=location_id)
         # TODO: I can't figure out what this is for, so just omit it for now.
         #location.code = int(raw['LOCATIONCODE']),
-        location.name = raw['DININGLOCATIONNAME'],
-        location.type = raw['TYPE'],
-        location.capacity = raw['CAPACITY'],
-        location.is_open = not bool(raw['ISCLOSED']),
-        location.address = raw['ADDRESS'],
-        location.phone = raw['PHONE'],
+        location.name = raw['DININGLOCATIONNAME']
+        location.type = raw['TYPE']
+        location.capacity = raw['CAPACITY']
+        location.is_open = not bool(raw['ISCLOSED'])
+        location.address = raw['ADDRESS']
+        location.phone = raw['PHONE']
         # Ignore manager fields as they're now outdated.
         print('Parsing ' + location.name)
         geolocation = raw.get('GEOLOCATION')
