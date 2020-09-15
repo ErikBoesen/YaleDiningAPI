@@ -420,7 +420,6 @@ def parse_right(college):
             today_menu['meals'].append(parse_meal('Breakfast'))
 
         menus[college].append(today_menu)
-        print(json.dumps(menus))
         with open(MENU_FILE, 'w') as f:
             json.dump(menus, f)
         click_next_date()
