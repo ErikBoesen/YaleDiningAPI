@@ -429,6 +429,9 @@ def parse_right(college):
 
 
 def get_last_day(college):
+    # Handle multi-college names
+    # TODO this is messy
+    college = college.split(' and ')[0].split(' & ')[0]
     print(college)
     location = Location.query.filter_by(name=college).first()
     print(location)
