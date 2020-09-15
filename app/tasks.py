@@ -448,16 +448,18 @@ def parse(location_id):
         college = get_header_text()
         if college not in menus:
             menus[college] = []
+        # If there's already some days in the list, then go to the next day.
+        # Otherwise, go all the way to the start.
+        # TODO: in theory, if we didn't run the scraper for a really long time, this could take us
+        # back to a time where there's no data, and the parser will think it's finished with this college.
+        # Hopefully we'll run often enough that this won't happen, but it would be good to be sure.
+        last_day = get_last_day(college)
+        if last_day:
+            seek_date(day_after(last_day))
+        else:
+            seek_start()
+
         try:
-            # If there's already some days in the list, then go to the next day.
-            # Otherwise, go all the way to the start.
-            # TODO: in theory, if we didn't run the scraper for a really long time, this could take us back to a time where there's no data.
-            # Hopefully we'll run often enough that this won't happen, but it would be good to be sure.
-            last_day = get_last_day(college)
-            if last_day:
-                seek_date(day_after(last_day))
-            else:
-                seek_start()
             finished = parse_right(college)
         except (ElementClickInterceptedException, ElementNotInteractableException, IndexError) as e:
             print('Squashing error...')
