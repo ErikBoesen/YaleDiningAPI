@@ -429,7 +429,9 @@ def parse_right(college):
 
 
 def get_last_day(college):
+    print(college)
     location = Location.query.filter_by(name=college).first()
+    print(location)
     last_meal = Meal.query.filter_by(location_id=location.id).order_by(Meal.date.desc()).first()
     last_day = last_meal.date if last_meal else None
     if menus[college]:
