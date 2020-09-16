@@ -444,7 +444,7 @@ def get_last_day(college):
     location = Location.query.filter_by(name=college).first()
     print(location)
     last_meal = Meal.query.filter_by(location_id=location.id).order_by(Meal.date.desc()).first()
-    last_day = last_meal.date if last_meal else None
+    last_day = last_meal.date.strftime('%Y-%m-%d') if last_meal else None
     if college in menus and menus[college]:
         last_cached_day = menus[college][-1]['date']
         # Make lexicographic comparison
