@@ -184,9 +184,10 @@ def click_next_date():
     sleep()
 
 
-def clean_college():
+def clean_college(college):
     if college in JAMIX_NAMES:
         college = JAMIX_NAMES[college]
+    return college
 
 ######################
 # Other util functions
