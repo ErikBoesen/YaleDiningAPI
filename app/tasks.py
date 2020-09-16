@@ -540,6 +540,7 @@ def parse_college(college):
                 # TODO actually add to course!!!!!!!
                 db.session.add(course)
             db.session.add(meal)
+    db.session.commit()
 
 
 def scrape_jamix():
