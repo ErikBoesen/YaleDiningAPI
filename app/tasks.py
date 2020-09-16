@@ -14,6 +14,9 @@ from selenium.common.exceptions import ElementClickInterceptedException, Element
 DATE_FMT = '%A, %B %d, %Y'
 WAIT_PERIOD = 10
 MENU_FILE = 'menus.json'
+JAMIX_NAMES = {
+    'Ezra Stiles': 'Stiles',
+}
 
 
 ops = webdriver.ChromeOptions()
@@ -180,6 +183,10 @@ def click_next_date():
     next_date_button.click()
     sleep()
 
+
+def clean_college():
+    if college in JAMIX_NAMES:
+        college = JAMIX_NAMES[college]
 
 ######################
 # Other util functions
@@ -451,6 +458,7 @@ def parse(location_id):
         driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=%d' % location_id)
         sleep()
         college = get_header_text()
+        college = clean_college(college)
         if college not in menus:
             menus[college] = []
         # If there's already some days in the list, then go to the next day.
@@ -561,6 +569,8 @@ def scrape_jamix():
         elif ' & ' in college:
             value = menus.pop(key)
             college_a, college_b = key.split(' & ')
+            college_a = clean_college(college_a)
+            college_b = clean_college(college_b)
             menus[college_a] = value
             menus[college_b] = value
             parse_college(college_a)
