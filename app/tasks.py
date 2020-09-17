@@ -556,7 +556,7 @@ def scrape_jamix():
     print('Reading JAMIX menu data.')
 
     # Iterate through colleges
-    for location_id in range(1, 12 + 1):
+    for location_id in range(1, 11 + 1):
         college, college_data = parse(location_id)
         # Separate multi-college menus
         # TODO: should we do this at request time?
