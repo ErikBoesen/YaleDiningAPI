@@ -522,7 +522,7 @@ def parse_college(college):
                 for item_name in ingredients:
                     print('Parsing item ' + item_name)
                     item = Item(
-                        name=item_name,
+                        name=item_name.replace('`', '\''),
                         ingredients=ingredients[item_name]['ingredients'],
                     )
                     diets = ingredients[item_name]['diets'].split(', ')
