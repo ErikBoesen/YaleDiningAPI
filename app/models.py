@@ -71,7 +71,6 @@ class Item(db.Model):
     vegetarian = db.Column(db.Boolean, default=False)
     vegan = db.Column(db.Boolean, default=False)
 
-    # TODO: it is possible that some of these allergens are not supported under the new API.
     alcohol = db.Column(db.Boolean, default=False)
     nuts = db.Column(db.Boolean, default=False)
     shellfish = db.Column(db.Boolean, default=False)
@@ -79,7 +78,7 @@ class Item(db.Model):
     dairy = db.Column(db.Boolean, default=False)
     egg = db.Column(db.Boolean, default=False)
     pork = db.Column(db.Boolean, default=False)
-    seafood = db.Column(db.Boolean, default=False)
+    fish = db.Column(db.Boolean, default=False)
     soy = db.Column(db.Boolean, default=False)
     wheat = db.Column(db.Boolean, default=False)
     gluten = db.Column(db.Boolean, default=False)
