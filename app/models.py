@@ -3,7 +3,7 @@ from app import app, db
 
 class Location(db.Model):
     __tablename__ = 'locations'
-    _to_expand = ('managers',)
+    _to_expand = ()
     _to_exclude = ('managers', 'meals',)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
