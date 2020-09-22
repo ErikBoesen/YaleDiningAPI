@@ -4,4 +4,33 @@
 <h3>Access Yale Dining data with ease!</h3>
 <p>YaleDine provides an open, standards-compliant API that developers can use to access Yale Dining's location and menu data. It replaces Yale Dining's deprecated official API, and scrapes data from Yale Dining's occupancy statistics page, the new JAMIX menus website, and various other sources, compiling it together and cleaning it up for presentation in a polished and developer-friendly API that can easily be used for your projects.</p>
 <p>For questions, comments, bug reports, or suggestions, contact <a href="mailto:erik.boesen@yale.edu">erik.boesen@yale.edu</a>.</p>
+<h1>API documentation</h1>
+<h3>Endpoints</h3>
+<p>All endpoints below are from the root <code>https://yaledine.com/api</code>. For example, <code>https://yaledine.com/api/locations</code>. All endpoints return a JSON response.</p>
+<h4 name="endpoint_locations"><code>/locations</code></h4>
+<p>Returns a list of available dining <code><a href="#object_location">Location</a></code> objects.</p>
+<h4 name="endpoint_location"><code>/locations/:id</code></h4>
+<p>Returns a single <code><a href="#object_location">Location</a></code> object with the given id.</p>
+<h4 name="endpoint_location"><code>/locations/:id</code></h4>
+<p>Returns a single <code><a href="#object_location">Location</a></code> object with the given id.</p>
+<h4 name="endpoint_location_managers"><code>/locations/:id/managers</code></h4>
+<p>Returns a list of <code><a href="#object_manager">Manager</a></code> objects for the given location.</p>
+<h4 name="endpoint_location_meals"><code>/locations/:id/meals</code></h4>
+<p>Returns a list of <code><a href="#object_meal">Meal</a></code> objects for the given location.</p>
+<h4 name="endpoint_meal"><code>/meals/:id</code></h4>
+<p>Returns a single <code><a href="#object_meal">Meal</a></code> object with the given id.</p>
+<h4 name="endpoint_meal_items"><code>/meals/:id/items</code></h4>
+<p>Returns a list of <code><a href="#object_item">Item</a></code> objects for the given meal.</p>
+<h4 name="endpoint_meal_items"><code>/meals/:id/items</code></h4>
+<p>Returns a list of <code><a href="#object_item">Item</a></code> objects for the given meal.</p>
+<h4 name="endpoint_meal_courses"><code>/meals/:id/courses</code></h4>
+<p>Returns a list of <code><a href="#object_course">Course</a></code> objects for the given meal.</p>
+<h4 name="endpoint_course"><code>/courses/:id</code></h4>
+<p>Returns a single <code><a href="#object_course">Course</a></code> object with the given id.</p>
+<h4 name="endpoint_course_items"><code>/courses/:id/items</code></h4>
+<p>Returns a list of <code><a href="#object_item">Item</a></code> objects for the given course.</p>
+<h4 name="endpoint_item"><code>/items/:id</code></h4>
+<p>Returns a single <code><a href="#object_item">Item</a></code> objects with the given id.</p>
+<h4 name="endpoint_item_nutrition"><code>/items/:id/nutrition</code></h4>
+<p>Returns a single <code><a href="#object_nutrition">Nutrition</a></code> object for the <code><a href="#object_item">Item</a></code> with the given id.</p>
 {% endblock %}
