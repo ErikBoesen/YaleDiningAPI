@@ -17,6 +17,22 @@ MENU_FILE = 'menus.json'
 JAMIX_NAMES = {
     'Ezra Stiles': 'Stiles',
 }
+LOCATION_CODES = {
+    'Berkeley': 'BK',
+    'Branford': 'BR',
+    'Davenport': 'DC',
+    'Franklin': 'BF',
+    'Grace Hopper': 'GH',
+    'Jonathan Edwards': 'JE',
+    'Morse': 'MC',
+    'Pauli Murray': 'MY',
+    'Pierson': 'PC',
+    'Saybrook': 'SY',
+    'Silliman': 'SM',
+    'Stiles': 'ES',
+    'Timothy Dwight': 'TD',
+    'Trumbull': 'TC',
+}
 
 
 ops = webdriver.ChromeOptions()
@@ -64,6 +80,7 @@ def scrape_fasttrack():
         # TODO: I can't figure out what this is for, so just omit it for now.
         #location.code = int(raw['LOCATIONCODE']),
         location.name = raw['DININGLOCATIONNAME']
+        location.code = LOCATION_CODES[location.name]
         location.type = raw['TYPE']
         location.capacity = raw['CAPACITY']
         location.is_open = not bool(raw['ISCLOSED'])
