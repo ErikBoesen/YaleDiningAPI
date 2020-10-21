@@ -36,15 +36,19 @@ def api_location_meals(location_id):
     # TODO: use this later on, right now it's mostly a 404 check
     location = Location.query.get_or_404(location_id)
     meals = Meal.query.filter_by(location_id=location_id)
-    start_date = request.args.get('start_date')
-    if start_date is None:
-        start_date = datetime.date.today()
+    date = request.args.get('date')
+    if date is not None:
+        meals = meals.filter(Meal.date == date)
     else:
-        start_date = datetime.datetime.strptime(start_date, DATE_FMT)
-    meals = meals.filter(start_date <= Meal.date)
-    end_date = request.args.get('end_date')
-    if end_date is not None:
-        meals = meals.filter(Meal.date <= end_date)
+        start_date = request.args.get('start_date')
+        if start_date is None:
+            start_date = datetime.date.today()
+        else:
+            start_date = datetime.datetime.strptime(start_date, DATE_FMT)
+        meals = meals.filter(start_date <= Meal.date)
+        end_date = request.args.get('end_date')
+        if end_date is not None:
+            meals = meals.filter(Meal.date <= end_date)
     meals = meals.all()
     return to_json(meals)
 
