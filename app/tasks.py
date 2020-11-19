@@ -507,7 +507,7 @@ def parse_college(college):
             meal_name = meal_d['name']
             print('Parsing meal ' + meal_name)
             if meal_name == 'Breakfast':
-                start_time = '8:00'
+                start_time = '08:00'
                 end_time = '10:30'
             elif meal_name == 'Lunch':
                 start_time = '11:30'
