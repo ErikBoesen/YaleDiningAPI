@@ -49,6 +49,7 @@ def api_location_meals(location_id):
         end_date = request.args.get('end_date')
         if end_date is not None:
             meals = meals.filter(Meal.date <= end_date)
+    meals = meals.order_by(Meal.date, Meal.start_time)
     meals = meals.all()
     return to_json(meals)
 
