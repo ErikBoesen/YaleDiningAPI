@@ -16,6 +16,7 @@ WAIT_PERIOD = 10
 MENU_FILE = 'menus.json'
 JAMIX_NAMES = {
     'Ezra Stiles': 'Stiles',
+    'Murray': 'Pauli Murray',
 }
 LOCATION_CODES = {
     'Berkeley': 'BK',
