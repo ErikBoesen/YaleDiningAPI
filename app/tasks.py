@@ -578,14 +578,9 @@ def scrape_jamix():
         college, college_data = parse(location_id)
         # Separate multi-college menus
         # TODO: should we do this at request time?
-        if college == 'Branford and Saybrook':
-            value = menus.pop(college)
-            menus['Branford'] = value
-            menus['Saybrook'] = value
-            parse_college('Branford')
-            parse_college('Saybrook')
-        # Murray & Franklin, Ezra Stiles & Morse
-        elif '/' in college:
+        if college == 'ESM':
+            college = 'Ezra Stiles/Morse'
+        if '/' in college:
             value = menus.pop(college)
             college_a, college_b = college.split('/')
             college_a = clean_college(college_a)
