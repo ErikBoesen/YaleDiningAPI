@@ -202,6 +202,7 @@ def click_next_date():
 
 
 def clean_college(college):
+    college = college.replace(', Residential', '')
     if college in JAMIX_NAMES:
         college = JAMIX_NAMES[college]
     return college
