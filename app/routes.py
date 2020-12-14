@@ -1,5 +1,5 @@
 from flask import render_template, request, jsonify, g
-from app import app, db, tasks
+from app import app, db, scraper
 #from app.models import
 
 
@@ -14,5 +14,5 @@ def scraper():
         return render_template('scraper.html')
     payload = request.get_json()
     print('Kicking off scraper.')
-    tasks.scrape.apply_async()
+    scraper.scrape.apply_async()
     return '', 200
