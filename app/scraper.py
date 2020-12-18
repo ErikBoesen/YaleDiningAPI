@@ -547,6 +547,7 @@ def parse_college(college):
                     diets = ingredients[item_name]['diets'].split(', ')
                     item.vegan = ('V' in diets)
                     item.vegetarian = ('VG' in diets)
+                    item.gluten = not ('GF' in diets)
                     allergens = ingredients[item_name].get('allergens')
                     if allergens:
                         allergens = allergens.split(', ')
