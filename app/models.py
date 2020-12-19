@@ -49,18 +49,6 @@ class Meal(db.Model):
     items = db.relationship('Item', cascade='all,delete', back_populates='meal')
 
 
-class Course(db.Model):
-    __tablename__ = 'courses'
-    _to_expand = ()
-    _to_exclude = ('meal', 'items')
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String, nullable=False)
-
-    meal_id = db.Column(db.Integer, db.ForeignKey('meals.id'))
-    meal = db.relationship('Meal', back_populates='courses')
-    items = db.relationship('Item', cascade='all,delete', back_populates='course')
-
-
 class Item(db.Model):
     __tablename__ = 'items'
     _to_expand = ()
