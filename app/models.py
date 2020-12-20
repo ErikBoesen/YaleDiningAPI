@@ -45,7 +45,6 @@ class Meal(db.Model):
 
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
     location = db.relationship('Location', back_populates='meals')
-    courses = db.relationship('Course', cascade='all,delete', back_populates='meal')
     items = db.relationship('Item', cascade='all,delete', back_populates='meal')
 
 
@@ -56,6 +55,7 @@ class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     ingredients = db.Column(db.String)
+    course = db.Column(db.String)
 
     vegetarian = db.Column(db.Boolean, default=False)
     vegan = db.Column(db.Boolean, default=False)
@@ -75,8 +75,6 @@ class Item(db.Model):
 
     meal_id = db.Column(db.Integer, db.ForeignKey('meals.id'))
     meal = db.relationship('Meal', back_populates='items')
-    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'))
-    course = db.relationship('Course', back_populates='items')
     nutrition = db.relationship('Nutrition', cascade='all,delete', uselist=False, back_populates='item')
 
 
