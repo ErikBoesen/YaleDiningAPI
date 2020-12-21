@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 
 from app import db
-from app.models import Location, Manager, Meal, Course, Item, Nutrition
+from app.models import Location, Manager, Meal, Item, Nutrition
 from app.util import to_json
 
 import datetime
@@ -64,26 +64,6 @@ def api_meal(meal_id):
 def api_meal_items(meal_id):
     meal = Meal.query.get_or_404(meal_id)
     items = meal.items
-    return to_json(items)
-
-
-@api_bp.route('/meals/<meal_id>/courses')
-def api_meal_courses(meal_id):
-    meal = Meal.query.get_or_404(meal_id)
-    courses = meal.courses
-    return to_json(courses)
-
-
-@api_bp.route('/courses/<course_id>')
-def api_course(course_id):
-    course = Course.query.get_or_404(course_id)
-    return to_json(course)
-
-
-@api_bp.route('/courses/<course_id>/items')
-def api_course_items(course_id):
-    course = Course.query.get_or_404(course_id)
-    items = course.items
     return to_json(items)
 
 
