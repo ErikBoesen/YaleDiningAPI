@@ -1,5 +1,5 @@
 from app import app, db, celery
-from app.models import Location, Manager, Meal, Course, Item, Nutrition
+from app.models import Location, Manager, Meal, Item, Nutrition
 
 import os
 import requests
@@ -530,10 +530,6 @@ def parse_college(college):
             for course_d in meal_d['courses']:
                 course_name = course_d['name']
                 print('Parsing course ' + course_name)
-                course = Course(
-                    name=course_name,
-                )
-                course.meal = meal
                 # Note that both ingredients and nutrition_facts['items'] are dictionaries,
                 # with the keys being the names of the items.
                 ingredients = course_d['ingredients']
@@ -543,6 +539,7 @@ def parse_college(college):
                     item = Item(
                         name=item_name.replace('`', '\''),
                         ingredients=ingredients[item_name]['ingredients'],
+                        course=course_name,
                     )
                     diets = ingredients[item_name]['diets'].split(', ')
                     item.vegan = ('V' in diets)
@@ -561,13 +558,10 @@ def parse_college(college):
                         nutrition = read_nutrition_facts(nutrition_facts['items'][item_name])
                         db.session.add(nutrition)
                         item.nutrition = nutrition
-                    item.course = course
                     item.meal = meal
                     db.session.add(item)
                 #course_nutrition = read_nutrition_facts(nutrition_facts['course'])
                 #db.session.add(course_nutrition)
-                # TODO actually add to course!!!!!!!
-                db.session.add(course)
             db.session.add(meal)
     db.session.commit()
 
