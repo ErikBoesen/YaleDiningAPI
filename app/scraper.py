@@ -104,7 +104,7 @@ def scrape_fasttrack():
 def scrape_managers():
     print('Scraping managers.')
     ROOT = 'https://hospitality.yale.edu/residential-dining/'
-    locations = Location.query.filter_by(type='Residential').all()
+    locations = Location.query.all()
     HEADER_RE = re.compile(r'Management Team')
     Manager.query.delete()
     for location in locations:
