@@ -1,6 +1,8 @@
 from app import app, db, celery
 from app.models import Location, Manager, Meal, Item, Nutrition
 
+from celery.schedules import crontab
+
 import os
 import requests
 import json
@@ -603,7 +605,18 @@ def scrape_jamix():
 
 
 @celery.task
-def scrape():
+def scrape(fasttrack_only=False):
     scrape_fasttrack()
-    scrape_managers()
-    scrape_jamix()
+    if not fasttrack_only:
+        scrape_managers()
+        scrape_jamix()
+
+
+@celery.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    sender.add_periodic_task(10, scrape.s(fasttrack_only=True), name='FastTrack scrape')
+    sender.add_periodic_task(
+        crontab(minute=0),
+        scrape.s(fasttrack_only=False),
+        name='Full scrape'
+    )
