@@ -463,7 +463,10 @@ def parse_right(college):
 def get_last_day(college):
     # Handle multi-college names
     # TODO this is messy
-    college = college.split(' and ')[0].split(' & ')[0]
+    # .split(' and ')[0].split(' & ')[0]
+    if college == 'ESM':
+        college = 'Stiles'
+    college = college.split('/')[0]
     college = clean_college(college)
     print(college)
     location = Location.query.filter_by(name=college).first()
@@ -581,8 +584,8 @@ def scrape_jamix():
         college, college_data = parse(location_id)
         # Separate multi-college menus
         # TODO: should we do this at request time?
-        if college == 'ESM':
-            college = 'Ezra Stiles/Morse'
+        if college == 'ESM, Residential':
+            college = 'Stiles/Morse'
         if '/' in college:
             value = menus.pop(college)
             college_a, college_b = college.split('/')
