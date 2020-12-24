@@ -9,7 +9,7 @@ def index():
 
 
 @app.route('/scraper', methods=['GET', 'POST'])
-def scraper():
+def scrape():
     if request.method == 'GET':
         return render_template('scraper.html')
     payload = request.get_json()
