@@ -74,6 +74,8 @@ def scrape_fasttrack():
         for entry in data['DATA']
     ]
     for raw in data:
+        if raw['TYPE'] != 'Residential':
+            continue
         location_id = int(raw['ID_LOCATION'])
         location = Location.query.get(location_id)
         if location is None:
@@ -82,7 +84,6 @@ def scrape_fasttrack():
         #location.code = int(raw['LOCATIONCODE']),
         location.name = raw['DININGLOCATIONNAME']
         location.code = LOCATION_CODES[location.name]
-        location.type = raw['TYPE']
         location.capacity = raw['CAPACITY']
         location.is_open = not bool(raw['ISCLOSED'])
         location.address = raw['ADDRESS']
