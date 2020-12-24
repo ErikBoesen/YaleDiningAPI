@@ -36,16 +36,19 @@ LOCATION_CODES = {
 }
 
 
-ops = webdriver.ChromeOptions()
-ops.add_argument('--disable-gpu')
-ops.add_argument('--no-sandbox')
-GOOGLE_CHROME_PATH = os.environ.get('GOOGLE_CHROME_PATH')
-if GOOGLE_CHROME_PATH:
-    ops.binary_location = GOOGLE_CHROME_PATH
-CHROMEDRIVER_PATH = os.environ.get('CHROMEDRIVER_PATH', '/usr/local/bin/chromedriver')
-driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=ops)
-driver.maximize_window()
-driver.implicitly_wait(WAIT_PERIOD)
+driver = None
+
+def create_driver():
+    ops = webdriver.ChromeOptions()
+    ops.add_argument('--disable-gpu')
+    ops.add_argument('--no-sandbox')
+    GOOGLE_CHROME_PATH = os.environ.get('GOOGLE_CHROME_PATH')
+    if GOOGLE_CHROME_PATH:
+        ops.binary_location = GOOGLE_CHROME_PATH
+    CHROMEDRIVER_PATH = os.environ.get('CHROMEDRIVER_PATH', '/usr/local/bin/chromedriver')
+    driver = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=ops)
+    driver.maximize_window()
+    driver.implicitly_wait(WAIT_PERIOD)
 
 
 def read_nutrition_facts(raw):
@@ -569,6 +572,7 @@ def parse_college(college):
 
 def scrape_jamix():
     print('Reading JAMIX menu data.')
+    create_driver()
 
     # Iterate through colleges
     for location_id in range(1, 11 + 1):
