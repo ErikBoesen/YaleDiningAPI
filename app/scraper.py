@@ -35,10 +35,12 @@ LOCATION_CODES = {
     'Trumbull': 'TC',
 }
 
-
 driver = None
 
 def create_driver():
+    # TODO: using globals is bad practice.
+    global driver
+
     ops = webdriver.ChromeOptions()
     ops.add_argument('--disable-gpu')
     ops.add_argument('--no-sandbox')
