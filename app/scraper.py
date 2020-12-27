@@ -27,6 +27,7 @@ SHORTNAMES = {
     'Timothy Dwight': 'TD',
 }
 JAMIX_NAMES = {
+    **FASTTRACK_NAME_OVERRIDES,
     'Murray': 'Pauli Murray',
     'Hopper': 'Grace Hopper',
 }
