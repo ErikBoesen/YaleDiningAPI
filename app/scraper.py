@@ -102,7 +102,7 @@ def scrape_fasttrack():
         #location.code = int(raw['LOCATIONCODE']),
         # Get custom name override, falling back to provided name where applicable
         name = raw['DININGLOCATIONNAME']
-        location.name = FASTTRACK_LOCATION_OVERRIDES.get(name, name)
+        location.name = FASTTRACK_NAME_OVERRIDES.get(name, name)
         location.shortname = SHORTNAMES.get(location.name, location.name)
         location.code = LOCATION_CODES[location.name]
         location.capacity = raw['CAPACITY']
