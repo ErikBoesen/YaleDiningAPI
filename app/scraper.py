@@ -22,6 +22,7 @@ FASTTRACK_NAME_OVERRIDES = {
 }
 SHORTNAMES = {
     **{name: nickname for nickname, name in FASTTRACK_NAME_OVERRIDES.items()},
+    'Grace Hopper': 'Hopper',
     'Jonathan Edwards': 'JE',
     'Pauli Murray': 'Murray',
     'Timothy Dwight': 'TD',
@@ -30,6 +31,8 @@ JAMIX_NAMES = {
     **FASTTRACK_NAME_OVERRIDES,
     'Murray': 'Pauli Murray',
     'Hopper': 'Grace Hopper',
+    'ESM': 'Ezra Stiles/Morse',
+    'JE': 'Jonathan Edwards',
 }
 LOCATION_CODES = {
     'Berkeley': 'BK',
@@ -600,8 +603,6 @@ def scrape_jamix():
         college, college_data = parse(location_id)
         # Separate multi-college menus
         # TODO: should we do this at request time?
-        if college == 'ESM':
-            college = 'Ezra Stiles/Morse'
         if '/' in college:
             value = menus.pop(college)
             college_a, college_b = college.split('/')
