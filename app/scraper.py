@@ -35,7 +35,7 @@ LOCATION_CODES = {
     'Berkeley': 'BK',
     'Branford': 'BR',
     'Davenport': 'DC',
-    'Franklin': 'BF',
+    'Benjamin Franklin': 'BF',
     'Grace Hopper': 'GH',
     'Jonathan Edwards': 'JE',
     'Morse': 'MC',
@@ -43,7 +43,7 @@ LOCATION_CODES = {
     'Pierson': 'PC',
     'Saybrook': 'SY',
     'Silliman': 'SM',
-    'Stiles': 'ES',
+    'Ezra Stiles': 'ES',
     'Timothy Dwight': 'TD',
     'Trumbull': 'TC',
 }
