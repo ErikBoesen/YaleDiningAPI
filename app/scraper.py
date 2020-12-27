@@ -468,6 +468,8 @@ def get_last_day(college):
     # .split(' and ')[0].split(' & ')[0]
     if college == 'ESM':
         college = 'Stiles'
+    elif college == 'Hopper'
+        college = 'Grace Hopper'
     college = college.split('/')[0]
     college = clean_college(college)
     print(college)
@@ -588,6 +590,8 @@ def scrape_jamix():
         # TODO: should we do this at request time?
         if college == 'ESM, Residential':
             college = 'Stiles/Morse'
+        if college == 'Hopper'
+            college = 'Grace Hopper'
         if '/' in college:
             value = menus.pop(college)
             college_a, college_b = college.split('/')
