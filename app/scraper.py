@@ -16,9 +16,19 @@ from selenium.common.exceptions import ElementClickInterceptedException, Element
 DATE_FMT = '%A, %B %d, %Y'
 WAIT_PERIOD = 10
 MENU_FILE = 'menus.json'
+FASTTRACK_NAME_OVERRIDES = {
+    'Franklin': 'Benjamin Franklin',
+    'Stiles': 'Ezra Stiles',
+}
+SHORTNAMES = {
+    **{name: nickname for nickname, name in FASTTRACK_NAME_OVERRIDES.items()},
+    'Jonathan Edwards': 'JE',
+    'Pauli Murray': 'Murray',
+    'Timothy Dwight': 'TD',
+}
 JAMIX_NAMES = {
-    'Ezra Stiles': 'Stiles',
     'Murray': 'Pauli Murray',
+    'Hopper': 'Grace Hopper',
 }
 LOCATION_CODES = {
     'Berkeley': 'BK',
@@ -89,7 +99,10 @@ def scrape_fasttrack():
             location = Location(id=location_id)
         # TODO: I can't figure out what this is for, so just omit it for now.
         #location.code = int(raw['LOCATIONCODE']),
-        location.name = raw['DININGLOCATIONNAME']
+        # Get custom name override, falling back to provided name where applicable
+        name = raw['DININGLOCATIONNAME']
+        location.name = FASTTRACK_LOCATION_OVERRIDES.get(name, name)
+        location.shortname = SHORTNAMES.get(location.name, location.name)
         location.code = LOCATION_CODES[location.name]
         location.capacity = raw['CAPACITY']
         location.is_open = not bool(raw['ISCLOSED'])
@@ -467,9 +480,7 @@ def get_last_day(college):
     # TODO this is messy
     # .split(' and ')[0].split(' & ')[0]
     if college == 'ESM':
-        college = 'Stiles'
-    elif college == 'Hopper'
-        college = 'Grace Hopper'
+        college = 'Ezra Stiles'
     college = college.split('/')[0]
     college = clean_college(college)
     print(college)
@@ -588,10 +599,8 @@ def scrape_jamix():
         college, college_data = parse(location_id)
         # Separate multi-college menus
         # TODO: should we do this at request time?
-        if college == 'ESM, Residential':
-            college = 'Stiles/Morse'
-        if college == 'Hopper'
-            college = 'Grace Hopper'
+        if college == 'ESM':
+            college = 'Ezra Stiles/Morse'
         if '/' in college:
             value = menus.pop(college)
             college_a, college_b = college.split('/')

@@ -7,7 +7,7 @@ class Location(db.Model):
     _to_exclude = ('managers', 'meals',)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    nickname = db.Column(db.String, nullable=False)
+    shortname = db.Column(db.String, nullable=False)
     code = db.Column(db.String, nullable=False)
     is_open = db.Column(db.Boolean, nullable=False)
     capacity = db.Column(db.Integer)
