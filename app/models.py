@@ -36,7 +36,7 @@ class Manager(db.Model):
 class Meal(db.Model):
     __tablename__ = 'meals'
     _to_expand = ()
-    _to_exclude = ('location', 'items', 'courses')
+    _to_exclude = ('location', 'items')
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     date = db.Column(db.Date, nullable=False)
