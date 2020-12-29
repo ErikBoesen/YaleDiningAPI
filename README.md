@@ -1,4 +1,4 @@
-<img src="app/static/images/logo.png" align="right" width=100 alt="YaleDine logo">
+<img src="app/static/images/logo/logo.png" align="right" width=100 alt="YaleDine logo">
 
 # YaleDine
 
