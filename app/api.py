@@ -14,7 +14,7 @@ api_bp = Blueprint('api', __name__)
 
 @api_bp.route('/locations')
 def api_locations():
-    locations = Location.query.order_by(Location.name).all()
+    locations = Location.query.order_by(Location.shortname).all()
     return to_json(locations)
 
 
