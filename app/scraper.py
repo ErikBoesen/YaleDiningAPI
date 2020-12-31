@@ -50,6 +50,9 @@ LOCATION_CODES = {
     'Timothy Dwight': 'TD',
     'Trumbull': 'TC',
 }
+COURSE_NAME_OVERRIDES = {
+    'Yale Bakery Dessert': 'Dessert',
+}
 
 driver = None
 
@@ -380,8 +383,10 @@ def parse_course():
     """
     Parse course that has been opened on the screen (i.e. Ingredients and Nutrition Facts buttons are showing).
     """
+    course_name = get_header_text()
+    course_name = COURSE_NAME_OVERRIDES.get(course_name, course_name)
     course = {
-        'name': get_header_text(),
+        'name': course_name,
     }
     # Grab and parse Ingredients page
     in_buttons = get_ingredients_and_nutrition_buttons()
