@@ -24,6 +24,9 @@ body {
 header {
     margin-bottom: 10px;
 }
+header a {
+    text-decoration: none;
+}
 img {
     height: 52px;
     vertical-align: top;
