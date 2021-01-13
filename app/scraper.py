@@ -111,7 +111,7 @@ def scrape_fasttrack():
         location.name = FASTTRACK_NAME_OVERRIDES.get(name, name)
         location.shortname = SHORTNAMES.get(location.name, location.name)
         location.code = LOCATION_CODES[location.name]
-        location.capacity = raw['CAPACITY']
+        location.occupancy = raw['CAPACITY']
         location.open = not bool(raw['ISCLOSED'])
         location.address = raw['ADDRESS']
         location.phone = raw['PHONE']
