@@ -112,7 +112,7 @@ def scrape_fasttrack():
         location.shortname = SHORTNAMES.get(location.name, location.name)
         location.code = LOCATION_CODES[location.name]
         location.capacity = raw['CAPACITY']
-        location.is_open = not bool(raw['ISCLOSED'])
+        location.open = not bool(raw['ISCLOSED'])
         location.address = raw['ADDRESS']
         location.phone = raw['PHONE']
         # Ignore manager fields as they're now outdated.

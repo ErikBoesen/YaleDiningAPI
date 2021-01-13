@@ -9,7 +9,7 @@ class Location(db.Model):
     name = db.Column(db.String, nullable=False)
     shortname = db.Column(db.String, nullable=False)
     code = db.Column(db.String, nullable=False)
-    is_open = db.Column(db.Boolean, nullable=False)
+    open = db.Column(db.Boolean, nullable=False)
     capacity = db.Column(db.Integer)
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
