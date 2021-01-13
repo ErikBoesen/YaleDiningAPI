@@ -82,7 +82,6 @@ class Nutrition(db.Model):
     __tablename__ = 'nutrition'
     _to_expand = ()
     _to_exclude = ('item',)
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     portion_size = db.Column(db.String)
     calories = db.Column(db.String)
 
@@ -119,5 +118,5 @@ class Nutrition(db.Model):
     iron_pdv = db.Column(db.Integer)
     potassium_pdv = db.Column(db.Integer)
 
-    item_id = db.Column(db.Integer, db.ForeignKey('items.id'))
+    item_id = db.Column(db.Integer, db.ForeignKey('items.id'), primary_key=True)
     item = db.relationship('Item', back_populates='nutrition')

@@ -1,8 +1,8 @@
 """init
 
-Revision ID: a7d5f7957b40
+Revision ID: 5225618290b8
 Revises: 
-Create Date: 2021-01-12 20:13:05.473835
+Create Date: 2021-01-12 20:34:09.328296
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a7d5f7957b40'
+revision = '5225618290b8'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,7 +24,7 @@ def upgrade():
     sa.Column('shortname', sa.String(), nullable=False),
     sa.Column('code', sa.String(), nullable=False),
     sa.Column('open', sa.Boolean(), nullable=False),
-    sa.Column('capacity', sa.Integer(), nullable=True),
+    sa.Column('occupancy', sa.Integer(), nullable=True),
     sa.Column('latitude', sa.Float(), nullable=True),
     sa.Column('longitude', sa.Float(), nullable=True),
     sa.Column('address', sa.String(), nullable=False),
@@ -74,7 +74,6 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('nutrition',
-    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('portion_size', sa.String(), nullable=True),
     sa.Column('calories', sa.String(), nullable=True),
     sa.Column('total_fat', sa.String(), nullable=True),
@@ -107,9 +106,9 @@ def upgrade():
     sa.Column('calcium_pdv', sa.Integer(), nullable=True),
     sa.Column('iron_pdv', sa.Integer(), nullable=True),
     sa.Column('potassium_pdv', sa.Integer(), nullable=True),
-    sa.Column('item_id', sa.Integer(), nullable=True),
+    sa.Column('item_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['item_id'], ['items.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('item_id')
     )
     # ### end Alembic commands ###
 
