@@ -57,9 +57,8 @@ class Item(db.Model):
     ingredients = db.Column(db.String)
     course = db.Column(db.String)
 
-    vegetarian = db.Column(db.Boolean, default=False)
-    vegan = db.Column(db.Boolean, default=False)
-
+    meat = db.Column(db.Boolean, default=False)
+    animal_products = db.Column(db.Boolean, default=False)
     alcohol = db.Column(db.Boolean, default=False)
     nuts = db.Column(db.Boolean, default=False)
     shellfish = db.Column(db.Boolean, default=False)
