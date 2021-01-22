@@ -1,8 +1,8 @@
 """init
 
-Revision ID: 5491d8aec7d3
+Revision ID: c603b2b5c117
 Revises: 
-Create Date: 2021-01-22 17:46:50.606885
+Create Date: 2021-01-22 18:49:28.991007
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '5491d8aec7d3'
+revision = 'c603b2b5c117'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -35,7 +35,7 @@ def upgrade():
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('email', sa.String(), nullable=True),
     sa.Column('position', sa.String(), nullable=True),
-    sa.Column('hall_id', sa.Integer(), nullable=True),
+    sa.Column('hall_id', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['hall_id'], ['halls.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -45,7 +45,7 @@ def upgrade():
     sa.Column('date', sa.Date(), nullable=False),
     sa.Column('start_time', sa.String(), nullable=True),
     sa.Column('end_time', sa.String(), nullable=True),
-    sa.Column('hall_id', sa.Integer(), nullable=True),
+    sa.Column('hall_id', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['hall_id'], ['halls.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
