@@ -34,7 +34,7 @@ JAMIX_NAMES = {
     'ESM': 'Ezra Stiles/Morse',
     'JE': 'Jonathan Edwards',
 }
-HALL_CODES = {
+HALL_IDS = {
     'Berkeley': 'BK',
     'Branford': 'BR',
     'Davenport': 'DC',
@@ -100,17 +100,18 @@ def scrape_fasttrack():
     for raw in data:
         if raw['TYPE'] != 'Residential':
             continue
-        hall_id = int(raw['ID_LOCATION'])
+        # We currently don't use this ID as it is relatively meaningless and using the building code is clearer
+        #hall_id = int(raw['ID_LOCATION'])
+        name = raw['DININGLOCATIONNAME']
+        hall_id = HALL_IDS[name]
         hall = Hall.query.get(hall_id)
         if hall is None:
             hall = Hall(id=hall_id)
         # TODO: I can't figure out what this is for, so just omit it for now.
         #hall.code = int(raw['LOCATIONCODE']),
         # Get custom name override, falling back to provided name where applicable
-        name = raw['DININGLOCATIONNAME']
         hall.name = FASTTRACK_NAME_OVERRIDES.get(name, name)
         hall.shortname = SHORTNAMES.get(hall.name, hall.name)
-        hall.code = HALL_CODES[hall.name]
         hall.occupancy = raw['CAPACITY']
         hall.open = not bool(raw['ISCLOSED'])
         hall.address = raw['ADDRESS']
@@ -604,8 +605,8 @@ def scrape_jamix():
     create_driver()
 
     # Iterate through colleges
-    for hall_id in range(1, 11 + 1):
-        college, college_data = parse(hall_id)
+    for hall_jamix_id in range(1, 11 + 1):
+        college, college_data = parse(hall_jamix_id)
         # Separate multi-college menus
         # TODO: should we do this at request time?
         if '/' in college:
