@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 
 from app import db
-from app.models import Location, Manager, Meal, Item, Nutrition
+from app.models import Hall, Manager, Meal, Item, Nutrition
 from app.util import to_json
 
 import datetime
@@ -12,30 +12,30 @@ DATE_FMT = '%Y-%m-%d'
 api_bp = Blueprint('api', __name__)
 
 
-@api_bp.route('/locations')
-def api_locations():
-    locations = Location.query.order_by(Location.shortname).all()
-    return to_json(locations)
+@api_bp.route('/halls')
+def api_halls():
+    halls = Hall.query.order_by(Hall.shortname).all()
+    return to_json(halls)
 
 
-@api_bp.route('/locations/<location_id>')
-def api_location(location_id):
-    location = Location.query.get_or_404(location_id)
-    return to_json(location)
+@api_bp.route('/halls/<hall_id>')
+def api_hall(hall_id):
+    hall = Hall.query.get_or_404(hall_id)
+    return to_json(hall)
 
 
-@api_bp.route('/locations/<location_id>/managers')
-def api_managers(location_id):
-    location = Location.query.get_or_404(location_id)
-    managers = location.managers
+@api_bp.route('/halls/<hall_id>/managers')
+def api_managers(hall_id):
+    hall = Hall.query.get_or_404(hall_id)
+    managers = hall.managers
     return to_json(managers)
 
 
-@api_bp.route('/locations/<location_id>/meals')
-def api_location_meals(location_id):
+@api_bp.route('/halls/<hall_id>/meals')
+def api_hall_meals(hall_id):
     # TODO: use this later on, right now it's mostly a 404 check
-    location = Location.query.get_or_404(location_id)
-    meals = Meal.query.filter_by(location_id=location_id)
+    hall = Hall.query.get_or_404(hall_id)
+    meals = Meal.query.filter_by(hall_id=hall_id)
     date = request.args.get('date')
     if date is not None:
         meals = meals.filter(Meal.date == date)
