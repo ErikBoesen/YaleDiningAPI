@@ -38,7 +38,7 @@ HALL_IDS = {
     'Berkeley': 'BK',
     'Branford': 'BR',
     'Davenport': 'DC',
-    'Benjamin Franklin': 'BF',
+    'Franklin': 'BF',
     'Grace Hopper': 'GH',
     'Jonathan Edwards': 'JE',
     'Morse': 'MC',
@@ -46,7 +46,7 @@ HALL_IDS = {
     'Pierson': 'PC',
     'Saybrook': 'SY',
     'Silliman': 'SM',
-    'Ezra Stiles': 'ES',
+    'Stiles': 'ES',
     'Timothy Dwight': 'TD',
     'Trumbull': 'TC',
 }
