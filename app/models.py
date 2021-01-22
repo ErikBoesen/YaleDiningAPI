@@ -5,10 +5,9 @@ class Hall(db.Model):
     __tablename__ = 'halls'
     _to_expand = ()
     _to_exclude = ('managers', 'meals',)
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String, primary_key=True)
     name = db.Column(db.String, nullable=False)
     shortname = db.Column(db.String, nullable=False)
-    code = db.Column(db.String, nullable=False)
     open = db.Column(db.Boolean, nullable=False)
     occupancy = db.Column(db.Integer, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
