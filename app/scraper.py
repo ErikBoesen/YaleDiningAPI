@@ -27,7 +27,7 @@ SHORTNAMES = {
     'Pauli Murray': 'Murray',
     'Timothy Dwight': 'TD',
 }
-JAMIX_NAMES = {
+JAMIX_HALL_NAMES = {
     **FASTTRACK_NAME_OVERRIDES,
     'Murray': 'Pauli Murray',
     'Hopper': 'Grace Hopper',
@@ -231,11 +231,11 @@ def click_next_date():
     sleep()
 
 
-def clean_college(college):
-    college = college.replace(', Residential', '')
-    if college in JAMIX_NAMES:
-        college = JAMIX_NAMES[college]
-    return college
+def clean_hall_name(hall_name):
+    hall_name = hall_name.replace(', Residential', '')
+    if hall_name in JAMIX_HALL_NAMES:
+        hall_name = JAMIX_HALL_NAMES[hall_name]
+    return hall_name
 
 ######################
 # Other util functions
@@ -439,8 +439,8 @@ else:
     menus = {}
 
 
-def parse_right(college):
-    print('Parsing ' + college)
+def parse_right(hall_name):
+    print('Parsing ' + hall_name)
 
     # Cycle through dates, collecting data
     while True:
@@ -476,7 +476,7 @@ def parse_right(college):
             # TODO: does this default hold?
             today_menu['meals'].append(parse_meal('Breakfast'))
 
-        menus[college].append(today_menu)
+        menus[hall_name].append(today_menu)
         with open(MENU_FILE, 'w') as f:
             json.dump(menus, f)
         click_next_date()
@@ -485,58 +485,58 @@ def parse_right(college):
     return True
 
 
-def get_last_day(college):
-    # Handle multi-college names
+def get_last_day(hall_name):
+    # Handle multi-hall names
     # TODO this is messy
     # .split(' and ')[0].split(' & ')[0]
-    if college == 'ESM':
-        college = 'Ezra Stiles'
-    college = college.split('/')[0]
-    college = clean_college(college)
-    print(college)
-    hall = Hall.query.filter_by(name=college).first()
+    if hall_name == 'ESM':
+        hall_name = 'Ezra Stiles'
+    hall_name = hall_name.split('/')[0]
+    hall_name = clean_hall_name(hall_name)
+    print(hall_name)
+    hall = Hall.query.filter_by(name=hall_name).first()
     print(hall)
     last_meal = Meal.query.filter_by(hall_id=hall.id).order_by(Meal.date.desc()).first()
     last_day = last_meal.date if last_meal else None
-    if college in menus and menus[college]:
-        last_cached_day = datetime.datetime.strptime(menus[college][-1]['date'], DATE_FMT).date()
+    if hall_name in menus and menus[hall_name]:
+        last_cached_day = datetime.datetime.strptime(menus[hall_name][-1]['date'], DATE_FMT).date()
         # Make lexicographic comparison
         if last_day is None or last_cached_day > last_day:
             last_day = last_cached_day
     return last_day
 
 
-def parse(hall_id):
+def parse(hall_jamix_id):
     finished = False
     while not finished:
-        driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=%d' % hall_id)
+        driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=%d' % hall_jamix_id)
         sleep()
-        college = get_header_text()
-        college = clean_college(college)
-        if college not in menus:
-            menus[college] = []
+        hall_name = get_header_text()
+        hall_name = clean_hall_name(hall_name)
+        if hall_name not in menus:
+            menus[hall_name] = []
         # If there's already some days in the list, then go to the next day.
         # Otherwise, go all the way to the start.
         # TODO: in theory, if we didn't run the scraper for a really long time, this could take us
-        # back to a time where there's no data, and the parser will think it's finished with this college.
+        # back to a time where there's no data, and the parser will think it's finished with this hall.
         # Hopefully we'll run often enough that this won't happen, but it would be good to be sure.
-        last_day = get_last_day(college)
+        last_day = get_last_day(hall_name)
         if last_day:
             seek_date(day_after(last_day))
         else:
             seek_start()
 
         try:
-            finished = parse_right(college)
+            finished = parse_right(hall_name)
         except (ElementClickInterceptedException, ElementNotInteractableException, IndexError) as e:
             print('Squashing error...')
             print(e)
-    return college, menus[college]
+    return hall_name, menus[hall_name]
 
 
-def parse_college(college):
-    print('Parsing college ' + college)
-    for day_d in menus[college]:
+def parse_hall(hall_name):
+    print('Parsing hall ' + hall_name)
+    for day_d in menus[hall_name]:
         date = datetime.datetime.strptime(day_d['date'], DATE_FMT).date()
         print('Parsing day ' + day_d['date'])
         for meal_d in day_d['meals']:
@@ -560,7 +560,7 @@ def parse_college(college):
                 start_time=start_time,
                 end_time=end_time,
             )
-            meal.hall = Hall.query.filter_by(name=college).first()
+            meal.hall = Hall.query.filter_by(name=hall_name).first()
             for course_d in meal_d['courses']:
                 course_name = course_d['name']
                 print('Parsing course ' + course_name)
@@ -604,22 +604,22 @@ def scrape_jamix():
     print('Reading JAMIX menu data.')
     create_driver()
 
-    # Iterate through colleges
+    # Iterate through halls
     for hall_jamix_id in range(1, 11 + 1):
-        college, college_data = parse(hall_jamix_id)
-        # Separate multi-college menus
+        hall_name, hall = parse(hall_jamix_id)
+        # Separate multi-hall menus
         # TODO: should we do this at request time?
-        if '/' in college:
-            value = menus.pop(college)
-            college_a, college_b = college.split('/')
-            college_a = clean_college(college_a)
-            college_b = clean_college(college_b)
-            menus[college_a] = value
-            menus[college_b] = value
-            parse_college(college_a)
-            parse_college(college_b)
+        if '/' in hall_name:
+            value = menus.pop(hall_name)
+            hall_name_a, hall_name_b = hall_name.split('/')
+            hall_name_a = clean_hall_name(hall_name_a)
+            hall_name_b = clean_hall_name(hall_name_b)
+            menus[hall_name_a] = value
+            menus[hall_name_b] = value
+            parse_hall(hall_name_a)
+            parse_hall(hall_name_b)
         else:
-            parse_college(college)
+            parse_hall(hall_name)
 
     db.session.commit()
     print('Done.')
