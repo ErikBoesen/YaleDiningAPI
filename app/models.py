@@ -28,7 +28,7 @@ class Manager(db.Model):
     email = db.Column(db.String)
     position = db.Column(db.String)
 
-    hall_id = db.Column(db.Integer, db.ForeignKey('halls.id'))
+    hall_id = db.Column(db.String, db.ForeignKey('halls.id'))
     hall = db.relationship('Hall', back_populates='managers')
 
 
@@ -42,7 +42,7 @@ class Meal(db.Model):
     start_time = db.Column(db.String)
     end_time = db.Column(db.String)
 
-    hall_id = db.Column(db.Integer, db.ForeignKey('halls.id'))
+    hall_id = db.Column(db.String, db.ForeignKey('halls.id'))
     hall = db.relationship('Hall', back_populates='meals')
     items = db.relationship('Item', cascade='all,delete', back_populates='meal')
 
