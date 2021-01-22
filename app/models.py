@@ -1,8 +1,8 @@
 from app import app, db
 
 
-class Location(db.Model):
-    __tablename__ = 'locations'
+class Hall(db.Model):
+    __tablename__ = 'halls'
     _to_expand = ()
     _to_exclude = ('managers', 'meals',)
     id = db.Column(db.Integer, primary_key=True)
@@ -10,41 +10,41 @@ class Location(db.Model):
     shortname = db.Column(db.String, nullable=False)
     code = db.Column(db.String, nullable=False)
     open = db.Column(db.Boolean, nullable=False)
-    occupancy = db.Column(db.Integer)
-    latitude = db.Column(db.Float)
-    longitude = db.Column(db.Float)
+    occupancy = db.Column(db.Integer, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
     address = db.Column(db.String, nullable=False)
     phone = db.Column(db.String, nullable=False)
 
-    managers = db.relationship('Manager', cascade='all,delete', back_populates='location')
-    meals = db.relationship('Meal', cascade='all,delete', back_populates='location')
+    managers = db.relationship('Manager', cascade='all,delete', back_populates='hall')
+    meals = db.relationship('Meal', cascade='all,delete', back_populates='hall')
 
 
 class Manager(db.Model):
     __tablename__ = 'managers'
     _to_expand = ()
-    _to_exclude = ('location_id', 'location')
+    _to_exclude = ('hall_id', 'hall')
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     email = db.Column(db.String)
     position = db.Column(db.String)
 
-    location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
-    location = db.relationship('Location', back_populates='managers')
+    hall_id = db.Column(db.Integer, db.ForeignKey('halls.id'))
+    hall = db.relationship('Hall', back_populates='managers')
 
 
 class Meal(db.Model):
     __tablename__ = 'meals'
     _to_expand = ()
-    _to_exclude = ('location', 'items')
+    _to_exclude = ('hall', 'items')
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     date = db.Column(db.Date, nullable=False)
     start_time = db.Column(db.String)
     end_time = db.Column(db.String)
 
-    location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
-    location = db.relationship('Location', back_populates='meals')
+    hall_id = db.Column(db.Integer, db.ForeignKey('halls.id'))
+    hall = db.relationship('Hall', back_populates='meals')
     items = db.relationship('Item', cascade='all,delete', back_populates='meal')
 
 
