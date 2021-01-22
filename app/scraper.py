@@ -1,5 +1,5 @@
 from app import app, db, celery
-from app.models import Location, Manager, Meal, Item, Nutrition
+from app.models import Hall, Manager, Meal, Item, Nutrition
 
 from celery.schedules import crontab
 
@@ -34,7 +34,7 @@ JAMIX_NAMES = {
     'ESM': 'Ezra Stiles/Morse',
     'JE': 'Jonathan Edwards',
 }
-LOCATION_CODES = {
+HALL_CODES = {
     'Berkeley': 'BK',
     'Branford': 'BR',
     'Davenport': 'DC',
@@ -100,27 +100,27 @@ def scrape_fasttrack():
     for raw in data:
         if raw['TYPE'] != 'Residential':
             continue
-        location_id = int(raw['ID_LOCATION'])
-        location = Location.query.get(location_id)
-        if location is None:
-            location = Location(id=location_id)
+        hall_id = int(raw['ID_LOCATION'])
+        hall = Hall.query.get(hall_id)
+        if hall is None:
+            hall = Hall(id=hall_id)
         # TODO: I can't figure out what this is for, so just omit it for now.
-        #location.code = int(raw['LOCATIONCODE']),
+        #hall.code = int(raw['LOCATIONCODE']),
         # Get custom name override, falling back to provided name where applicable
         name = raw['DININGLOCATIONNAME']
-        location.name = FASTTRACK_NAME_OVERRIDES.get(name, name)
-        location.shortname = SHORTNAMES.get(location.name, location.name)
-        location.code = LOCATION_CODES[location.name]
-        location.occupancy = raw['CAPACITY']
-        location.open = not bool(raw['ISCLOSED'])
-        location.address = raw['ADDRESS']
-        location.phone = raw['PHONE']
+        hall.name = FASTTRACK_NAME_OVERRIDES.get(name, name)
+        hall.shortname = SHORTNAMES.get(hall.name, hall.name)
+        hall.code = HALL_CODES[hall.name]
+        hall.occupancy = raw['CAPACITY']
+        hall.open = not bool(raw['ISCLOSED'])
+        hall.address = raw['ADDRESS']
+        hall.phone = raw['PHONE']
         # Ignore manager fields as they're now outdated.
-        print('Parsing ' + location.name)
+        print('Parsing ' + hall.name)
         geolocation = raw.get('GEOLOCATION')
         if geolocation is not None:
-            location.latitude, location.longitude = [float(coordinate) for coordinate in geolocation.split(',')]
-        db.session.add(location)
+            hall.latitude, hall.longitude = [float(coordinate) for coordinate in geolocation.split(',')]
+        db.session.add(hall)
     db.session.commit()
     print('Done reading FastTrack data.')
 
@@ -128,11 +128,11 @@ def scrape_fasttrack():
 def scrape_managers():
     print('Scraping managers.')
     ROOT = 'https://hospitality.yale.edu/residential-dining/'
-    locations = Location.query.all()
+    halls = Hall.query.all()
     HEADER_RE = re.compile(r'Management Team')
     Manager.query.delete()
-    for location in locations:
-        slug = location.name.lower().replace(' ', '-')
+    for hall in halls:
+        slug = hall.name.lower().replace(' ', '-')
         custom_slugs = {
             'franklin': 'benjamin-franklin',
             'stiles': 'ezra-stiles',
@@ -159,7 +159,7 @@ def scrape_managers():
                 manager.email = contents[0]['href'].replace('mailto:', '')
                 manager.position = contents[1].lstrip(', ').replace('/ ', '/').replace(' /', '/')
             db.session.add(manager)
-            manager.location = location
+            manager.hall = hall
             print('Name: ' + manager.name)
             print('Email: %s' % manager.email)
             print('Position: %s' % manager.position)
@@ -493,9 +493,9 @@ def get_last_day(college):
     college = college.split('/')[0]
     college = clean_college(college)
     print(college)
-    location = Location.query.filter_by(name=college).first()
-    print(location)
-    last_meal = Meal.query.filter_by(location_id=location.id).order_by(Meal.date.desc()).first()
+    hall = Hall.query.filter_by(name=college).first()
+    print(hall)
+    last_meal = Meal.query.filter_by(hall_id=hall.id).order_by(Meal.date.desc()).first()
     last_day = last_meal.date if last_meal else None
     if college in menus and menus[college]:
         last_cached_day = datetime.datetime.strptime(menus[college][-1]['date'], DATE_FMT).date()
@@ -505,10 +505,10 @@ def get_last_day(college):
     return last_day
 
 
-def parse(location_id):
+def parse(hall_id):
     finished = False
     while not finished:
-        driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=%d' % location_id)
+        driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=%d' % hall_id)
         sleep()
         college = get_header_text()
         college = clean_college(college)
@@ -559,7 +559,7 @@ def parse_college(college):
                 start_time=start_time,
                 end_time=end_time,
             )
-            meal.location = Location.query.filter_by(name=college).first()
+            meal.hall = Hall.query.filter_by(name=college).first()
             for course_d in meal_d['courses']:
                 course_name = course_d['name']
                 print('Parsing course ' + course_name)
@@ -604,8 +604,8 @@ def scrape_jamix():
     create_driver()
 
     # Iterate through colleges
-    for location_id in range(1, 11 + 1):
-        college, college_data = parse(location_id)
+    for hall_id in range(1, 11 + 1):
+        college, college_data = parse(hall_id)
         # Separate multi-college menus
         # TODO: should we do this at request time?
         if '/' in college:
