@@ -14,7 +14,7 @@ api_bp = Blueprint('api', __name__)
 
 @api_bp.route('/halls')
 def api_halls():
-    halls = Hall.query.order_by(Hall.shortname).all()
+    halls = Hall.query.order_by(Hall.nickname).all()
     return to_json(halls)
 
 
