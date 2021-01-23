@@ -20,7 +20,7 @@ FASTTRACK_NAME_OVERRIDES = {
     'Franklin': 'Benjamin Franklin',
     'Stiles': 'Ezra Stiles',
 }
-SHORTNAMES = {
+NICKNAMES = {
     **{name: nickname for nickname, name in FASTTRACK_NAME_OVERRIDES.items()},
     'Grace Hopper': 'Hopper',
     'Jonathan Edwards': 'JE',
@@ -111,7 +111,7 @@ def scrape_fasttrack():
         #hall.code = int(raw['LOCATIONCODE']),
         # Get custom name override, falling back to provided name where applicable
         hall.name = FASTTRACK_NAME_OVERRIDES.get(name, name)
-        hall.shortname = SHORTNAMES.get(hall.name, hall.name)
+        hall.nickname = NICKNAMES.get(hall.name, hall.name)
         hall.occupancy = raw['CAPACITY']
         hall.open = not bool(raw['ISCLOSED'])
         hall.address = raw['ADDRESS']

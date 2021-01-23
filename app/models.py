@@ -7,7 +7,7 @@ class Hall(db.Model):
     _to_exclude = ('managers', 'meals',)
     id = db.Column(db.String, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    shortname = db.Column(db.String, nullable=False)
+    nickname = db.Column(db.String, nullable=False)
     open = db.Column(db.Boolean, nullable=False)
     occupancy = db.Column(db.Integer, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
