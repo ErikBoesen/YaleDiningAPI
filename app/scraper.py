@@ -344,6 +344,8 @@ def parse_nutrition_facts():
         spans = lside.find_all('span')
         ingredient = spans[0].text.lstrip('- ')
         amount = spans[1].text
+        if ingredient == 'Calories':
+            amount = float(amount.replace(' kcal', ''))
         nutrition_facts[ingredient] = {
             'amount': amount,
         }
