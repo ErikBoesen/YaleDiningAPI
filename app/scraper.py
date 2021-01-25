@@ -74,7 +74,7 @@ def create_driver():
 
 def read_nutrition_facts(raw):
     nutrition = Nutrition(
-        portion_size=raw.pop('Portion Size', None),
+        serving_size=raw.pop('Serving Size', None),
     )
     for key in raw:
         snaked_key = key.lower().replace(' ', '_')
@@ -201,7 +201,7 @@ def get_ingredients_and_nutrition_buttons():
     return driver.find_elements_by_css_selector('.v-button.v-widget.multiline.v-button-multiline.selection.v-button-selection.icon-align-right.v-button-icon-align-right.v-has-width')
 
 
-def get_portion_size():
+def get_serving_size():
     text = driver.find_element_by_css_selector('.v-panel-content .v-panel-captionwrap').text.replace('Nutrition Facts\n', '')
     # Chop off parentheses
     if text[0] == '(' and text[-1] == ')':
@@ -326,7 +326,7 @@ def parse_nutrition_facts():
     Parse a visible nutrition facts pane, whether for a full course or an individual item.
     """
     nutrition_facts = {
-        'Portion Size': get_portion_size(),
+        'Serving Size': get_serving_size(),
     }
     lists = driver.find_elements_by_css_selector('.v-panel-content ul')
     if len(lists) != 2:

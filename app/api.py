@@ -14,7 +14,6 @@ api_bp = Blueprint('api', __name__)
 
 STATUS = to_json({
     'message': os.environ.get('STATUS_MESSAGE'),
-    'kill': bool(os.environ.get('STATUS_KILL')),
     'min_version': int(os.environ.get('STATUS_MIN_VERSION', 0)),
 })
 
