@@ -1,8 +1,8 @@
 """init
 
-Revision ID: 4a453f14ce7f
+Revision ID: d0fc9374fd4d
 Revises: 
-Create Date: 2021-01-22 22:12:45.399513
+Create Date: 2021-01-25 17:39:23.375327
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '4a453f14ce7f'
+revision = 'd0fc9374fd4d'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -73,8 +73,8 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('nutrition',
-    sa.Column('portion_size', sa.String(), nullable=True),
-    sa.Column('calories', sa.String(), nullable=True),
+    sa.Column('serving_size', sa.String(), nullable=True),
+    sa.Column('calories', sa.Float(), nullable=True),
     sa.Column('total_fat', sa.String(), nullable=True),
     sa.Column('saturated_fat', sa.String(), nullable=True),
     sa.Column('trans_fat', sa.String(), nullable=True),
