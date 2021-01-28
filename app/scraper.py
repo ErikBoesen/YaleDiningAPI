@@ -591,8 +591,8 @@ def parse_hall(hall_name):
                         course=course_name,
                     )
                     diets = ingredients[item_name]['diets'].split(', ')
-                    item.animal_products = not ('V' in diets)
-                    item.meat = not ('VG' in diets)
+                    item.animal_products = not ('VG' in diets)
+                    item.meat = not ('V' in diets)
                     item.gluten = not ('GF' in diets)
                     allergens = ingredients[item_name].get('allergens')
                     if allergens:
