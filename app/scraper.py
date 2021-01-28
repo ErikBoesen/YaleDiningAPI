@@ -497,7 +497,7 @@ def get_last_day(hall_name):
     # .split(' and ')[0].split(' & ')[0]
     if hall_name == 'ESM':
         hall_name = 'Ezra Stiles'
-    hall_name = hall_name.split('/')[0]
+    hall_name = hall_name.split('/')[0].split(' & ')[0].split(' and ')[0]
     hall_name = clean_hall_name(hall_name)
     print(hall_name)
     hall = Hall.query.filter_by(name=hall_name).first()
@@ -619,9 +619,15 @@ def scrape_jamix():
         hall_name, hall = parse(hall_jamix_id)
         # Separate multi-hall menus
         # TODO: should we do this at request time?
-        if '/' in hall_name:
+        if '/' in hall_name or ' & ' in hall_name or ' and ' in hall_name:
             value = menus.pop(hall_name)
-            hall_name_a, hall_name_b = hall_name.split('/')
+            # TODO: just use regex
+            if '/' in hall_name:
+                hall_name_a, hall_name_b = hall_name.split('/')
+            elif ' & ' in hall_name:
+                hall_name_a, hall_name_b = hall_name.split(' & ')
+            elif ' and ' in hall_name:
+                hall_name_a, hall_name_b = hall_name.split(' and ')
             hall_name_a = clean_hall_name(hall_name_a)
             hall_name_b = clean_hall_name(hall_name_b)
             menus[hall_name_a] = value
