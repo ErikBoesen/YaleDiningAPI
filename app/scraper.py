@@ -527,7 +527,9 @@ def parse(hall_jamix_id):
             seek_date(day_after(last_day))
         else:
             # TEMPORARY
-            seek_date(datetime.date.today() + datetime.timedelta(days=5))
+            seek_date(
+                (datetime.date.today() + datetime.timedelta(days=5)).strftime(DATE_FMT)
+            )
             seek_start()
 
         try:
