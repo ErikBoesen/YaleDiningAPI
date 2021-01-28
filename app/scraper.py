@@ -558,7 +558,7 @@ def parse_hall(hall_name):
             elif meal_name == 'Lunch':
                 start_time = '11:30'
                 end_time = '14:00'
-            elif meal_name == 'Dinner':
+            elif 'Dinner' in meal_name:
                 start_time = '17:00'
                 end_time = '19:30'
             else:
