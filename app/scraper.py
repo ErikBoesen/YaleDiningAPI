@@ -485,12 +485,10 @@ def parse_right(hall_name):
         menus[hall_name].append(today_menu)
         with open(MENU_FILE, 'w') as f:
             json.dump(menus, f)
-        # WARNING!!!!
-        # TEMPORARY: this will work around the removed buttons issue, but makes everything less efficient.
-        # Nothing we can do for now until they fix their website.
-        driver.refresh()
-        seek_date(day_after(datetime.datetime.strptime(today_menu['date'], DATE_FMT).date()))
-        #click_next_date()
+        # Uncomment to work around the removed buttons issue, but makes everything less efficient.
+        #driver.refresh()
+        #seek_date(today_menu['date'])
+        click_next_date()
         sleep()
 
     return True
