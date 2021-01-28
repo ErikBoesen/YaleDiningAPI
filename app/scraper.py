@@ -53,6 +53,9 @@ HALL_IDS = {
 COURSE_NAME_OVERRIDES = {
     'Yale Bakery Dessert': 'Dessert',
 }
+ITEM_NAME_OVERRIDES = {
+    'Nut-Free Basil Pesto (basil, canola oil, extra virgin olive oil, romano cheese, pasteurized sheep\'s milk, rennet, garlic, salt)': 'Nut-Free Basil Pesto',
+}
 
 driver = None
 
@@ -371,6 +374,7 @@ def parse_nutrition_facts_course():
             # TODO: stop this from running twice on the first go. And same with other such constructs in this file.
             items = get_item_nutrition_buttons()
             item_name = items[items_processed].text
+            item_name = ITEM_NAME_OVERRIDES.get(item_name, item_name)
             items[items_processed].click()
             sleep()
 
