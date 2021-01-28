@@ -488,7 +488,7 @@ def parse_right(hall_name):
         # WARNING!!!!
         # TEMPORARY: this will work around the removed buttons issue, but makes everything less efficient.
         # Nothing we can do for now until they fix their website.
-        driver.navigate().refresh()
+        driver.refresh()
         seek_date(day_after(today_menu[date]))
         #click_next_date()
         sleep()
