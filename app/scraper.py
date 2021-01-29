@@ -662,7 +662,7 @@ def scrape(fasttrack_only=False):
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(60, scrape.s(fasttrack_only=True), name='FastTrack scrape')
     sender.add_periodic_task(
-        crontab(minute=0),
+        crontab(hour=0, minute=0),
         scrape.s(fasttrack_only=False),
         name='Full scrape'
     )
