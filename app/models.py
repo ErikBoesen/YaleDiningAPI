@@ -50,7 +50,10 @@ class Meal(db.Model):
 
     hall_id = db.Column(db.String, db.ForeignKey('halls.id'))
     hall = db.relationship('Hall', back_populates='meals')
-    items = db.relationship('Item', cascade='all,delete', back_populates='meal')
+
+    items = db.relationship(
+        'Item', secondary=meals_x_items, lazy='subquery',
+        backref=db.backref('meals', lazy=True))
 
 
 class Item(db.Model):
@@ -77,9 +80,7 @@ class Item(db.Model):
     gluten = db.Column(db.Boolean, default=False)
     coconut = db.Column(db.Boolean, default=False)
 
-    meal_id = db.Column(db.Integer, db.ForeignKey('meals.id'))
-    meal = db.relationship('Meal', back_populates='items')
-    nutrition = db.relationship('Nutrition', cascade='all,delete', uselist=False, back_populates='item')
+    nutrition = db.relationship('Nutrition', cascade='all,delete,delete-orphan', uselist=False, back_populates='item')
 
 
 class Nutrition(db.Model):
