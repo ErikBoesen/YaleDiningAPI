@@ -660,7 +660,7 @@ def scrape(fasttrack_only=False):
 
 @celery.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(60, scrape.s(fasttrack_only=True), name='FastTrack scrape')
+    sender.add_periodic_task(60 * 5, scrape.s(fasttrack_only=True), name='FastTrack scrape')
     sender.add_periodic_task(
         crontab(hour=0, minute=0),
         scrape.s(fasttrack_only=False),
