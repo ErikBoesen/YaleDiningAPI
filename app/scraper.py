@@ -583,11 +583,16 @@ def parse_hall(hall_name):
                 nutrition_facts = course_d['nutrition_facts']
                 for item_name in ingredients:
                     print('Parsing item ' + item_name)
-                    item = Item(
-                        name=item_name.replace('`', '\''),
-                        ingredients=ingredients[item_name]['ingredients'],
-                        course=course_name,
-                    )
+                    item_attributes = {
+                        'name': item_name.replace('`', '\''),
+                        'ingredients': ingredients[item_name]['ingredients'],
+                        'course': course_name,
+                    }
+                    item = Item.query.filter_by(**item_attributes).first()
+                    item_new = False
+                    if item is None:
+                        item = Item(**item_attributes)
+                        item_new = True
                     diets = ingredients[item_name]['diets'].split(', ')
                     item.animal_products = not ('VG' in diets)
                     item.meat = not ('V' in diets)
@@ -605,8 +610,9 @@ def parse_hall(hall_name):
                         nutrition = read_nutrition_facts(nutrition_facts['items'][item_name])
                         db.session.add(nutrition)
                         item.nutrition = nutrition
-                    item.meal = meal
-                    db.session.add(item)
+                    item.meals.append(meal)
+                    if item_new:
+                        db.session.add(item)
                 #course_nutrition = read_nutrition_facts(nutrition_facts['course'])
                 #db.session.add(course_nutrition)
             db.session.add(meal)
