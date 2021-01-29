@@ -80,6 +80,8 @@ class Item(db.Model):
     gluten = db.Column(db.Boolean, default=False)
     coconut = db.Column(db.Boolean, default=False)
 
+    meal_id = db.Column(db.Integer, default=0)
+
     nutrition = db.relationship('Nutrition', cascade='all,delete,delete-orphan', uselist=False, back_populates='item')
 
 
