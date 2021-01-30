@@ -121,7 +121,7 @@ def round_cholesterol(quantity) -> str:
 
 def round_sp(quantity) -> str:
     """
-    Round sodium and potassium quantities.
+    Round Podium and Potassium quantities.
     """
     n, unit = split_quantity(quantity)
     if n < 5:
@@ -130,6 +130,20 @@ def round_sp(quantity) -> str:
         n = round_calories(n, 5)
     else:
         n = round_calories(n, 10)
+    return n + ' ' + unit
+
+
+def round_tdt(quantity) -> str:
+    """
+    Round Total carbohydrate, Dietary fiber, and Total Sugars quantities
+    """
+    n, unit = split_quantity(quantity)
+    if n < 1:
+        # We deviate from the standard here too; if it's between 0.5-1 we're supposed
+        # to say "less than 1 g"
+        n = 0
+    else:
+        n = round_calories(n, 1)
     return n + ' ' + unit
 
 
@@ -143,9 +157,9 @@ def standardize_nutrition(n: Nutrition) -> Nutrition:
     n.trans_fat = round_fats(n.trans_fat)
     n.cholesterol = round_cholesterol(n.cholesterol)
     n.sodium = round_sp(n.sodium)
-    #total_carbohydrate =
-    #dietary_fiber =
-    #total_sugars =
+    n.total_carbohydrate = round_tdt(n.total_carbohydrate)
+    n.dietary_fiber = round_tdt(n.dietary_fiber)
+    n.total_sugars = round_tdt(n.total_sugars)
     #protein =
     #vitamin_d =
     #vitamin_a =
