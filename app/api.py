@@ -65,6 +65,12 @@ def api_hall_meals(hall_id):
     return to_json(meals)
 
 
+@api_bp.route('/meals')
+def api_meals():
+    meals = Meal.query.all()
+    return to_json(meals)
+
+
 @api_bp.route('/meals/<meal_id>')
 def api_meal(meal_id):
     meal = Meal.query.get_or_404(meal_id)
