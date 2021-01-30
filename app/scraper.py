@@ -100,9 +100,9 @@ def round_fats(quantity) -> str:
     if n < 0.5:
         n = 0
     elif n < 5:
-        n = round_calories(n, 0.5)
+        n = round_increment(n, 0.5)
     else:
-        n = round_calories(n, 1)
+        n = round_increment(n, 1)
     return n + ' ' + unit
 
 def round_cholesterol(quantity) -> str:
@@ -113,9 +113,9 @@ def round_cholesterol(quantity) -> str:
         # Here we deviate from the standard slighly.
         # Regularly we'd say "less than 5 mg", but this is a
         # little unpleasant for our interface.
-        n = round_calories(n, 1)
+        n = round_increment(n, 1)
     else:
-        n = round_calories(n, 5)
+        n = round_increment(n, 5)
     return n + ' ' + unit
 
 
@@ -127,9 +127,9 @@ def round_sp(quantity) -> str:
     if n < 5:
         n = 0
     elif n < 140:
-        n = round_calories(n, 5)
+        n = round_increment(n, 5)
     else:
-        n = round_calories(n, 10)
+        n = round_increment(n, 10)
     return n + ' ' + unit
 
 
@@ -147,6 +147,20 @@ def round_tdt(quantity) -> str:
     return n + ' ' + unit
 
 
+def round_protein(quantity) -> str:
+    """
+    Round Protein quantities
+    """
+    n, unit = split_quantity(quantity)
+    if n < 1:
+        # We deviate from the standard here too; if it's between 0.5-1 we're supposed
+        # to say "less than 1 g"
+        n = 0
+    else:
+        n = round_increment(n, 1)
+    return n + ' ' + unit
+
+
 def standardize_nutrition(n: Nutrition) -> Nutrition:
     # Perform rounding and correction of fields to adhere to FDA labelling standards.
     # See more on pp129-130: https://www.fda.gov/files/food/published/Food-Labeling-Guide-%28PDF%29.pdf
@@ -160,7 +174,7 @@ def standardize_nutrition(n: Nutrition) -> Nutrition:
     n.total_carbohydrate = round_tdt(n.total_carbohydrate)
     n.dietary_fiber = round_tdt(n.dietary_fiber)
     n.total_sugars = round_tdt(n.total_sugars)
-    #protein =
+    n.protein = round_protein(n.protein)
     #vitamin_d =
     #vitamin_a =
     #vitamin_c =
