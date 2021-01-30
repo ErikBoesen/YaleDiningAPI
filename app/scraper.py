@@ -81,12 +81,6 @@ def round_increment(number, increment):
     return round(number / increment) * increment
 
 
-def round_serving_size(quantity) -> str:
-    n, unit = split_quantity(quantity)
-    n = round_increment(n, 1)
-    return str(n) + ' ' + unit
-
-
 def round_calories(n) -> int:
     if n < 5:
         return 0
@@ -110,6 +104,7 @@ def round_fats(quantity) -> str:
     else:
         n = round_increment(n, 1)
     return str(n) + ' ' + unit
+
 
 def round_cholesterol(quantity) -> str:
     n, unit = split_quantity(quantity)
@@ -179,7 +174,6 @@ def round_vm(quantity) -> str:
 def standardize_nutrition(n: Nutrition) -> Nutrition:
     # Perform rounding and correction of fields to adhere to FDA labelling standards.
     # See more on pp129-130: https://www.fda.gov/files/food/published/Food-Labeling-Guide-%28PDF%29.pdf
-    n.serving_size = round_serving_size(n.serving_size)
     n.calories = round_calories(n.calories)
     n.total_fat = round_fats(n.total_fat)
     n.saturated_fat = round_fats(n.saturated_fat)
