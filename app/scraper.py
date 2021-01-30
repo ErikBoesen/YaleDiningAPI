@@ -77,6 +77,70 @@ def create_driver():
     driver.implicitly_wait(WAIT_PERIOD)
 
 
+def round_increment(number, increment):
+    return round(number / increment) * increment
+
+
+def round_calories(n) -> int:
+    if n < 5:
+        return 0
+    elif n <= 50:
+        return round_increment(n, 5)
+    return round_increment(n, 10)
+
+
+def split_quantity(quantity):
+    n, unit = quantity.split()
+    n = float(n)
+    return n, unit
+
+
+def round_fats(quantity) -> str:
+    n, unit = split_quantity(quantity)
+    if n < 0.5:
+        n = 0
+    elif n < 5:
+        n = round_calories(n, 0.5)
+    else:
+        n = round_calories(n, 1)
+    return n + ' ' + unit
+
+def round_cholesterol(quantity) -> str:
+    n, unit = split_quantity(quantity)
+    if n < 2:
+        n = 0
+    elif n < 5:
+        # Here we deviate from the standard slighly.
+        # Regularly we'd say "less than 5 mg", but this is a
+        # little unpleasant for our interface.
+        n = round_calories(n, 1)
+    else:
+        n = round_calories(n, 5)
+    return n + ' ' + unit
+
+
+def standardize_nutrition(n: Nutrition) -> Nutrition:
+    # Perform rounding and correction of fields to adhere to FDA labelling standards.
+    # See more on pp129-130: https://www.fda.gov/files/food/published/Food-Labeling-Guide-%28PDF%29.pdf
+
+    n.calories = round_calories(n.calories)
+    n.total_fat = round_fats(n.total_fat)
+    n.saturated_fat = round_fats(n.saturated_fat)
+    n.trans_fat = round_fats(n.trans_fat)
+    n.cholesterol = round_cholesterol(n.cholesterol)
+    #sodium =
+    #total_carbohydrate =
+    #dietary_fiber =
+    #total_sugars =
+    #protein =
+    #vitamin_d =
+    #vitamin_a =
+    #vitamin_c =
+    #calcium =
+    #iron =
+    #potassium =
+
+
 def read_nutrition_facts(raw):
     nutrition = Nutrition(
         serving_size=raw.pop('Serving Size', None),
