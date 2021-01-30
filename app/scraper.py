@@ -209,7 +209,7 @@ def has_active_meal(hall):
     # TODO: ensure that timezones function properly here
     date = datetime.date.today().strftime(DATE_FMT)
     meals = Meal.query.filter(Meal.hall_id == hall.id,
-                                 Meal.date == date)
+                                 Meal.date == date).all()
     time = datetime.datetime.now().strftime(TIME_FMT)
     for meal in meals:
         if meal.start_time < time < meal.end_time:
