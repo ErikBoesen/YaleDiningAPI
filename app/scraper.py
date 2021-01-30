@@ -13,7 +13,9 @@ import time
 from selenium import webdriver
 from selenium.common.exceptions import ElementClickInterceptedException, ElementNotInteractableException
 
-DATE_FMT = '%A, %B %d, %Y'
+DATE_FMT = '%Y-%m-%d'
+DATE_FMT_JAMIX = '%A, %B %d, %Y'
+TIME_FMT = '%H:%M'
 WAIT_PERIOD = 10
 MENU_FILE = 'menus.json'
 FASTTRACK_NAME_OVERRIDES = {
@@ -86,6 +88,18 @@ def read_nutrition_facts(raw):
     return nutrition
 
 
+def has_active_meal(hall):
+    # TODO: ensure that timezones function properly here
+    date = datetime.date.today().strftime(DATE_FMT)
+    meals = Meal.query.filter(Meal.hall_id == hall.id,
+                                 Meal.date == date)
+    time = datetime.datetime.now().strftime(TIME_FMT)
+    for meal in meals:
+        if meal.start_time < time < meal.end_time:
+            return True
+    return False
+
+
 def scrape_fasttrack():
     # Reach out to old FastTrack-based dining API,
     # which still provides non-menu data
@@ -116,7 +130,7 @@ def scrape_fasttrack():
         hall.name = FASTTRACK_NAME_OVERRIDES.get(name, name)
         hall.nickname = NICKNAMES.get(hall.name, hall.name)
         hall.occupancy = raw['CAPACITY']
-        hall.open = not bool(raw['ISCLOSED'])
+        hall.open = (not bool(raw['ISCLOSED'])) or has_active_meal(hall)
         hall.address = raw['ADDRESS']
         hall.phone = raw['PHONE']
         # Ignore manager fields as they're now outdated.
@@ -253,7 +267,7 @@ def day_after(date):
     Given a date, return the next day in that format.
     """
     fut = date + datetime.timedelta(days=1)
-    return fut.strftime(DATE_FMT)
+    return fut.strftime(DATE_FMT_JAMIX)
 
 
 def seek_date(target_date) -> bool:
@@ -261,10 +275,10 @@ def seek_date(target_date) -> bool:
     Seek toward a target date.
     :return: whether the date has been reached.
     """
-    target_date = datetime.datetime.strptime(target_date, DATE_FMT)
+    target_date = datetime.datetime.strptime(target_date, DATE_FMT_JAMIX)
     while True:
         current_date = get_subheader_text()
-        current_date = datetime.datetime.strptime(current_date, DATE_FMT)
+        current_date = datetime.datetime.strptime(current_date, DATE_FMT_JAMIX)
         if current_date == target_date:
             break
         if current_date < target_date:
@@ -508,7 +522,7 @@ def get_last_day(hall_name):
     last_meal = Meal.query.filter_by(hall_id=hall.id).order_by(Meal.date.desc()).first()
     last_day = last_meal.date if last_meal else None
     if hall_name in menus and menus[hall_name]:
-        last_cached_day = datetime.datetime.strptime(menus[hall_name][-1]['date'], DATE_FMT).date()
+        last_cached_day = datetime.datetime.strptime(menus[hall_name][-1]['date'], DATE_FMT_JAMIX).date()
         # Make lexicographic comparison
         if last_day is None or last_cached_day > last_day:
             last_day = last_cached_day
@@ -535,7 +549,7 @@ def parse(hall_jamix_id):
         else:
             # TEMPORARY
             seek_date(
-                (datetime.date.today() + datetime.timedelta(days=5)).strftime(DATE_FMT)
+                (datetime.date.today() + datetime.timedelta(days=5)).strftime(DATE_FMT_JAMIX)
             )
             seek_start()
 
@@ -550,7 +564,7 @@ def parse(hall_jamix_id):
 def parse_hall(hall_name):
     print('Parsing hall ' + hall_name)
     for day_d in menus[hall_name]:
-        date = datetime.datetime.strptime(day_d['date'], DATE_FMT).date()
+        date = datetime.datetime.strptime(day_d['date'], DATE_FMT_JAMIX).date()
         print('Parsing day ' + day_d['date'])
         for meal_d in day_d['meals']:
             meal_name = meal_d['name']
