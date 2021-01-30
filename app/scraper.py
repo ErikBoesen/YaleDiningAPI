@@ -103,7 +103,7 @@ def round_fats(quantity) -> str:
         n = round_increment(n, 0.5)
     else:
         n = round_increment(n, 1)
-    return n + ' ' + unit
+    return str(n) + ' ' + unit
 
 def round_cholesterol(quantity) -> str:
     n, unit = split_quantity(quantity)
@@ -116,7 +116,7 @@ def round_cholesterol(quantity) -> str:
         n = round_increment(n, 1)
     else:
         n = round_increment(n, 5)
-    return n + ' ' + unit
+    return str(n) + ' ' + unit
 
 
 def round_sp(quantity) -> str:
@@ -130,7 +130,7 @@ def round_sp(quantity) -> str:
         n = round_increment(n, 5)
     else:
         n = round_increment(n, 10)
-    return n + ' ' + unit
+    return str(n) + ' ' + unit
 
 
 def round_tdt(quantity) -> str:
@@ -143,8 +143,8 @@ def round_tdt(quantity) -> str:
         # to say "less than 1 g"
         n = 0
     else:
-        n = round_calories(n, 1)
-    return n + ' ' + unit
+        n = round_increment(n, 1)
+    return str(n) + ' ' + unit
 
 
 def round_protein(quantity) -> str:
@@ -158,7 +158,7 @@ def round_protein(quantity) -> str:
         n = 0
     else:
         n = round_increment(n, 1)
-    return n + ' ' + unit
+    return str(n) + ' ' + unit
 
 
 def round_vm(quantity) -> str:
@@ -167,7 +167,7 @@ def round_vm(quantity) -> str:
     """
     n, unit = split_quantity(quantity)
     # We don't do any explicit rounding here, but extra 0s will be trimmed.
-    return n + ' ' + unit
+    return str(n) + ' ' + unit
 
 
 def standardize_nutrition(n: Nutrition) -> Nutrition:
