@@ -91,7 +91,7 @@ def round_calories(n) -> int:
 
 def split_quantity(quantity):
     n, unit = quantity.split()
-    n = float(n)
+    n = float(n.replace(',', ''))
     return n, unit
 
 
