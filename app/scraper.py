@@ -751,12 +751,6 @@ def parse_hall(hall_name):
 
 
 def scrape_jamix():
-    # TODO: remove this, it's just temporary
-    print('Reformatting nutrition data!')
-    for nutrition in Nutrition.query.all():
-        standardize_nutrition(nutrition)
-    db.session.commit()
-
     print('Reading JAMIX menu data.')
     create_driver()
 
