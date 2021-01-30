@@ -90,7 +90,7 @@ class Nutrition(db.Model):
     _to_expand = ()
     _to_exclude = ('item',)
     serving_size = db.Column(db.String)
-    calories = db.Column(db.Float)
+    calories = db.Column(db.Integer)
 
     total_fat = db.Column(db.String)
     saturated_fat = db.Column(db.String)
