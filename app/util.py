@@ -28,8 +28,6 @@ class ModelEncoder(json.JSONEncoder):
                         # not expanding this field: set it to None and continue
                         fields[field] = None
                         continue
-                if field == 'calories':
-                    val = int(val)
                 fields[field] = self.val_to_string(val)
             # a json-encodable dict
             return fields
