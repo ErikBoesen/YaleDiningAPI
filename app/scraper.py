@@ -161,10 +161,18 @@ def round_protein(quantity) -> str:
     return n + ' ' + unit
 
 
+def round_vm(quantity) -> str:
+    """
+    Round Vitamin and Mineral quantities
+    """
+    n, unit = split_quantity(quantity)
+    # We don't do any explicit rounding here, but extra 0s will be trimmed.
+    return n + ' ' + unit
+
+
 def standardize_nutrition(n: Nutrition) -> Nutrition:
     # Perform rounding and correction of fields to adhere to FDA labelling standards.
     # See more on pp129-130: https://www.fda.gov/files/food/published/Food-Labeling-Guide-%28PDF%29.pdf
-
     n.calories = round_calories(n.calories)
     n.total_fat = round_fats(n.total_fat)
     n.saturated_fat = round_fats(n.saturated_fat)
@@ -175,12 +183,13 @@ def standardize_nutrition(n: Nutrition) -> Nutrition:
     n.dietary_fiber = round_tdt(n.dietary_fiber)
     n.total_sugars = round_tdt(n.total_sugars)
     n.protein = round_protein(n.protein)
-    #vitamin_d =
-    #vitamin_a =
-    #vitamin_c =
-    #calcium =
-    #iron =
-    #potassium =
+    n.vitamin_d = round_vm(n.vitamin_d)
+    n.vitamin_a = round_vm(n.vitamin_a)
+    n.vitamin_c = round_vm(n.vitamin_c)
+    n.calcium = round_vm(n.calcium)
+    n.iron = round_vm(n.iron)
+    n.potassium = round_vm(n.potassium)
+    return n
 
 
 def read_nutrition_facts(raw):
