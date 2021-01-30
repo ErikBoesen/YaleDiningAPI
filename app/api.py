@@ -84,6 +84,12 @@ def api_meal_items(meal_id):
     return to_json(items)
 
 
+@api_bp.route('/items')
+def api_items():
+    items = Item.query.all()
+    return to_json(items)
+
+
 @api_bp.route('/items/<item_id>')
 def api_item(item_id):
     item = Item.query.get_or_404(item_id)
