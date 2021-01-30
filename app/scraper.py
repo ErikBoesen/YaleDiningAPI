@@ -7,6 +7,7 @@ import os
 import requests
 import json
 import datetime
+import pytz
 import re
 from bs4 import BeautifulSoup
 import time
@@ -16,6 +17,7 @@ from selenium.common.exceptions import ElementClickInterceptedException, Element
 DATE_FMT = '%Y-%m-%d'
 DATE_FMT_JAMIX = '%A, %B %d, %Y'
 TIME_FMT = '%H:%M'
+TIMEZONE = pytz.timezone('America/New_York')
 WAIT_PERIOD = 10
 MENU_FILE = 'menus.json'
 FASTTRACK_NAME_OVERRIDES = {
@@ -206,14 +208,11 @@ def read_nutrition_facts(raw):
 
 
 def has_active_meal(hall):
-    print('Fact checking!')
-    # TODO: ensure that timezones function properly here
-    date = datetime.date.today().strftime(DATE_FMT)
-    print(date)
+    now = datetime.datetime.now(TIMEZONE)
+    date = now.strftime(DATE_FMT)
     meals = Meal.query.filter_by(hall_id=hall.id,
                                  date=date).all()
-    print(meals)
-    time = datetime.datetime.now().strftime(TIME_FMT)
+    time = now.strftime(TIME_FMT)
     for meal in meals:
         print('Start: %s, current: %s, end: %s' % (meal.start_time, time, meal.end_time))
         if meal.start_time < time < meal.end_time:
