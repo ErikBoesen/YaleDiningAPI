@@ -200,6 +200,7 @@ def read_nutrition_facts(raw):
         snaked_key = key.lower().replace(' ', '_')
         setattr(nutrition, snaked_key, raw[key]['amount'])
         setattr(nutrition, snaked_key + '_pdv', raw[key].get('percent_daily_value'))
+    nutrition = standardize_nutrition(nutrition)
     return nutrition
 
 
