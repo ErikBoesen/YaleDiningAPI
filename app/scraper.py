@@ -206,12 +206,16 @@ def read_nutrition_facts(raw):
 
 
 def has_active_meal(hall):
+    print('Fact checking!')
     # TODO: ensure that timezones function properly here
     date = datetime.date.today().strftime(DATE_FMT)
-    meals = Meal.query.filter(Meal.hall_id == hall.id,
-                                 Meal.date == date).all()
+    print(date)
+    meals = Meal.query.filter_by(hall_id=hall.id,
+                                 date=date).all()
+    print(meals)
     time = datetime.datetime.now().strftime(TIME_FMT)
     for meal in meals:
+        print('Start: %s, current: %s, end: %s' % (meal.start_time, time, meal.end_time))
         if meal.start_time < time < meal.end_time:
             return True
     return False
