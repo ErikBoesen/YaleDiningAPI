@@ -119,6 +119,20 @@ def round_cholesterol(quantity) -> str:
     return n + ' ' + unit
 
 
+def round_sp(quantity) -> str:
+    """
+    Round sodium and potassium quantities.
+    """
+    n, unit = split_quantity(quantity)
+    if n < 5:
+        n = 0
+    elif n < 140:
+        n = round_calories(n, 5)
+    else:
+        n = round_calories(n, 10)
+    return n + ' ' + unit
+
+
 def standardize_nutrition(n: Nutrition) -> Nutrition:
     # Perform rounding and correction of fields to adhere to FDA labelling standards.
     # See more on pp129-130: https://www.fda.gov/files/food/published/Food-Labeling-Guide-%28PDF%29.pdf
@@ -128,7 +142,7 @@ def standardize_nutrition(n: Nutrition) -> Nutrition:
     n.saturated_fat = round_fats(n.saturated_fat)
     n.trans_fat = round_fats(n.trans_fat)
     n.cholesterol = round_cholesterol(n.cholesterol)
-    #sodium =
+    n.sodium = round_sp(n.sodium)
     #total_carbohydrate =
     #dietary_fiber =
     #total_sugars =
