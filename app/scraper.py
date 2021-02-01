@@ -103,6 +103,8 @@ def round_fats(quantity) -> str:
         n = 0
     elif n < 5:
         n = round_increment(n, 0.5)
+        if n % 1 == 0:
+            n = int(n)
     else:
         n = round_increment(n, 1)
     return str(n) + ' ' + unit
