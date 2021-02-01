@@ -719,13 +719,11 @@ def parse_hall(hall_name):
                 nutrition_facts = course_d['nutrition_facts']
                 for item_name in ingredients:
                     print('Parsing item ' + item_name)
-                    item_attributes = {
-                        'name': item_name.replace('`', '\''),
-                        'ingredients': ingredients[item_name]['ingredients'],
-                        'course': course_name,
-                    }
-                    item = Item.query.filter_by(**item_attributes).first()
-                    item_new = False
+                    item = Item(
+                        name=item_name.replace('`', '\''),
+                        ingredients=ingredients[item_name]['ingredients'],
+                        course=course_name,
+                    )
                     if item is None:
                         item = Item(**item_attributes)
                         item_new = True
@@ -746,11 +744,31 @@ def parse_hall(hall_name):
                         nutrition = read_nutrition_facts(nutrition_facts['items'][item_name])
                         db.session.add(nutrition)
                         item.nutrition = nutrition
-                    item.meals.append(meal)
-                    if item_new:
+                    # TODO: DRY
+                    existing_item = Item.query.filter_by(
+                        name=item.name,
+                        ingredients=item.ingredients,
+                        course=item.course,
+                        meat=item.meat,
+                        animal_products=item.animal_products,
+                        alcohol=item.alcohol,
+                        nuts=item.nuts,
+                        shellfish=item.shellfish,
+                        peanuts=item.peanuts,
+                        dairy=item.dairy,
+                        egg=item.egg,
+                        pork=item.pork,
+                        fish=item.fish,
+                        soy=item.soy,
+                        wheat=item.wheat,
+                        gluten=item.gluten,
+                        coconut=item.coconut,
+                    ).first()
+                    if existing_item is not None:
+                        item = existing_item
+                    else:
                         db.session.add(item)
-                #course_nutrition = read_nutrition_facts(nutrition_facts['course'])
-                #db.session.add(course_nutrition)
+                    item.meals.append(meal)
             db.session.add(meal)
     db.session.commit()
 
