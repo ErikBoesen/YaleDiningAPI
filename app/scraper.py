@@ -751,13 +751,6 @@ def parse_hall(hall_name):
                         for allergen in allergens:
                             setattr(item, allergen.lower(), True)
 
-                    # TODO: this should always be present, but handle its absence in case the scraper broke
-                    if nutrition_facts['items'].get(item_name):
-                        # Read nutrition facts
-                        # TODO: 'nutrition' or 'nutrition facts'?
-                        nutrition = read_nutrition_facts(nutrition_facts['items'][item_name])
-                        db.session.add(nutrition)
-                        item.nutrition = nutrition
                     # TODO: DRY
                     existing_item = Item.query.filter_by(
                         name=item.name,
@@ -778,11 +771,19 @@ def parse_hall(hall_name):
                         gluten=item.gluten,
                         coconut=item.coconut,
                     ).first()
+                    print(existing_item)
                     if existing_item is not None:
                         item = existing_item
                     else:
                         db.session.add(item)
+                        if nutrition_facts['items'].get(item_name):
+                            # Read nutrition facts
+                            # TODO: 'nutrition' or 'nutrition facts'?
+                            nutrition = read_nutrition_facts(nutrition_facts['items'][item_name])
+                            db.session.add(nutrition)
+                            item.nutrition = nutrition
                     item.meals.append(meal)
+                    # TODO: this should always be present, but handle its absence in case the scraper broke
             db.session.add(meal)
     db.session.commit()
 
