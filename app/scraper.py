@@ -724,10 +724,23 @@ def parse_hall(hall_name):
                         name=item_name.replace('`', '\''),
                         ingredients=ingredients[item_name]['ingredients'],
                         course=course_name,
+
+                        # Set to default for later operations
+                        # Database will put in the default values, but we need
+                        # to compare them for deduplication below.
+                        alcohol=False,
+                        nuts=False,
+                        shellfish=False,
+                        peanuts=False,
+                        dairy=False,
+                        egg=False,
+                        pork=False,
+                        fish=False,
+                        soy=False,
+                        wheat=False,
+                        gluten=False,
+                        coconut=False,
                     )
-                    if item is None:
-                        item = Item(**item_attributes)
-                        item_new = True
                     diets = ingredients[item_name]['diets'].split(', ')
                     item.animal_products = not ('VG' in diets)
                     item.meat = not ('V' in diets)
