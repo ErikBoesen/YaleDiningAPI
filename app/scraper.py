@@ -56,6 +56,7 @@ HALL_IDS = {
 }
 COURSE_NAME_OVERRIDES = {
     'Yale Bakery Dessert': 'Dessert',
+    'Smart Meals (must be ordered ahead)': 'Smart Meals',
 }
 ITEM_NAME_OVERRIDES = {
     'Nut-Free Basil Pesto (basil, canola oil, extra virgin olive oil, romano cheese, pasteurized sheep\'s milk, rennet, garlic, salt)': 'Nut-Free Basil Pesto',
