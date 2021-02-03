@@ -14,6 +14,9 @@ api_bp = Blueprint('api', __name__)
 
 STATUS = to_json({
     'message': os.environ.get('STATUS_MESSAGE'),
+    'min_version_ios': int(os.environ.get('STATUS_MIN_VERSION_IOS', 0)),
+    'min_version_android': int(os.environ.get('STATUS_MIN_VERSION_ANDROID', 0)),
+    # Deprecated, still used for older versions
     'min_version': int(os.environ.get('STATUS_MIN_VERSION', 0)),
 })
 
