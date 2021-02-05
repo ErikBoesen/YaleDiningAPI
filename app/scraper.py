@@ -513,7 +513,6 @@ def parse_nutrition_facts_course():
             # TODO: stop this from running twice on the first go. And same with other such constructs in this file.
             items = get_item_nutrition_buttons()
             item_name = items[items_processed].text
-            item_name = ITEM_NAME_OVERRIDES.get(item_name, item_name)
             items[items_processed].click()
             sleep()
 
@@ -723,8 +722,9 @@ def parse_hall(hall_name):
                 nutrition_facts = course_d['nutrition_facts']
                 for item_name in ingredients:
                     print('Parsing item ' + item_name)
+                    clean_item_name = ITEM_NAME_OVERRIDES.get(item_name, item_name).replace('`', '\'')
                     item = Item(
-                        name=item_name.replace('`', '\''),
+                        name=clean_item_name,
                         ingredients=ingredients[item_name]['ingredients'],
                         course=course_name,
 
