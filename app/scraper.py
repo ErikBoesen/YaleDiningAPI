@@ -220,7 +220,6 @@ def has_active_meal(hall):
                                  date=date).all()
     time = now.strftime(TIME_FMT)
     for meal in meals:
-        print('Start: %s, current: %s, end: %s' % (meal.start_time, time, meal.end_time))
         if meal.start_time < time < meal.end_time:
             return True
     return False
