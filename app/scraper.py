@@ -54,6 +54,9 @@ HALL_IDS = {
     'Timothy Dwight': 'TD',
     'Trumbull': 'TC',
 }
+MEAL_NAME_OVERRIDES = {
+    'OC Dinner': 'Dinner',
+}
 COURSE_NAME_OVERRIDES = {
     'Yale Bakery Dessert': 'Dessert',
     'Smart Meals (must be ordered ahead)': 'Smart Meals',
@@ -610,6 +613,7 @@ def parse_right(hall_name):
                 tabs[tabs_processed].click()
                 sleep()
                 meal_name = tabs[tabs_processed].text
+                meal_name = MEAL_NAME_OVERRIDES.get(meal_name, meal_name)
 
                 today_menu['meals'].append(parse_meal(meal_name))
 
