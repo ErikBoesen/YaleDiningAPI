@@ -68,7 +68,7 @@ class Item(db.Model):
     meat = db.Column(db.Boolean, default=False)
     animal_products = db.Column(db.Boolean, default=False)
     alcohol = db.Column(db.Boolean, default=False)
-    nuts = db.Column(db.Boolean, default=False)
+    tree_nut = db.COlumn(db.Boolean, default=False)
     shellfish = db.Column(db.Boolean, default=False)
     peanuts = db.Column(db.Boolean, default=False)
     dairy = db.Column(db.Boolean, default=False)
@@ -81,6 +81,8 @@ class Item(db.Model):
     coconut = db.Column(db.Boolean, default=False)
 
     meal_id = db.Column(db.Integer, default=0)
+    # Obsolete
+    nuts = db.Column(db.Boolean, default=False)
 
     nutrition = db.relationship('Nutrition', cascade='all,delete,delete-orphan', uselist=False, back_populates='item')
 
