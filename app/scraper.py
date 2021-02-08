@@ -732,8 +732,8 @@ def parse_hall(hall_name):
                         # Database will put in the default values, but we need
                         # to compare them for deduplication below.
                         alcohol=False,
-                        nuts=False,
                         shellfish=False,
+                        tree_nut=False,
                         peanuts=False,
                         dairy=False,
                         egg=False,
@@ -743,6 +743,8 @@ def parse_hall(hall_name):
                         wheat=False,
                         gluten=False,
                         coconut=False,
+
+                        nuts=False,
                     )
                     diets = ingredients[item_name]['diets'].split(', ')
                     item.animal_products = not ('VG' in diets)
@@ -762,8 +764,8 @@ def parse_hall(hall_name):
                         meat=item.meat,
                         animal_products=item.animal_products,
                         alcohol=item.alcohol,
-                        nuts=item.nuts,
                         shellfish=item.shellfish,
+                        tree_nut=item.tree_nut,
                         peanuts=item.peanuts,
                         dairy=item.dairy,
                         egg=item.egg,
@@ -774,6 +776,29 @@ def parse_hall(hall_name):
                         gluten=item.gluten,
                         coconut=item.coconut,
                     ).first()
+                    if existing_item is None:
+                        # Fix missing tree nut allergens
+                        existing_item = Item.query.filter_by(
+                            name=item.name,
+                            ingredients=item.ingredients,
+                            course=item.course,
+                            meat=item.meat,
+                            animal_products=item.animal_products,
+                            alcohol=item.alcohol,
+                            shellfish=item.shellfish,
+                            tree_nut=not item.tree_nut,
+                            peanuts=item.peanuts,
+                            dairy=item.dairy,
+                            egg=item.egg,
+                            pork=item.pork,
+                            fish=item.fish,
+                            soy=item.soy,
+                            wheat=item.wheat,
+                            gluten=item.gluten,
+                            coconut=item.coconut,
+                        ).first()
+                        if existing_item is not None:
+                            existing_item.tree_nut = item.tree_nut
                     print(existing_item)
                     if existing_item is not None:
                         item = existing_item
