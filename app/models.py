@@ -68,7 +68,7 @@ class Item(db.Model):
     meat = db.Column(db.Boolean, default=False)
     animal_products = db.Column(db.Boolean, default=False)
     alcohol = db.Column(db.Boolean, default=False)
-    tree_nut = db.COlumn(db.Boolean, default=False)
+    tree_nut = db.Column(db.Boolean, default=False)
     shellfish = db.Column(db.Boolean, default=False)
     peanuts = db.Column(db.Boolean, default=False)
     dairy = db.Column(db.Boolean, default=False)
