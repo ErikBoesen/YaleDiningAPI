@@ -56,6 +56,8 @@ HALL_IDS = {
 }
 MEAL_NAME_OVERRIDES = {
     'OC Dinner': 'Dinner',
+    # TODO: check that this error is still happening, as this override could cause problems
+    'breakfast': 'Lunch',
 }
 COURSE_NAME_OVERRIDES = {
     'Yale Bakery Dessert': 'Dessert',
