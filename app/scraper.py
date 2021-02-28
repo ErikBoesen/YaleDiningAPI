@@ -695,11 +695,13 @@ def parse_hall(hall_name):
         print('Parsing day ' + day_d['date'])
         # TODO: some days may actually have less than three meals.
         if len(day_d['meals']) < 3:
+            print('Not enough meals found, skipping day.')
             continue
         for meal_d in day_d['meals']:
             meal_name = meal_d['name']
             existing_meal = Meal.query.filter_by(name=meal_name, date=date).first()
             if existing_meal is not None:
+                print('Meal already exists.')
                 continue
             print('Parsing meal ' + meal_name)
             if meal_name == 'Breakfast':
