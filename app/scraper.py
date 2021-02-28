@@ -693,6 +693,9 @@ def parse_hall(hall_name):
     for day_d in menus[hall_name]:
         date = datetime.datetime.strptime(day_d['date'], DATE_FMT_JAMIX).date()
         print('Parsing day ' + day_d['date'])
+        # TODO: some days may actually have less than three meals.
+        if len(day_d['meals']) < 3:
+            continue
         for meal_d in day_d['meals']:
             meal_name = meal_d['name']
             print('Parsing meal ' + meal_name)
