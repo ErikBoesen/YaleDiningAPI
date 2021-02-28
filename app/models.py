@@ -9,8 +9,7 @@ meals_x_items = db.Table('meals_x_items',
 
 class Hall(db.Model):
     __tablename__ = 'halls'
-    _to_expand = ()
-    _to_exclude = ('managers', 'meals',)
+    __serializable__ = ('id', 'name', 'nickname', 'open', 'occupancy', 'latitude', 'longitude', 'address', 'phone')
     id = db.Column(db.String, primary_key=True)
     name = db.Column(db.String, nullable=False)
     nickname = db.Column(db.String, nullable=False)
@@ -27,8 +26,7 @@ class Hall(db.Model):
 
 class Manager(db.Model):
     __tablename__ = 'managers'
-    _to_expand = ()
-    _to_exclude = ('hall_id', 'hall')
+    __serializable__ = ('id', 'name', 'email', 'position')
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     email = db.Column(db.String)
@@ -40,8 +38,7 @@ class Manager(db.Model):
 
 class Meal(db.Model):
     __tablename__ = 'meals'
-    _to_expand = ()
-    _to_exclude = ('hall', 'items')
+    __serializable__ = ('id', 'name', 'date', 'start_time', 'end_time', 'hall_id')
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     date = db.Column(db.Date, nullable=False)
@@ -58,8 +55,11 @@ class Meal(db.Model):
 
 class Item(db.Model):
     __tablename__ = 'items'
-    _to_expand = ()
-    _to_exclude = ('meal', 'nutrition')
+    __serializable__ = (
+        'id', 'name', 'ingredients', 'course',
+        'meat', 'animal_products', 'alcohol', 'tree_nut', 'shellfish', 'peanuts', 'dairy', 'egg', 'pork', 'fish', 'soy', 'wheat', 'gluten', 'coconut',
+        'meal_id', 'nuts',
+    )
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     ingredients = db.Column(db.String)
@@ -89,8 +89,14 @@ class Item(db.Model):
 
 class Nutrition(db.Model):
     __tablename__ = 'nutrition'
-    _to_expand = ()
-    _to_exclude = ('item',)
+    __serializable__ = (
+        'serving_size', 'calories',
+        'total_fat', 'saturated_fat', 'trans_fat', 'cholesterol', 'sodium', 'total_carbohydrate', 'dietary_fiber', 'total_sugars', 'protein',
+        'vitamin_d', 'vitamin_a', 'vitamin_c', 'calcium', 'iron', 'potassium',
+        'total_fat_pdv', 'saturated_fat_pdv', 'trans_fat_pdv', 'cholesterol_pdv', 'sodium_pdv', 'total_carbohydrate_pdv', 'dietary_fiber_pdv', 'total_sugars_pdv', 'protein_pdv',
+        'vitamin_d_pdv', 'vitamin_a_pdv', 'vitamin_c_pdv', 'calcium_pdv', 'iron_pdv', 'potassium_pdv',
+        'item_id',
+    )
     serving_size = db.Column(db.String)
     calories = db.Column(db.Integer)
 
