@@ -698,6 +698,9 @@ def parse_hall(hall_name):
             continue
         for meal_d in day_d['meals']:
             meal_name = meal_d['name']
+            existing_meal = Meal.query.filter_by(name=meal_name, date=date).first()
+            if existing_meal is not None:
+                continue
             print('Parsing meal ' + meal_name)
             if meal_name == 'Breakfast':
                 start_time = '08:00'
