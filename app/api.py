@@ -34,13 +34,15 @@ def api_halls():
 
 @api_bp.route('/halls/<hall_id>')
 def api_hall(hall_id):
-    hall = Hall.query.get_or_404(hall_id)
+    #hall = Hall.query.get_or_404(hall_id)
+    hall = Hall.query.get('BR')
     return to_json(hall)
 
 
 @api_bp.route('/halls/<hall_id>/managers')
 def api_managers(hall_id):
-    hall = Hall.query.get_or_404(hall_id)
+    #hall = Hall.query.get_or_404(hall_id)
+    hall = Hall.query.get('BR')
     managers = hall.managers
     return to_json(managers)
 
@@ -48,8 +50,10 @@ def api_managers(hall_id):
 @api_bp.route('/halls/<hall_id>/meals')
 def api_hall_meals(hall_id):
     # TODO: use this later on, right now it's mostly a 404 check
-    hall = Hall.query.get_or_404(hall_id)
-    meals = Meal.query.filter_by(hall_id=hall_id)
+    #hall = Hall.query.get_or_404(hall_id)
+    hall = Hall.query.get('BR')
+    #meals = Meal.query.filter_by(hall_id=hall_id)
+    meals = Meal.query.filter_by(hall_id='BR')
     date = request.args.get('date')
     if date is not None:
         meals = meals.filter(Meal.date == date)
