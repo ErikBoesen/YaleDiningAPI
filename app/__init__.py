@@ -4,6 +4,7 @@ from celery import Celery
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_mail import Mail
 
 
 app = Flask(__name__)
@@ -13,6 +14,7 @@ celery.conf.update(app.config)
 cors = CORS(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+mail = Mail(app)
 
 from app import routes, models, errors, api, util
 app.register_blueprint(api.api_bp, url_prefix='/api')
