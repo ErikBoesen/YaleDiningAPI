@@ -52,6 +52,22 @@ class Meal(db.Model):
         'Item', secondary=meals_x_items, lazy='subquery',
         backref=db.backref('meals', lazy=True))
 
+    def search(hall_id, date=None, start_date=None, end_date=None):
+        meals = Meal.query.filter_by(hall_id=hall_id)
+        if date is not None:
+            meals = meals.filter(Meal.date == date)
+        else:
+            if start_date is None:
+                start_date = datetime.date.today()
+            else:
+                start_date = datetime.datetime.strptime(start_date, DATE_FMT)
+            meals = meals.filter(start_date <= Meal.date)
+            if end_date is not None:
+                meals = meals.filter(Meal.date <= end_date)
+        meals = meals.order_by(Meal.date, Meal.start_time)
+        meals = meals.all()
+        return meals
+
 
 class Item(db.Model):
     __tablename__ = 'items'

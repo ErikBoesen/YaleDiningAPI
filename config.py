@@ -10,4 +10,4 @@ class Config(object):
 
     CELERY_BROKER_URL = CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 
-    OVERRIDE_HALL_ID = os.environ.get('OVERRIDE_HALL_ID')
+    FALLBACK_HALL_ID = os.environ.get('FALLBACK_HALL_ID')

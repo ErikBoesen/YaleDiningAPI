@@ -47,26 +47,25 @@ def api_managers(hall_id):
 
 @api_bp.route('/halls/<hall_id>/meals')
 def api_hall_meals(hall_id):
-    override_hall_id = app.config['OVERRIDE_HALL_ID']
-    if override_hall_id:
-        hall_id = override_hall_id
     hall = Hall.query.get_or_404(hall_id)
-    meals = Meal.query.filter_by(hall_id=hall_id)
+
     date = request.args.get('date')
-    if date is not None:
-        meals = meals.filter(Meal.date == date)
-    else:
-        start_date = request.args.get('start_date')
-        if start_date is None:
-            start_date = datetime.date.today()
-        else:
-            start_date = datetime.datetime.strptime(start_date, DATE_FMT)
-        meals = meals.filter(start_date <= Meal.date)
-        end_date = request.args.get('end_date')
-        if end_date is not None:
-            meals = meals.filter(Meal.date <= end_date)
-    meals = meals.order_by(Meal.date, Meal.start_time)
-    meals = meals.all()
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+
+    meals = Meal.search(hall_id,
+                        date=date,
+                        start_date=start_date,
+                        end_date=end_date)
+
+    if not meals:
+        override_hall_id = app.config['FALLBACK_HALL_ID']
+        if override_hall_id:
+            meals = Meal.search(override_hall_id,
+                                date=date,
+                                start_date=start_date,
+                                end_date=end_date)
+
     return to_json(meals)
 
 
