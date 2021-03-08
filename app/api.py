@@ -59,9 +59,9 @@ def api_hall_meals(hall_id):
                         end_date=end_date)
 
     if not meals:
-        override_hall_id = app.config['FALLBACK_HALL_ID']
-        if override_hall_id:
-            meals = Meal.search(override_hall_id,
+        fallback_hall_id = app.config['FALLBACK_HALL_ID']
+        if fallback_hall_id:
+            meals = Meal.search(fallback_hall_id,
                                 date=date,
                                 start_date=start_date,
                                 end_date=end_date)

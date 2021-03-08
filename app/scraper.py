@@ -232,7 +232,8 @@ def read_nutrition_facts(raw):
 def has_active_meal(hall):
     now = datetime.datetime.now(TIMEZONE)
     date = now.strftime(DATE_FMT)
-    hall_id = app.config['OVERRIDE_HALL_ID'] or hall.id
+    # TODO: we don't always want to use this default... but for now it's fine
+    hall_id = app.config['FALLBACK_HALL_ID'] or hall.id
     meals = Meal.query.filter_by(hall_id=hall_id,
                                  date=date).all()
     time = now.strftime(TIME_FMT)
