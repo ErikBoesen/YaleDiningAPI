@@ -353,7 +353,6 @@ def get_tabs():
 
 def get_courses():
     courses = driver.find_element_by_css_selector('div.v-verticallayout.v-layout.menu-sub-view').find_elements_by_class_name('v-button')
-    print('Found %d courses this time.' % len(courses))
     return courses
 
 
@@ -573,13 +572,14 @@ def parse_course():
 
 def parse_meal(name):
     """
-    Parse the meal currently on the screen, whether or not it was accessed via a tab.
+    Parse the meal currently on the screen.
     """
     meal = {
         'name': name,
         'courses': [],
     }
     courses = get_courses()
+    print('Found %d courses in this meal.' % len(courses))
     courses_processed = 0
     while courses_processed < len(courses):
         # Old references will be stale, so we must regenerate element list
