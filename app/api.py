@@ -34,15 +34,16 @@ def api_halls():
 
 @api_bp.route('/halls/<hall_id>')
 def api_hall(hall_id):
-    #hall = Hall.query.get_or_404(hall_id)
-    hall = Hall.query.get('BR')
+    hall = Hall.query.get_or_404(hall_id)
     return to_json(hall)
 
 
 @api_bp.route('/halls/<hall_id>/managers')
 def api_managers(hall_id):
-    #hall = Hall.query.get_or_404(hall_id)
-    hall = Hall.query.get('BR')
+    override_hall_id = app.config['OVERRIDE_HALL_ID']
+    if override_hall_id:
+        hall_id = override_hall_id
+    hall = Hall.query.get_or_404(hall_id)
     managers = hall.managers
     return to_json(managers)
 
