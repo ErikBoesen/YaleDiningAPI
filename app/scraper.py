@@ -704,6 +704,7 @@ def parse(hall_jamix_id):
 
 def parse_hall(hall_name):
     print('Parsing hall ' + hall_name)
+    hall = Hall.query.filter_by(name=hall_name).first()
     for day_d in menus[hall_name]:
         date = datetime.datetime.strptime(day_d['date'], DATE_FMT_JAMIX).date()
         print('Parsing day ' + day_d['date'])
@@ -713,7 +714,7 @@ def parse_hall(hall_name):
             continue
         for meal_d in day_d['meals']:
             meal_name = meal_d['name']
-            existing_meal = Meal.query.filter_by(name=meal_name, date=date).first()
+            existing_meal = Meal.query.filter_by(hall_id=hall.id, name=meal_name, date=date).first()
             if existing_meal is not None:
                 print('Meal already exists.')
                 continue
@@ -736,7 +737,7 @@ def parse_hall(hall_name):
                 start_time=start_time,
                 end_time=end_time,
             )
-            meal.hall = Hall.query.filter_by(name=hall_name).first()
+            meal.hall = hall
             for course_d in meal_d['courses']:
                 course_name = course_d['name']
                 print('Parsing course ' + course_name)
