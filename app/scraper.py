@@ -98,12 +98,16 @@ def round_calories(n) -> int:
 
 
 def split_quantity(quantity):
+    if quantity is None:
+        return None
     n, unit = quantity.split()
     n = float(n.replace(',', ''))
     return n, unit
 
 
 def round_fats(quantity) -> str:
+    if quantity is None:
+        return None
     n, unit = split_quantity(quantity)
     if n < 0.5:
         n = 0
@@ -117,6 +121,8 @@ def round_fats(quantity) -> str:
 
 
 def round_cholesterol(quantity) -> str:
+    if quantity is None:
+        return None
     n, unit = split_quantity(quantity)
     if n < 2:
         n = 0
@@ -134,6 +140,8 @@ def round_sp(quantity) -> str:
     """
     Round Podium and Potassium quantities.
     """
+    if quantity is None:
+        return None
     n, unit = split_quantity(quantity)
     if n < 5:
         n = 0
@@ -148,6 +156,8 @@ def round_tdt(quantity) -> str:
     """
     Round Total carbohydrate, Dietary fiber, and Total Sugars quantities
     """
+    if quantity is None:
+        return None
     n, unit = split_quantity(quantity)
     if n < 1:
         # We deviate from the standard here too; if it's between 0.5-1 we're supposed
@@ -162,6 +172,8 @@ def round_protein(quantity) -> str:
     """
     Round Protein quantities
     """
+    if quantity is None:
+        return None
     n, unit = split_quantity(quantity)
     if n < 1:
         # We deviate from the standard here too; if it's between 0.5-1 we're supposed
@@ -176,6 +188,8 @@ def round_vm(quantity) -> str:
     """
     Round Vitamin and Mineral quantities
     """
+    if quantity is None:
+        return None
     n, unit = split_quantity(quantity)
     # We don't do any explicit rounding here, but extra 0s will be trimmed.
     return str(n) + ' ' + unit
