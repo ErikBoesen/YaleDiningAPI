@@ -530,6 +530,7 @@ def parse_nutrition_facts_course():
             # TODO: stop this from running twice on the first go. And same with other such constructs in this file.
             items = get_item_nutrition_buttons()
             item_name = items[items_processed].text
+            print(f'Reading nutrition facts for {item_name}.')
             items[items_processed].click()
             sleep()
 
@@ -547,6 +548,7 @@ def parse_course():
     """
     course_name = get_header_text()
     course_name = COURSE_NAME_OVERRIDES.get(course_name, course_name)
+    print(f'Parsing course {course_name}.')
     course = {
         'name': course_name,
     }
