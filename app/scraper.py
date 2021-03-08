@@ -431,7 +431,7 @@ def seek_date(target_date) -> bool:
 
 
 ################################
-# Parsing process functions
+# Scraping process functions
 
 
 def seek_start(start_date=None):
@@ -447,9 +447,9 @@ def seek_start(start_date=None):
         sleep()
 
 
-def parse_ingredients():
+def scrape_ingredients():
     """
-    Parse ingredients page that's on the screen.
+    Scrape ingredients page onscreen.
     """
     sleep()
     ingredients = {}
@@ -480,16 +480,16 @@ def parse_ingredients():
     return ingredients
 
 
-def parse_nutrition_facts():
+def scrape_nutrition():
     """
-    Parse a visible nutrition facts pane, whether for a full course or an individual item.
+    Scrape a visible nutrition facts pane, whether for a full course or an individual item.
     """
-    nutrition_facts = {
+    nutrition = {
         'Serving Size': get_serving_size(),
     }
     lists = driver.find_elements_by_css_selector('.v-panel-content ul')
     if len(lists) != 2:
-        print('Warning: more than 2 uls found on nutrition facts page.')
+        print('Warning: more than 2 uls found on nutrition page.')
     # The nutrition facts table is made with two uls, the first of which has the ingredient name and amount of it,
     # and the second of which has the daily values.
     # The elements in the left side list
@@ -505,22 +505,23 @@ def parse_nutrition_facts():
         amount = spans[1].text
         if ingredient == 'Calories':
             amount = float(amount.replace(',', '').replace(' kcal', ''))
-        nutrition_facts[ingredient] = {
+        nutrition[ingredient] = {
             'amount': amount,
         }
 
         rtext = rside.text.strip(' %')
         if rtext:
-            nutrition_facts[ingredient]['percent_daily_value'] = int(rtext)
-    return nutrition_facts
+            nutrition[ingredient]['percent_daily_value'] = int(rtext)
+    return nutrition
 
 
-def parse_nutrition_facts_course():
+def scrape_course_nutrition():
     """
-    Parse nutrition facts for an entire course.
+    Scrape nutrition facts for each item in a course, starting from course nutrition page.
     """
-    nutrition_facts = {
-        'course': parse_nutrition_facts(),
+    course_nutrition = {
+        # The website offers nutrition facts for an entire course, but we ignore this.
+        #'course': scrape_nutrition(),
         'items': {},
     }
     items = get_item_nutrition_buttons()
@@ -534,7 +535,7 @@ def parse_nutrition_facts_course():
             items[items_processed].click()
             sleep()
 
-            nutrition_facts['items'][item_name] = parse_nutrition_facts()
+            course_nutrition['items'][item_name] = scrape_nutrition()
 
             click_back()
 
@@ -542,9 +543,9 @@ def parse_nutrition_facts_course():
     return nutrition_facts
 
 
-def parse_course():
+def scrape_course():
     """
-    Parse course that has been opened on the screen (i.e. Ingredients and Nutrition Facts buttons are showing).
+    Scrape course that has been opened on the screen (i.e. Ingredients and Nutrition Facts buttons are showing).
     """
     course_name = get_header_text()
     course_name = COURSE_NAME_OVERRIDES.get(course_name, course_name)
@@ -557,7 +558,7 @@ def parse_course():
     in_buttons[0].click()
     sleep()
 
-    course['ingredients'] = parse_ingredients()
+    course['ingredients'] = scrape_ingredients()
 
     click_back()
     # Do again to reattach to the list
@@ -565,16 +566,16 @@ def parse_course():
     in_buttons[1].click()
     sleep()
 
-    course['nutrition_facts'] = parse_nutrition_facts_course()
+    course['nutrition_facts'] = scrape_course_nutrition()
 
     click_back()  # to Ingredients/Nutrition Facts Selection pane
     sleep()
     return course
 
 
-def parse_meal(name):
+def scrape_meal(name):
     """
-    Parse the meal currently on the screen.
+    Scrape the meal currently on the screen.
     """
     meal = {
         'name': name,
@@ -589,7 +590,7 @@ def parse_meal(name):
         courses[courses_processed].click()
         sleep()
 
-        meal['courses'].append(parse_course())
+        meal['courses'].append(scrape_course())
 
         click_back()  # to main page/meal
         sleep()
@@ -604,7 +605,7 @@ else:
     menus = {}
 
 
-def parse_right(hall_name):
+def scrape_right(hall_name):
     print('Parsing ' + hall_name)
 
     # Cycle through dates, collecting data
@@ -635,7 +636,7 @@ def parse_right(hall_name):
                 meal_name = MEAL_NAME_OVERRIDES.get(meal_name, meal_name)
                 print(f'Checking tab {meal_name}.')
 
-                today_menu['meals'].append(parse_meal(meal_name))
+                today_menu['meals'].append(scrape_meal(meal_name))
 
                 tabs_processed += 1
         else:
@@ -883,6 +884,7 @@ def scrape(fasttrack_only=False):
     if not fasttrack_only:
         scrape_managers()
         scrape_jamix()
+
 
 
 @celery.on_after_configure.connect
