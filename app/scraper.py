@@ -90,7 +90,7 @@ def round_increment(number, increment):
 
 
 def round_calories(n) -> int:
-    if n < 5:
+    if n is None or n < 5:
         return 0
     elif n <= 50:
         return round_increment(n, 5)
