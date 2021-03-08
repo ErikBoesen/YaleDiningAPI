@@ -12,7 +12,7 @@ import re
 from bs4 import BeautifulSoup
 import time
 from selenium import webdriver
-from selenium.common.exceptions import ElementClickInterceptedException, ElementNotInteractableException
+from selenium.common.exceptions import ElementClickInterceptedException, ElementNotInteractableException, StaleElementReferenceException
 
 DATE_FMT = '%Y-%m-%d'
 DATE_FMT_JAMIX = '%A, %B %d, %Y'
@@ -697,7 +697,7 @@ def parse(hall_jamix_id):
 
         try:
             finished = parse_right(hall_name)
-        except (ElementClickInterceptedException, ElementNotInteractableException, IndexError) as e:
+        except (ElementClickInterceptedException, ElementNotInteractableException, StaleElementReferenceException, IndexError) as e:
             print('Squashing error...')
             print(e)
     return hall_name, menus[hall_name]
