@@ -617,7 +617,7 @@ def parse_right(hall_name):
             break
         sleep()
         tabs = get_tabs()
-        has_tabs = (len(tabs) > 0)
+        has_tabs = (len(tabs) >= 3)
         if has_tabs:
             print('Found %d tabs on this page.' % len(tabs))
             tabs_processed = 0
@@ -629,14 +629,14 @@ def parse_right(hall_name):
                 sleep()
                 meal_name = tabs[tabs_processed].text
                 meal_name = MEAL_NAME_OVERRIDES.get(meal_name, meal_name)
+                print(f'Checking tab {meal_name}.')
 
                 today_menu['meals'].append(parse_meal(meal_name))
 
                 tabs_processed += 1
         else:
-            print('No tabs are available. Parsing single meal.')
-            # TODO: does this default hold?
-            today_menu['meals'].append(parse_meal('Breakfast'))
+            print('Not enough tabs are available. Skipping date.')
+            break
 
         menus[hall_name].append(today_menu)
         with open(MENU_FILE, 'w') as f:
