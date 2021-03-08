@@ -582,7 +582,6 @@ def parse_meal(name):
     courses = get_courses()
     courses_processed = 0
     while courses_processed < len(courses):
-        courses = get_courses()
         courses[courses_processed].click()
         sleep()
 
