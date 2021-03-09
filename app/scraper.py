@@ -1,5 +1,6 @@
 from app import app, db, celery
 from app.models import Hall, Manager, Meal, Item, Nutrition
+from app.mail import send_scraper_report
 
 from celery.schedules import crontab
 
