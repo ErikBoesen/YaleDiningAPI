@@ -932,8 +932,8 @@ def scrape(fasttrack_only=False):
     if not fasttrack_only:
         scrape_managers()
         stats = scrape_jamix()
+        send_scraper_report(stats)
         print(stats)
-
 
 
 @celery.on_after_configure.connect
