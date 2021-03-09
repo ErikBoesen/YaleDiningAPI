@@ -1,0 +1,19 @@
+<div style="font-size: 20px">
+    <h1>Scraper Report</h1>
+    <p>Start time: {{ stats['start_time'].strftime(DATETIME_FMT) }}</p>
+    <p>Completion time: {{ stats['end_time'].strftime(DATETIME_FMT) }}</p>
+    {% for hall_name, hall in stats['halls'].items() %}
+    <div>
+        <h2>{{ hall_name }}</h2>
+        <p>Previous most recent day: {{ hall['parse']['previous_end_day'].strftime(DATE_FMT) }}</p>
+        <p>New most recent day: {{ hall['parse']['end_day'].strftime(DATE_FMT) }}</p>
+        <p>Restarts: {{ hall['scrape']['restarts'] }}</p>
+        <p>Days scanned: {{ hall['parse']['found']['days'] }}</p>
+        <p>Meals found: {{ hall['parse']['found']['meals'] }} / inserted: {{ hall['parse']['inserted']['meals'] }}</p>
+        <p>Items found: {{ hall['parse']['found']['items'] }} / inserted: {{ hall['parse']['inserted']['items'] }}</p>
+    </div>
+    {% endfor %}
+
+    <a style="display: inline-block; padding: 10px 15px; background: #00356b; box-sizing: border-box; color: white; text-decoration: none;" href="https://yaledine.com/scraper">Rerun scraper</a>
+</div>
+
