@@ -889,7 +889,7 @@ def scrape_jamix():
     }
 
     # Iterate through halls
-    for hall_jamix_id in range(1, 2 + 1):
+    for hall_jamix_id in range(1, 11 + 1):
         hall_name, hall, scrape_stats = parse(hall_jamix_id)
         # Separate multi-hall menus
         # TODO: should we do this at request time?
