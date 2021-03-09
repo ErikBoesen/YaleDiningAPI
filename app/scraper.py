@@ -540,7 +540,7 @@ def scrape_course_nutrition():
             click_back()
 
             items_processed += 1
-    return nutrition_facts
+    return course_nutrition
 
 
 def scrape_course():
@@ -566,7 +566,7 @@ def scrape_course():
     in_buttons[1].click()
     sleep()
 
-    course['nutrition_facts'] = scrape_course_nutrition()
+    course['nutrition'] = scrape_course_nutrition()
 
     click_back()  # to Ingredients/Nutrition Facts Selection pane
     sleep()
@@ -678,6 +678,9 @@ def get_last_day(hall_name):
 
 def parse(hall_jamix_id):
     finished = False
+    stats = {
+        'restarts': 0,
+    }
     while not finished:
         driver.get('https://usa.jamix.cloud/menu/app?anro=97939&k=%d' % hall_jamix_id)
         sleep()
@@ -701,17 +704,39 @@ def parse(hall_jamix_id):
             seek_start()
 
         try:
-            finished = parse_right(hall_name)
+            finished = scrape_right(hall_name)
         except (ElementClickInterceptedException, ElementNotInteractableException, IndexError) as e:
             print('Squashing error...')
             print(e)
-    return hall_name, menus[hall_name]
+            stats['restarts'] += 1
+    return hall_name, menus[hall_name], stats
+
+
+def get_last_covered_day(hall):
+    last_meal = Meal.query.filter_by(hall_id=hall.id).order_by(Meal.date.desc()).first()
+    if last_meal is None:
+        return None
+    return last_meal.date
 
 
 def parse_hall(hall_name):
     print('Parsing hall ' + hall_name)
     hall = Hall.query.filter_by(name=hall_name).first()
+    stats = {
+        'found': {
+            'days': 0,
+            'meals': 0,
+            'items': 0,
+        },
+        'inserted': {
+            'meals': 0,
+            'items': 0,
+        },
+        'previous_end_day': get_last_covered_day(hall),
+        'end_day': None,
+    }
     for day_d in menus[hall_name]:
+        stats['found']['days'] += 1
         date = datetime.datetime.strptime(day_d['date'], DATE_FMT_JAMIX).date()
         print('Parsing day ' + day_d['date'])
         # TODO: some days may actually have less than three meals.
@@ -719,6 +744,7 @@ def parse_hall(hall_name):
             print('Not enough meals found, skipping day.')
             continue
         for meal_d in day_d['meals']:
+            stats['found']['meals'] += 1
             meal_name = meal_d['name']
             existing_meal = Meal.query.filter_by(hall_id=hall.id, name=meal_name, date=date).first()
             if existing_meal is not None:
@@ -744,14 +770,16 @@ def parse_hall(hall_name):
                 end_time=end_time,
             )
             meal.hall = hall
+            stats['inserted']['meals'] += 1
             for course_d in meal_d['courses']:
                 course_name = course_d['name']
                 print('Parsing course ' + course_name)
-                # Note that both ingredients and nutrition_facts['items'] are dictionaries,
+                # Note that both ingredients and nutrition_d['items'] are dictionaries,
                 # with the keys being the names of the items.
                 ingredients = course_d['ingredients']
-                nutrition_facts = course_d['nutrition_facts']
+                nutrition_d = course_d['nutrition']
                 for item_name in ingredients:
+                    stats['found']['items'] += 1
                     print('Parsing item ' + item_name)
                     clean_item_name = ITEM_NAME_OVERRIDES.get(item_name, item_name).replace('`', '\'')
                     item = Item(
@@ -834,26 +862,34 @@ def parse_hall(hall_name):
                     if existing_item is not None:
                         item = existing_item
                     else:
+                        stats['inserted']['items'] += 1
                         db.session.add(item)
-                        if nutrition_facts['items'].get(item_name):
+                        if nutrition_d['items'].get(item_name):
                             # Read nutrition facts
                             # TODO: 'nutrition' or 'nutrition facts'?
-                            nutrition = read_nutrition_facts(nutrition_facts['items'][item_name])
+                            nutrition = read_nutrition_facts(nutrition_d['items'][item_name])
                             db.session.add(nutrition)
                             item.nutrition = nutrition
                     item.meals.append(meal)
                     # TODO: this should always be present, but handle its absence in case the scraper broke
             db.session.add(meal)
     db.session.commit()
+    stats['end_day'] = get_last_covered_day(hall)
+    return stats
 
 
 def scrape_jamix():
     print('Reading JAMIX menu data.')
     create_driver()
+    stats = {
+        'start_time': datetime.datetime.now(),
+        'end_time': None,
+        'halls': {},
+    }
 
     # Iterate through halls
-    for hall_jamix_id in range(1, 11 + 1):
-        hall_name, hall = parse(hall_jamix_id)
+    for hall_jamix_id in range(1, 2 + 1):
+        hall_name, hall, scrape_stats = parse(hall_jamix_id)
         # Separate multi-hall menus
         # TODO: should we do this at request time?
         if '/' in hall_name or ' & ' in hall_name or ' and ' in hall_name:
@@ -869,13 +905,24 @@ def scrape_jamix():
             hall_name_b = clean_hall_name(hall_name_b)
             menus[hall_name_a] = value
             menus[hall_name_b] = value
-            parse_hall(hall_name_a)
-            parse_hall(hall_name_b)
+            stats['halls'][hall_name_a] = {
+                'scrape': scrape_stats,
+                'parse': parse_hall(hall_name_a),
+            }
+            stats['halls'][hall_name_b] = {
+                'scrape': scrape_stats,
+                'parse': parse_hall(hall_name_b),
+            }
         else:
-            parse_hall(hall_name)
+            stats['halls'][hall_name] = {
+                'scrape': scrape_stats,
+                'parse': parse_hall(hall_name),
+            }
 
     db.session.commit()
     print('Done.')
+    stats['end_time'] = datetime.datetime.now()
+    return stats
 
 
 @celery.task
@@ -883,7 +930,8 @@ def scrape(fasttrack_only=False):
     scrape_fasttrack()
     if not fasttrack_only:
         scrape_managers()
-        scrape_jamix()
+        stats = scrape_jamix()
+        print(stats)
 
 
 
