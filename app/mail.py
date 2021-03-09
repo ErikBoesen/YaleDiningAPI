@@ -7,16 +7,14 @@ TIME_FMT = '%H:%M'
 DATETIME_FMT = DATE_FMT + ' ' + TIME_FMT
 
 def send_mail(subject, html, recipients):
-    message = Message(subject=subject,
-                      body=body,
-                      recipients=recipients)
-    msg = Message(
-        subject,
-        html=html,
-        recipients=recipients,
-        sender=app.config['MAIL_DEFAULT_SENDER'],
-    )
-    mail.send(msg)
+    with app.app_context():
+        msg = Message(
+            subject,
+            html=html,
+            recipients=recipients,
+            sender=app.config['MAIL_DEFAULT_SENDER'],
+        )
+        mail.send(msg)
 
 
 def send_scraper_report(stats):
