@@ -4,7 +4,7 @@
     {% for hall_name, hall in stats['halls'].items() %}
     <div>
         <h3>{{ hall_name }}</h3>
-        <p>Scraped up to {{ hall['end_day'].strftime(DATE_FMT) }}</p>
+        <p>Scraped to {{ hall['end_day'].strftime(DATE_FMT) }} <span style="color: {{ status_color(hall['days_left']) }}">({{ hall['days_left'] }} days left)</p>
         <p>New days: {{ hall['found']['days'] }}</p>
         {% if hall['found']['days'] %}
         <p>Meals found: {{ hall['inserted']['meals'] }}</p>
@@ -13,6 +13,6 @@
     </div>
     {% endfor %}
 
-    <a style="display: inline-block; padding: 10px 15px; background: #00356b; box-sizing: border-box; color: white; text-decoration: none;" href="https://yaledine.com/scraper">Rerun scraper</a>
+    {#<a style="display: inline-block; padding: 10px 15px; background: #00356b; box-sizing: border-box; color: white; text-decoration: none;" href="https://yaledine.com/scraper">Rerun scraper</a>#}
 </div>
 

@@ -922,7 +922,7 @@ def scrape_jamix():
 
     now = datetime.datetime.now()
     for hall_name in stats['halls']:
-        stats[hall_name]['days_left'] = (stats['end_time'] - stats[hall_name]['end_day']).days
+        stats['halls'][hall_name]['days_left'] = (stats['halls'][hall_name]['end_day'] - now.date()).days
     stats['end_time'] = now
     db.session.commit()
     print('Done.')
