@@ -733,8 +733,8 @@ def parse_hall(hall_name):
             'meals': 0,
             'items': 0,
         },
-        'previous_end_day': get_last_covered_day(hall),
         'end_day': None,
+        'days_left': None,
     }
     for day_d in menus[hall_name]:
         stats['found']['days'] += 1
@@ -907,17 +907,17 @@ def scrape_jamix():
             menus[hall_name_a] = value
             menus[hall_name_b] = value
             stats['halls'][hall_name_a] = {
-                'scrape': scrape_stats,
-                'parse': parse_hall(hall_name_a),
+                **scrape_stats,
+                **parse_hall(hall_name_a),
             }
             stats['halls'][hall_name_b] = {
-                'scrape': scrape_stats,
-                'parse': parse_hall(hall_name_b),
+                **scrape_stats,
+                **parse_hall(hall_name_b),
             }
         else:
             stats['halls'][hall_name] = {
-                'scrape': scrape_stats,
-                'parse': parse_hall(hall_name),
+                **scrape_stats,
+                **parse_hall(hall_name),
             }
 
     db.session.commit()
