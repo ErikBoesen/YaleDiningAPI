@@ -1,7 +1,8 @@
 from app import app, db
 
 
-meals_x_items = db.Table('meals_x_items',
+meals_x_items = db.Table(
+    'meals_x_items',
     db.Column('meal_id', db.Integer, db.ForeignKey('meals.id'), nullable=False),
     db.Column('item_id', db.Integer, db.ForeignKey('items.id'), nullable=False),
 )

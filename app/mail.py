@@ -6,6 +6,7 @@ DATE_FMT = '%Y-%m-%d'
 TIME_FMT = '%H:%M'
 DATETIME_FMT = DATE_FMT + ' ' + TIME_FMT
 
+
 def send_mail(subject, html, recipients):
     with app.app_context():
         msg = Message(
@@ -35,4 +36,3 @@ def send_scraper_report(stats):
     send_mail(subject='YaleDine Scraper Report ' + stats['end_time'].strftime(DATE_FMT),
               html=html,
               recipients=app.config['ADMIN_EMAILS'])
-

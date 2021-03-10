@@ -70,6 +70,7 @@ ITEM_NAME_OVERRIDES = {
 
 driver = None
 
+
 def create_driver():
     # TODO: using globals is bad practice.
     global driver
