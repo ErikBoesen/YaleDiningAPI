@@ -39,7 +39,7 @@ def api_hall(hall_id):
 
 
 @api_bp.route('/halls/<hall_id>/managers')
-def api_managers(hall_id):
+def api_hall_managers(hall_id):
     hall = Hall.query.get_or_404(hall_id)
     managers = hall.managers
     return to_json(managers)
@@ -67,6 +67,12 @@ def api_hall_meals(hall_id):
                                 end_date=end_date)
 
     return to_json(meals)
+
+
+@api_bp.route('/managers')
+def api_managers():
+    managers = Manager.query.all()
+    return to_json(managers)
 
 
 @api_bp.route('/meals')
