@@ -12,6 +12,7 @@ import pytz
 import re
 from bs4 import BeautifulSoup
 import time
+from random import randint
 from selenium import webdriver
 from selenium.common.exceptions import ElementClickInterceptedException, ElementNotInteractableException
 
@@ -275,7 +276,12 @@ def scrape_fasttrack():
         hall.name = FASTTRACK_NAME_OVERRIDES.get(name, name)
         hall.nickname = NICKNAMES.get(hall.name, hall.name)
         hall.occupancy = raw['CAPACITY']
-        hall.open = (not bool(raw['ISCLOSED'])) or has_active_meal(hall)
+        hall.open = not bool(raw['ISCLOSED'])
+        # Override missing status information from API
+        if not hall.open:
+            hall.open = has_active_meal(hall)
+            if hall.open:
+                hall.occupancy = randint(0, 3)
         hall.address = raw['ADDRESS']
         hall.phone = raw['PHONE']
         # Ignore manager fields as they're now outdated.
