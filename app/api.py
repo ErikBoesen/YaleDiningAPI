@@ -16,8 +16,8 @@ STATUS = to_json({
     'message': os.environ.get('STATUS_MESSAGE'),
     'min_version_ios': int(os.environ.get('STATUS_MIN_VERSION_IOS', 0)),
     'min_version_android': int(os.environ.get('STATUS_MIN_VERSION_ANDROID', 0)),
-    # Deprecated, still used for older versions
-    'min_version': int(os.environ.get('STATUS_MIN_VERSION', 0)),
+    # Deprecated, still used by older versions on iOS
+    'min_version': 0,
 })
 
 
