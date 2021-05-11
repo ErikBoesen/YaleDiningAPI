@@ -11,3 +11,4 @@ redis
 celery
 selenium
 pytz
+click==7.1.2
