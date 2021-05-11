@@ -22,6 +22,7 @@ TIME_FMT = '%H:%M'
 TIMEZONE = pytz.timezone('America/New_York')
 WAIT_PERIOD = 10
 MENU_FILE = 'menus.json'
+MIN_MEALS_ALLOWED = 2
 FASTTRACK_NAME_OVERRIDES = {
     'Franklin': 'Benjamin Franklin',
     'Stiles': 'Ezra Stiles',
@@ -630,7 +631,7 @@ def scrape_right(hall_name):
             break
         sleep()
         tabs = get_tabs()
-        has_tabs = (len(tabs) >= 3)
+        has_tabs = (len(tabs) >= MIN_MEALS_ALLOWED)
         if has_tabs:
             print('Found %d tabs on this page.' % len(tabs))
             tabs_processed = 0
@@ -748,7 +749,7 @@ def parse_hall(hall_name):
         date = datetime.datetime.strptime(day_d['date'], DATE_FMT_JAMIX).date()
         print('Parsing day ' + day_d['date'])
         # TODO: some days may actually have less than three meals.
-        if len(day_d['meals']) < 3:
+        if len(day_d['meals']) < MIN_MEALS_ALLOWED:
             print('Not enough meals found, skipping day.')
             continue
         for meal_d in day_d['meals']:
