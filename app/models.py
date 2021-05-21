@@ -2,8 +2,6 @@ from app import app, db
 import datetime
 
 
-DATE_FMT = '%Y-%m-%d'
-
 meals_x_items = db.Table(
     'meals_x_items',
     db.Column('meal_id', db.Integer, db.ForeignKey('meals.id'), nullable=False),
@@ -61,14 +59,11 @@ class Meal(db.Model):
         if hall_id is not None:
             meals = meals.filter_by(hall_id=hall_id)
         if date is not None:
-            date = datetime.datetime.strptime(date, DATE_FMT)
-            meals = meals.filter_by(date=date)
+            meals = meals.filter(Meal.date == date)
         else:
             if start_date is not None:
-                start_date = datetime.datetime.strptime(start_date, DATE_FMT)
                 meals = meals.filter(start_date <= Meal.date)
             if end_date is not None:
-                end_date = datetime.datetime.strptime(end_date, DATE_FMT)
                 meals = meals.filter(Meal.date <= end_date)
         meals = meals.order_by(Meal.hall_id, Meal.date, Meal.start_time)
         return meals.all()
