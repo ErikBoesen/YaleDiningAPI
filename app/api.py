@@ -53,7 +53,7 @@ def api_hall_meals(hall_id):
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
 
-    meals = Meal.search(hall_id,
+    meals = Meal.search(hall_id=hall_id,
                         date=date,
                         start_date=start_date,
                         end_date=end_date)
@@ -77,7 +77,13 @@ def api_managers():
 
 @api_bp.route('/meals')
 def api_meals():
-    meals = Meal.query.all()
+    date = request.args.get('date')
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+
+    meals = Meal.search(date=date,
+                        start_date=start_date,
+                        end_date=end_date)
     return to_json(meals)
 
 
