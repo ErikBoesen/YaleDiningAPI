@@ -8,8 +8,6 @@ import os
 import datetime
 
 
-DATE_FMT = '%Y-%m-%d'
-
 api_bp = Blueprint('api', __name__)
 
 STATUS = to_json({
