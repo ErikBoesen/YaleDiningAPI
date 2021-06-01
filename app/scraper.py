@@ -61,6 +61,8 @@ MEAL_NAME_OVERRIDES = {
     'OC Dinner': 'Dinner',
     # TODO: check that this error is still happening, as this override could cause problems
     'breakfast': 'Lunch',
+    'Breakfast (Pick up at Lunch)': 'Breakfast',
+    'Dinner (Pick up at Lunch)': 'Dinner',
 }
 COURSE_NAME_OVERRIDES = {
     'Yale Bakery Dessert': 'Dessert',
