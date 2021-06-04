@@ -705,7 +705,7 @@ def parse(hall_jamix_id):
         # back to a time where there's no data, and the parser will think it's finished with this hall.
         # Hopefully we'll run often enough that this won't happen, but it would be good to be sure.
         last_day = get_last_day(hall_name)
-        if last_day:
+        if last_day and False:
             seek_date(day_after(last_day))
         else:
             # Uncomment to jump ahead by a few days if we need to look at a future time
