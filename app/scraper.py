@@ -710,7 +710,7 @@ def parse(hall_jamix_id):
         else:
             # Uncomment to jump ahead by a few days if we need to look at a future time
             seek_date(
-                (datetime.date.today() + datetime.timedelta(days=10)).strftime(DATE_FMT_JAMIX)
+                (datetime.date.today() + datetime.timedelta(days=16)).strftime(DATE_FMT_JAMIX)
             )
             seek_start()
 
