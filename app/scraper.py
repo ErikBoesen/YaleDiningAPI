@@ -709,9 +709,9 @@ def parse(hall_jamix_id):
             seek_date(day_after(last_day))
         else:
             # Uncomment to jump ahead by a few days if we need to look at a future time
-            #seek_date(
-            #    (datetime.date.today() + datetime.timedelta(days=5)).strftime(DATE_FMT_JAMIX)
-            #)
+            seek_date(
+                (datetime.date.today() + datetime.timedelta(days=5)).strftime(DATE_FMT_JAMIX)
+            )
             seek_start()
 
         try:
