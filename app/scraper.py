@@ -449,6 +449,7 @@ def seek_start(start_date=None):
     # Go to earliest available date or requested date
     while True:
         panels = driver.find_elements_by_class_name('v-panel-content')
+        print('Seeking date ' + get_subheader_text())
         if len(panels) == 1:
             # The only panel is the no menus error message
             click_next_date()
