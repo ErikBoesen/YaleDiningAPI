@@ -450,7 +450,7 @@ def seek_start(start_date=None):
     while True:
         panels = driver.find_elements_by_class_name('v-panel-content')
         print('Seeking date ' + get_subheader_text())
-        if len(panels) == 1:
+        if len(panels) == 1 or len(get_tabs()) < MIN_MEALS_ALLOWED:
             # The only panel is the no menus error message
             click_next_date()
             break
