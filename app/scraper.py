@@ -663,8 +663,8 @@ def scrape_right(hall_name):
         with open(MENU_FILE, 'w') as f:
             json.dump(menus, f)
         # Uncomment to work around the removed buttons issue, but makes everything less efficient.
-        #driver.refresh()
-        #seek_date(today_menu['date'])
+        driver.refresh()
+        seek_date(today_menu['date'])
         click_next_date()
         sleep()
 
