@@ -907,7 +907,7 @@ def scrape_jamix():
     for hall_jamix_id in range(1, 11 + 1):
         # Skip disabled halls
         if hall_jamix_id in (4,):
-            pass
+            continue
         hall_name, hall, scrape_stats = parse(hall_jamix_id)
         # Separate multi-hall menus
         # TODO: should we do this at request time?
