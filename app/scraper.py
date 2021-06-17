@@ -772,10 +772,12 @@ def parse_hall(hall_name):
                 end_time = '10:30'
             elif meal_name == 'Lunch':
                 start_time = '11:30'
-                end_time = '14:00'
+                end_time = '13:30'
+                #end_time = '14:00'
             elif 'Dinner' in meal_name:
                 start_time = '17:00'
-                end_time = '19:30'
+                end_time = '19:00'
+                #end_time = '19:30'
             else:
                 start_time = None
                 end_time = None
